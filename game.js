@@ -319,7 +319,7 @@ function renderTeam(containerId, units) {
     const isSelected =
       unit.team === "hero"
         ? selectedHeroId === unit.id
-        : Boolean(pendingMoveId && selectedTargetId === unit.id);
+        : selectedTargetId === unit.id;
 
     const isActive = currentActor && currentActor.id === unit.id;
 
