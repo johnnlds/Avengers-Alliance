@@ -2402,3 +2402,44 @@ body {
     border-width: 1.5px !important;
   }
 }
+
+
+/* Final override: no character auras or selection boxes; lower the ground ring. */
+.battlefield .unit.active-turn,
+.battlefield .unit.selected,
+.battlefield .unit.enemy.selected,
+.battlefield .unit.enemy.selected:not(.active-turn) {
+  outline: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+.battlefield .unit.active-turn .portrait,
+.battlefield .unit.selected .portrait,
+.battlefield .unit.enemy.selected .portrait {
+  outline: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+.battlefield .unit.active-turn .portrait img,
+.battlefield .unit.selected .portrait img,
+.battlefield .unit.enemy.selected .portrait img,
+.battlefield .unit.enemy:hover:not(.dead) .portrait img,
+.battlefield .unit:hover:not(.dead) .portrait img {
+  filter: drop-shadow(0 7px 9px rgba(0,0,0,.6)) !important;
+}
+.battlefield .unit.enemy.selected:not(.active-turn) {
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+.battlefield .unit.active-turn::after {
+  bottom: -1px !important;
+  width: 48% !important;
+  height: 12px !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit.active-turn::after {
+    bottom: -1px !important;
+    height: 9px !important;
+  }
+}
