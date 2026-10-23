@@ -927,3 +927,91 @@ button:focus-visible {
 .unit.attacking.enemy.attack-flying-melee {
   animation: flying-kick 1.28s cubic-bezier(.2,.75,.2,1) both !important;
 }
+
+
+/* Compact HUD: active hero health and stamina sit side by side above abilities. */
+.active-vitals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.vital-card {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #111c29;
+}
+.vital-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: bold;
+}
+.vital-label strong { color: var(--text); white-space: nowrap; }
+.vital-card .bar { height: 9px; }
+.stamina-vital .vital-label strong { color: #81ceff; }
+.health-vital .vital-label strong { color: #ff8585; }
+.unit-status { display: none; }
+.portrait { margin-bottom: 2px; }
+.unit-name { margin-top: 0; margin-bottom: 0; }
+.combat-panel { gap: 9px; }
+.target-summary { padding: 8px 10px; }
+.ability-list { gap: 5px; }
+.ability { padding: 8px 10px; gap: 7px; }
+.ability-description { margin-top: 3px; line-height: 1.25; }
+.action-row { gap: 6px; }
+.primary-button, .secondary-button { padding: 9px 11px; }
+
+@media (max-width: 760px) {
+  .topbar { padding: 8px 12px; gap: 8px; }
+  .topbar h1 { font-size: 18px; letter-spacing: 1px; }
+  .subtitle { margin-top: 2px; font-size: 8px; letter-spacing: 1px; }
+  .battle-info { gap: 3px; font-size: 9px; }
+  .game { padding: 5px; gap: 6px; }
+  .battlefield { padding: 7px 4px; gap: 3px; border-radius: 9px; }
+  .team-heading { flex-direction: row; align-items: center; gap: 3px; }
+  .team-heading h2 { font-size: 8px; letter-spacing: .5px; }
+  .team-heading > span { font-size: 8px; }
+  .hero-side .team-grid, .enemy-side .team-grid { margin-top: 4px; gap: 1px; }
+  .portrait { height: clamp(45px, 13vw, 76px); }
+  .unit { padding: 1px 0 2px; }
+  .unit-name { font-size: clamp(8px, 2.5vw, 10px); padding: 3px 4px; border-width: 1px; overflow-wrap: anywhere; }
+  .battle-divider span { font-size: 14px; }
+  .combat-panel, .log-panel { padding: 8px; border-radius: 9px; }
+  .combat-panel { gap: 6px; }
+  .selected-info { gap: 5px; }
+  .selected-info .eyebrow { font-size: 8px; letter-spacing: 1px; }
+  .selected-info h2 { font-size: 15px; margin: 2px 0; }
+  #activeDescription { font-size: 9px; }
+  .active-vitals { gap: 6px; }
+  .vital-card { padding: 6px; }
+  .vital-label { font-size: 9px; margin-bottom: 4px; }
+  .vital-card .bar { height: 7px; }
+  .target-summary { padding: 6px 8px; gap: 5px; }
+  .target-summary span { font-size: 8px; letter-spacing: .5px; }
+  .target-summary strong { font-size: 10px; }
+  .section-heading { font-size: 9px; letter-spacing: 1px; }
+  .ability-list { gap: 4px; }
+  .ability { padding: 6px 7px; border-radius: 6px; }
+  .ability-name { font-size: 10px; }
+  .ability-description { font-size: 8px; line-height: 1.2; margin-top: 2px; }
+  .ability-cost { font-size: 9px; }
+  .action-row { gap: 5px; }
+  .primary-button, .secondary-button { font-size: 10px; padding: 7px 8px; }
+  .log-panel { max-height: 90px; }
+  .log-heading h2 { font-size: 9px; }
+  .battle-log { margin-top: 4px; max-height: 54px; font-size: 9px; line-height: 1.3; }
+  .log-entry { padding: 3px 0; }
+}
+@media (max-width: 380px) {
+  .battlefield { grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr); }
+  .team-heading h2 { font-size: 7px; }
+  .team-heading > span { font-size: 7px; }
+  .portrait { height: 44px; }
+  .selected-info h2 { font-size: 13px; }
+  .ability-description { font-size: 7.5px; }
+}
