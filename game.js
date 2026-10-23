@@ -495,7 +495,23 @@ function renderMoveDock() {
     const cost = document.createElement("small");
     cost.textContent = String(move.cost);
     button.append(glyph, cost);
-    button.addEventListener("click", () => openMoveInfo(move.id));
+    let lastTapAt = 0;
+    button.addEventListener("click", () => {
+      const now = Date.now();
+      const isDoubleTap = now - lastTapAt <= 450;
+      lastTapAt = now;
+
+      if (
+        isDoubleTap &&
+        inspectedMoveId === move.id &&
+        !$("moveInfoOverlay").classList.contains("hidden")
+      ) {
+        // A second tap on the same icon confirms the move and closes its details.
+        $("selectMoveBtn").click();
+        return;
+      }
+      openMoveInfo(move.id);
+    });
     dock.appendChild(button);
   }
 }
