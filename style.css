@@ -1396,3 +1396,34 @@ button:focus-visible {
 @media (max-width: 760px) {
   .battlefield .unit.active-turn { outline-width: 1.5px !important; outline-offset: 1px; }
 }
+
+
+/* Mobile layout fix: prevent desktop grid-column assignments from creating
+   a narrow implicit second column for the combat panel and battle log. */
+@media (max-width: 760px) {
+  .game {
+    display: grid !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch;
+  }
+  .game > .battlefield,
+  .game > #teamRoster,
+  .game > .combat-panel,
+  .game > .log-panel {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    min-width: 0;
+    justify-self: stretch;
+  }
+  .combat-panel,
+  .log-panel {
+    box-sizing: border-box;
+  }
+  .ability-list,
+  .team-roster {
+    min-width: 0;
+    width: 100%;
+  }
+}
