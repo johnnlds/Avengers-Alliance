@@ -1,102 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alliance Protocol — Battle Prototype</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101722">
+  <title>Marvel Alliance - Battle Prototype</title>
   <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand-mark">A</div>
-      <div>
-        <p class="eyebrow">S.H.I.E.L.D. TACTICAL SIMULATION</p>
-        <h1>ALLIANCE <span>PROTOCOL</span></h1>
-      </div>
-      <div class="topbar-right">
-        <span class="status-dot"></span>
-        <span>SIMULATION ACTIVE</span>
-      </div>
-    </header>
+  <header class="topbar">
+    <div>
+      <h1>MARVEL <span>ALLIANCE</span></h1>
+      <p class="subtitle">TACTICAL COMBAT PROTOTYPE</p>
+    </div>
+    <div class="battle-info">
+      <span id="roundLabel">ROUND 1</span>
+      <span id="turnLabel">YOUR TURN</span>
+    </div>
+  </header>
 
-    <main>
-      <section class="mission-strip">
+  <main class="game">
+    <section class="battlefield">
+      <div class="team-heading">
+        <h2>YOUR TEAM</h2>
+        <span id="heroCount">3 ACTIVE</span>
+      </div>
+
+      <div id="heroTeam" class="team-grid"></div>
+
+      <div class="battle-divider">
+        <span>VS</span>
+        <div></div>
+      </div>
+
+      <div class="team-heading enemy-heading">
+        <h2>HYDRA FORCES</h2>
+        <span id="enemyCount">3 ACTIVE</span>
+      </div>
+
+      <div id="enemyTeam" class="team-grid"></div>
+    </section>
+
+    <section class="combat-panel">
+      <div class="selected-info">
         <div>
-          <p class="eyebrow">OPERATION 001</p>
-          <h2>HYDRA OUTPOST</h2>
-          <p class="mission-subtitle">Eliminate hostile forces to secure the area.</p>
+          <p class="eyebrow">ACTIVE CHARACTER</p>
+          <h2 id="activeName">Phil Coulson</h2>
+          <p id="activeDescription">S.H.I.E.L.D. field leader</p>
         </div>
-        <div class="mission-meta">
-          <div><span>OBJECTIVE</span><strong>DEFEAT ALL ENEMIES</strong></div>
-          <div><span>TURN</span><strong id="turn-count">01</strong></div>
-          <div><span>STATUS</span><strong id="battle-status">READY</strong></div>
-        </div>
-      </section>
+        <div id="activeStamina" class="stamina-summary">STA 80/80</div>
+      </div>
 
-      <section class="roster-picker" aria-label="Choose your team">
-        <div class="roster-picker-heading">
-          <div><p class="eyebrow">TEAM LOADOUT</p><h2>CHOOSE YOUR ALLIANCE</h2></div>
-          <p>Choose who fills the two hero slots. Your S.H.I.E.L.D. Agent stays on the team.</p>
-        </div>
-        <div class="roster-selectors">
-          <label class="roster-slot"><span>OPERATIVE SLOT 02</span><select id="slot-two-select"><option value="cap">Captain America</option><option value="black-bolt">Black Bolt</option></select></label>
-          <label class="roster-slot"><span>OPERATIVE SLOT 03</span><select id="slot-three-select"><option value="iron">Iron Man</option><option value="black-panther">Black Panther</option></select></label>
-        </div>
-      </section>
+      <div class="target-summary">
+        <span>SELECTED TARGET</span>
+        <strong id="targetName">Hydra Soldier 1</strong>
+      </div>
 
-      <section class="battlefield" aria-label="Battlefield">
-        <div class="battle-lane heroes-lane">
-          <div class="lane-label"><span>01</span> ALLIANCE</div>
-          <div id="hero-team" class="combatants"></div>
-        </div>
-        <div class="battle-divider">
-          <span>VS</span>
-          <div class="divider-line"></div>
-        </div>
-        <div class="battle-lane hydra-lane">
-          <div class="lane-label"><span>02</span> HYDRA FORCES</div>
-          <div id="enemy-team" class="combatants"></div>
-        </div>
-        <div id="battle-message" class="battle-message" role="status">Select a hero to begin your turn.</div>
-      </section>
+      <h3 class="section-heading">AVAILABLE ABILITIES</h3>
+      <div id="abilityList" class="ability-list"></div>
 
-      <section class="command-panel">
-        <div class="selected-unit">
-          <div id="selected-avatar" class="portrait large portrait-agent"><span>AG</span></div>
-          <div class="selected-copy">
-            <p class="eyebrow">ACTIVE OPERATIVE</p>
-            <h2 id="selected-name">S.H.I.E.L.D. Agent</h2>
-            <p id="selected-description">A versatile field operative. Choose a move.</p>
-          </div>
-        </div>
-        <div class="command-content">
-          <div class="command-heading">
-            <h3>AVAILABLE ACTIONS</h3>
-            <span id="action-hint">Choose an action, then a target.</span>
-          </div>
-          <div id="move-list" class="move-list"></div>
-        </div>
-      </section>
+      <div class="action-row">
+        <button id="endTurnBtn" class="secondary-button">Skip Turn</button>
+        <button id="restartBtn" class="secondary-button">Restart Battle</button>
+      </div>
+    </section>
 
-      <section class="bottom-row">
-        <div class="combat-log-panel">
-          <div class="panel-heading"><h3>COMBAT LOG</h3><span>LIVE FEED</span></div>
-          <ol id="combat-log" class="combat-log"></ol>
-        </div>
-        <aside class="save-panel">
-          <div class="panel-heading"><h3>MISSION DATA</h3><span>LOCAL</span></div>
-          <p id="save-status">Progress is saved in this browser after each action.</p>
-          <div class="save-actions">
-            <button id="save-button" class="secondary-button">SAVE NOW</button>
-            <button id="restart-button" class="danger-button">RESTART BATTLE</button>
-          </div>
-          <p class="small-note">Prototype save data stays on this device and browser.</p>
-        </aside>
-      </section>
-    </main>
-    <footer>ALLIANCE PROTOCOL <span>•</span> FAN-MADE GAMEPLAY PROTOTYPE <span>•</span> NOT AN OFFICIAL MARVEL PRODUCT</footer>
+    <section class="log-panel">
+      <div class="log-heading">
+        <h2>BATTLE LOG</h2>
+        <button id="clearLogBtn" class="text-button">Clear</button>
+      </div>
+      <div id="battleLog" class="battle-log" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div id="resultOverlay" class="overlay hidden">
+    <div class="result-card">
+      <p class="eyebrow">BATTLE COMPLETE</p>
+      <h2 id="resultTitle">VICTORY</h2>
+      <p id="resultMessage"></p>
+      <button id="playAgainBtn" class="primary-button">Play Again</button>
+    </div>
   </div>
-  <script src="game.js"></script>
 </body>
 </html>
