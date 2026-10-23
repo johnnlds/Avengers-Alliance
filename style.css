@@ -858,3 +858,62 @@ button:focus-visible {
   .unit.taking-hit { animation-duration: 680ms !important; }
   .combat-effect, .damage-number { animation-duration: 420ms !important; }
 }
+
+
+/* Slower, type-specific combat choreography. */
+.unit.attacking.hero,
+.unit.attacking.enemy {
+  animation-duration: 1.28s !important;
+}
+.unit.taking-hit {
+  animation-duration: 900ms !important;
+}
+.unit.attack-ranged-gun {
+  animation: gunner-recoil 900ms ease-out both !important;
+}
+.unit.attack-flying-melee {
+  animation: flying-kick 1.28s cubic-bezier(.2,.75,.2,1) both !important;
+}
+@keyframes gunner-recoil {
+  0%, 100% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+  18% { transform: translate(0, 0) scale(1); }
+  30% { transform: translate(-4px, 0) scale(1.02); filter: brightness(1.8); }
+  45% { transform: translate(3px, 0) scale(1); filter: brightness(1.2); }
+  62% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+}
+@keyframes flying-kick {
+  0% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+  30% { transform: translate(var(--attack-x, 35px), var(--attack-y, 0px)) scale(1.08) rotate(-4deg); }
+  43%, 55% { transform: translate(var(--attack-x, 35px), var(--attack-y, 0px)) scale(1.18) rotate(9deg); filter: brightness(1.7) saturate(1.25); }
+  68% { transform: translate(calc(var(--attack-x, 35px) - 8px), calc(var(--attack-y, 0px) - 2px)) scale(1.06) rotate(2deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0); filter: brightness(1); }
+}
+.combat-effect.ranged-gun.projectile {
+  width: 10px;
+  height: 5px;
+  border-radius: 3px;
+  background: #fff7a6;
+  box-shadow: 0 0 8px 3px #ffb52e, 0 0 20px 7px #ff632e;
+}
+.combat-effect.kick-strike {
+  width: 65px;
+  height: 65px;
+  border: 5px solid #fff2a1;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  box-shadow: 0 0 18px #ff8c42;
+  transform: translate(-50%, -50%) rotate(25deg) scale(.2);
+  animation: kick-arc 650ms ease-out both !important;
+}
+@keyframes kick-arc {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-35deg) scale(.2); }
+  30% { opacity: 1; transform: translate(-50%, -50%) rotate(20deg) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--target-x, 80px)), calc(-50% + var(--target-y, 0px))) rotate(85deg) scale(1.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .unit.attacking.hero, .unit.attacking.enemy, .unit.taking-hit,
+  .combat-effect, .damage-number {
+    animation-duration: inherit !important;
+  }
+}
