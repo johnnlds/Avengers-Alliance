@@ -1105,3 +1105,145 @@ button:focus-visible {
   .battlefield .portrait { height: 54px !important; }
   .unit-health-track { height: 3px; }
 }
+
+
+/* Battle UI refresh: clean portraits, turn marker, compact roster, and move popovers. */
+.battlefield .portrait { height: clamp(118px, 14vw, 170px) !important; }
+.battlefield .unit-name { display: none !important; }
+.battlefield .unit { position: relative; max-width: 180px; }
+.battlefield .unit.active-turn::after {
+  content: "";
+  position: absolute;
+  height: 5px;
+  left: 8%;
+  right: 8%;
+  bottom: -5px;
+  border-radius: 5px;
+  background: #ffd84a;
+  box-shadow: 0 0 12px rgba(255,216,74,.8);
+  z-index: 30;
+}
+.damage-number {
+  top: 18%;
+  left: auto;
+  font-size: clamp(20px, 2.8vw, 34px);
+  color: #ff3535;
+  text-shadow: 0 2px 3px #000, 0 0 8px rgba(255,35,35,.7);
+}
+.damage-number.damage-left { right: calc(100% + 2px); }
+.damage-number.damage-right { left: calc(100% + 2px); }
+.damage-number.critical { color: #ffe34d; text-shadow: 0 2px 3px #000, 0 0 12px #ffb700; }
+.damage-number.miss-number { color: #ff3535; text-shadow: 0 2px 3px #000, 0 0 8px rgba(255,35,35,.7); }
+.team-roster {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #101a27;
+}
+.roster-group { min-width: 0; }
+.roster-group h3 { margin: 0 0 6px; color: var(--muted); font-size: 10px; letter-spacing: 1px; }
+.roster-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) auto auto;
+  gap: 7px;
+  align-items: center;
+  padding: 5px 2px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  font-size: 11px;
+}
+.roster-name { overflow-wrap: anywhere; font-weight: 700; }
+.roster-hp { color: #ff8181; white-space: nowrap; }
+.roster-stamina { color: #85ceff; white-space: nowrap; }
+.roster-active .roster-name { color: #ffdf63; }
+.roster-row.defeated { opacity: .4; text-decoration: line-through; }
+.ability-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px !important;
+}
+.ability-card {
+  position: relative;
+  min-width: 0;
+  min-height: 98px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-content: center;
+  align-items: center;
+  gap: 5px 9px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: linear-gradient(145deg, #1a293b, #121c29);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+.ability-card:hover, .ability-card:focus-visible, .ability-card.chosen-ability {
+  border-color: var(--gold);
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(255,216,74,.22);
+}
+.ability-icon {
+  grid-row: 1 / 3;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: #0b1420;
+  font-size: 25px;
+}
+.ability-card .ability-name { font-size: 13px; line-height: 1.2; }
+.ability-card .ability-cost { font-size: 10px; color: #8fd4ff; }
+.move-popover {
+  position: absolute;
+  z-index: 50;
+  left: 0;
+  right: 0;
+  top: calc(100% + 5px);
+  padding: 12px;
+  border: 1px solid #e2bd49;
+  border-radius: 9px;
+  background: #101a27;
+  box-shadow: 0 10px 28px rgba(0,0,0,.65);
+  color: var(--text);
+  cursor: default;
+}
+.move-popover strong { display: block; font-size: 13px; }
+.move-popover p { margin: 7px 0; font-size: 11px; line-height: 1.4; }
+.move-popover .move-meta { color: var(--muted); }
+.choose-move {
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  padding: 8px;
+  background: var(--gold);
+  color: #16191e;
+  font-weight: 800;
+  cursor: pointer;
+}
+.choose-move:disabled { opacity: .45; cursor: not-allowed; }
+@media (max-width: 760px) {
+  .battlefield .portrait { height: clamp(82px, 20vw, 122px) !important; }
+  .battlefield .unit { max-width: 100%; }
+  .team-roster { gap: 6px; padding: 7px; }
+  .roster-group h3 { font-size: 8px; }
+  .roster-row { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 5px 2px; font-size: 10px; }
+  .ability-list { gap: 6px !important; }
+  .ability-card { min-height: 82px; padding: 8px; gap: 4px 6px; }
+  .ability-icon { width: 30px; height: 30px; font-size: 20px; }
+  .ability-card .ability-name { font-size: 11px; }
+  .move-popover { padding: 9px; }
+}
+@media (max-width: 380px) {
+  .battlefield .portrait { height: 74px !important; }
+  .team-roster { grid-template-columns: 1fr; }
+  .roster-row { grid-template-columns: minmax(0, 1.2fr) auto auto; font-size: 9px; }
+  .ability-card { min-height: 72px; padding: 6px; }
+  .ability-icon { width: 26px; height: 26px; font-size: 18px; }
+  .ability-card .ability-name { font-size: 10px; }
+}
