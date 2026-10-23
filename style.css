@@ -1487,3 +1487,113 @@ button:focus-visible {
   outline-offset: -1px;
   border-radius: 10px;
 }
+
+
+/* Requested combat UI refinements: turn outline on the health bar, roster
+   bars beside each name, reliable mobile damage numbers, and white DODGE text. */
+.battlefield .unit.active-turn {
+  outline: none !important;
+  filter: none !important;
+}
+.battlefield .unit.active-turn .portrait img {
+  filter: drop-shadow(0 7px 9px rgba(0,0,0,.6)) !important;
+}
+.battlefield .unit-health-track.active-turn-bar {
+  outline: 4px solid #fff !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.9), 0 0 10px rgba(255,255,255,.65) !important;
+  position: relative;
+  z-index: 4;
+}
+.battlefield .unit.enemy.selected:not(.active-turn) {
+  outline: 1px solid rgba(255, 115, 115, .75) !important;
+  outline-offset: -1px;
+}
+.team-roster {
+  align-items: start;
+}
+.roster-row {
+  grid-template-columns: minmax(90px, .8fr) minmax(0, 1.5fr) !important;
+  gap: 10px !important;
+  align-items: center;
+}
+.roster-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.roster-vitals {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.roster-vital-line {
+  display: grid;
+  grid-template-columns: 27px minmax(28px, 1fr) auto;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.roster-hp-label, .roster-sta-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .4px;
+}
+.roster-hp-label { color: #ff9696; }
+.roster-sta-label { color: #91d6ff; }
+.roster-bar {
+  height: 7px;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #263244;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+}
+.roster-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 220ms ease;
+}
+.roster-hp-track .roster-bar-fill { background: #e83d49; }
+.roster-sta-track .roster-bar-fill { background: #42a8ef; }
+.roster-value {
+  min-width: 36px;
+  color: #dbe5f1;
+  font-size: 9px;
+  text-align: right;
+  white-space: nowrap;
+}
+.damage-number {
+  position: absolute !important;
+  z-index: 100 !important;
+  top: 35% !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: calc(100vw - 12px);
+  white-space: nowrap;
+  pointer-events: none;
+  font-size: clamp(18px, 4.5vw, 34px) !important;
+  line-height: 1 !important;
+}
+.damage-number.miss-number {
+  color: #fff !important;
+  text-shadow: 0 2px 4px #000, 0 0 9px rgba(255,255,255,.5) !important;
+}
+.battlefield .unit { overflow: visible !important; }
+@media (max-width: 760px) {
+  .roster-row {
+    grid-template-columns: minmax(68px, .75fr) minmax(0, 1.25fr) !important;
+    gap: 6px !important;
+    font-size: 10px;
+  }
+  .roster-vital-line { grid-template-columns: 24px minmax(18px, 1fr) auto; gap: 3px; }
+  .roster-hp-label, .roster-sta-label { font-size: 8px; }
+  .roster-value { min-width: 29px; font-size: 8px; }
+  .roster-bar { height: 6px; }
+  .damage-number { top: 38% !important; font-size: clamp(17px, 5vw, 27px) !important; }
+  .battlefield .unit-health-track.active-turn-bar { outline-width: 3px !important; outline-offset: 2px; }
+}
+@media (max-width: 380px) {
+  .team-roster { grid-template-columns: 1fr !important; }
+  .roster-row { grid-template-columns: minmax(84px, .7fr) minmax(0, 1.3fr) !important; }
+}
