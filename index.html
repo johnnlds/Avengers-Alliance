@@ -22,24 +22,21 @@
 
   <main class="game">
     <section class="battlefield">
-      <div class="team-heading">
-        <h2>YOUR TEAM</h2>
-        <span id="heroCount">3 ACTIVE</span>
+      <div class="battle-side hero-side">
+        <div class="team-heading">
+          <h2>YOUR TEAM</h2>
+          <span id="heroCount">3 ACTIVE</span>
+        </div>
+        <div id="heroTeam" class="team-grid"></div>
       </div>
-
-      <div id="heroTeam" class="team-grid"></div>
-
-      <div class="battle-divider">
-        <span>VS</span>
-        <div></div>
+      <div class="battle-divider" aria-hidden="true"><span>VS</span></div>
+      <div class="battle-side enemy-side">
+        <div class="team-heading enemy-heading">
+          <h2>HYDRA FORCES</h2>
+          <span id="enemyCount">3 ACTIVE</span>
+        </div>
+        <div id="enemyTeam" class="team-grid"></div>
       </div>
-
-      <div class="team-heading enemy-heading">
-        <h2>HYDRA FORCES</h2>
-        <span id="enemyCount">3 ACTIVE</span>
-      </div>
-
-      <div id="enemyTeam" class="team-grid"></div>
     </section>
 
     <section class="combat-panel">
