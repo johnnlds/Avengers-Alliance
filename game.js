@@ -296,13 +296,43 @@ function renderRoster() {
       const name = document.createElement("span");
       name.className = "roster-name";
       name.textContent = unit.name;
-      const hp = document.createElement("span");
-      hp.className = "roster-hp";
-      hp.textContent = `HP ${Math.ceil(unit.hp)}/${unit.maxHp}`;
-      const sta = document.createElement("span");
-      sta.className = "roster-stamina";
-      sta.textContent = `STA ${Math.floor(unit.sta)}/${unit.maxSta}`;
-      row.append(name, hp, sta);
+      const vitals = document.createElement("div");
+      vitals.className = "roster-vitals";
+
+      const hpLine = document.createElement("div");
+      hpLine.className = "roster-vital-line";
+      const hpLabel = document.createElement("span");
+      hpLabel.className = "roster-hp-label";
+      hpLabel.textContent = "HP";
+      const hpTrack = document.createElement("div");
+      hpTrack.className = "roster-bar roster-hp-track";
+      const hpFill = document.createElement("div");
+      hpFill.className = "roster-bar-fill";
+      hpFill.style.width = `${Math.max(0, unit.hp / unit.maxHp * 100)}%`;
+      hpTrack.appendChild(hpFill);
+      const hpValue = document.createElement("span");
+      hpValue.className = "roster-value";
+      hpValue.textContent = `${Math.ceil(unit.hp)}/${unit.maxHp}`;
+      hpLine.append(hpLabel, hpTrack, hpValue);
+
+      const staLine = document.createElement("div");
+      staLine.className = "roster-vital-line";
+      const staLabel = document.createElement("span");
+      staLabel.className = "roster-sta-label";
+      staLabel.textContent = "STA";
+      const staTrack = document.createElement("div");
+      staTrack.className = "roster-bar roster-sta-track";
+      const staFill = document.createElement("div");
+      staFill.className = "roster-bar-fill";
+      staFill.style.width = `${Math.max(0, unit.sta / unit.maxSta * 100)}%`;
+      staTrack.appendChild(staFill);
+      const staValue = document.createElement("span");
+      staValue.className = "roster-value";
+      staValue.textContent = `${Math.floor(unit.sta)}/${unit.maxSta}`;
+      staLine.append(staLabel, staTrack, staValue);
+
+      vitals.append(hpLine, staLine);
+      row.append(name, vitals);
       group.appendChild(row);
     }
     root.appendChild(group);
@@ -364,7 +394,7 @@ function renderTeam(containerId, units) {
     status.textContent = statuses.join(" • ");
 
     const healthTrack = document.createElement("div");
-    healthTrack.className = "unit-health-track";
+    healthTrack.className = "unit-health-track" + (currentActor?.id === unit.id ? " active-turn-bar" : "");
     healthTrack.setAttribute("aria-label", "Health");
     const healthFill = document.createElement("div");
     healthFill.className = "unit-health-fill";
@@ -413,7 +443,7 @@ function renderCombatPanel() {
     for (const move of MOVE_DATA) {
       const card = document.createElement("button");
       card.type = "button";
-      card.className = "ability-card";
+      card.className = "ability-card" + (pendingMoveId === move.id ? " chosen-ability" : "");
       const cooldown = hero.cooldowns[move.id] || 0;
       const affordable = hero.sta >= move.cost;
       const disabled = battleOver || waitingForEnemy || !affordable || cooldown > 0;
@@ -438,14 +468,13 @@ function renderCombatPanel() {
         card.title = cooldown > 0 ? `On cooldown for ${cooldown} more turn(s)` : !affordable ? "Not enough stamina" : "Unavailable";
       } else {
         card.addEventListener("click", () => {
-          const target = enemies.find(e => e.id === selectedTargetId && e.alive)
-            || enemies.find(e => e.alive);
-          if (!target) {
+          if (!enemies.some(e => e.alive)) {
             log("No living Hydra targets remain.", "miss");
             return;
           }
-          selectedTargetId = target.id;
-          useMove(move.id, target);
+          pendingMoveId = move.id;
+          renderCombatPanel();
+          log(`${move.name} selected. Now select a Hydra target.`, "good");
         });
       }
       list.appendChild(card);
@@ -466,9 +495,15 @@ function selectUnit(unit) {
   if (!unit.alive || battleOver) return;
   if (unit.team === "hero") return;
 
-  // Tap an enemy to set the target, then tap a move to attack immediately.
+  // Choose a move first, then tap the enemy to execute it.
   if (!currentActor || currentActor.team !== "hero" || waitingForEnemy) return;
   selectedTargetId = unit.id;
+  if (pendingMoveId) {
+    const moveId = pendingMoveId;
+    pendingMoveId = null;
+    useMove(moveId, unit);
+    return;
+  }
   renderAll();
 }
 
@@ -627,7 +662,7 @@ function showDamageNumber(target, amount, critical = false, missed = false) {
     if (!card) return;
     const number = document.createElement("span");
     number.className = `damage-number ${target.team === "enemy" ? "damage-left" : "damage-right"}${critical ? " critical" : ""}${missed ? " miss-number" : ""}`;
-    number.textContent = missed ? "MISS" : String(Math.round(amount));
+    number.textContent = missed ? "DODGE" : String(Math.round(amount));
     number.setAttribute("aria-hidden", "true");
     card.appendChild(number);
     window.setTimeout(() => number.remove(), 950);
