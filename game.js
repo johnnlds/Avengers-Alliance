@@ -656,16 +656,18 @@ function triggerCombatAnimation(actor, target, move) {
 }
 
 function showDamageNumber(target, amount, critical = false, missed = false) {
-  // Rendering rebuilds the unit cards after damage is applied, so attach the
-  // floating number on the next frame to ensure it stays visible.
+  // A viewport-fixed overlay avoids clipping and stacking issues on mobile.
   window.setTimeout(() => {
     const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
     if (!card) return;
+    const rect = card.getBoundingClientRect();
     const number = document.createElement("span");
-    number.className = `damage-number ${target.team === "enemy" ? "damage-left" : "damage-right"}${critical ? " critical" : ""}${missed ? " miss-number" : ""}`;
+    number.className = "damage-number damage-overlay" + (critical ? " critical" : "") + (missed ? " miss-number" : "");
     number.textContent = missed ? "DODGE" : String(Math.round(amount));
     number.setAttribute("aria-hidden", "true");
-    card.appendChild(number);
+    number.style.left = Math.max(12, Math.min(window.innerWidth - 12, rect.left + rect.width / 2)) + "px";
+    number.style.top = Math.max(16, rect.top + rect.height * 0.32) + "px";
+    document.body.appendChild(number);
     window.setTimeout(() => number.remove(), 950);
   }, 80);
 }
