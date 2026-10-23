@@ -1074,3 +1074,34 @@ button:focus-visible {
 @media (max-width: 380px) {
   .battlefield .portrait { height: 38px !important; }
 }
+
+
+/* Larger battlefield portraits and slim, number-free health indicators. */
+.battlefield .portrait {
+  height: clamp(90px, 11vw, 145px) !important;
+}
+.unit-health-track {
+  display: block !important;
+  width: min(100%, 132px);
+  height: 4px;
+  margin: 3px auto 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #4a171d;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.unit-health-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: #ef343b;
+  transition: width 260ms ease;
+}
+@media (max-width: 760px) {
+  .battlefield .portrait { height: clamp(62px, 16vw, 96px) !important; }
+  .unit-health-track { height: 3px; margin-top: 2px; }
+}
+@media (max-width: 380px) {
+  .battlefield .portrait { height: 54px !important; }
+  .unit-health-track { height: 3px; }
+}
