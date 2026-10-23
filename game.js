@@ -184,7 +184,7 @@ function resetBattle() {
   turnIndex = 0;
   currentActor = null;
   selectedHeroId = heroes[0].id;
-  selectedTargetId = enemies[0].id;
+  selectedTargetId = null;
   pendingMoveId = null;
   animatingActorId = null;
   animatingTargetId = null;
@@ -281,7 +281,7 @@ function renderTeam(containerId, units) {
     const isSelected =
       unit.team === "hero"
         ? selectedHeroId === unit.id
-        : selectedTargetId === unit.id;
+        : Boolean(pendingMoveId && selectedTargetId === unit.id);
 
     const isActive = currentActor && currentActor.id === unit.id;
 
@@ -298,6 +298,7 @@ function renderTeam(containerId, units) {
     card.setAttribute("role", "button");
     card.setAttribute("tabindex", unit.alive ? "0" : "-1");
     card.setAttribute("aria-label", unit.name);
+    card.dataset.unitId = unit.id;
 
     const portrait = document.createElement("div");
     portrait.className = "portrait";
@@ -396,8 +397,8 @@ function renderCombatPanel() {
   ) || enemies.find(e => e.alive);
 
   $("targetName").textContent = pendingMoveId
-    ? `Choose target for ${MOVE_DATA.find(m => m.id === pendingMoveId)?.name || "ability"}`
-    : (target ? target.name : "No targets remaining");
+    ? "Choose a Hydra soldier on the battlefield"
+    : (target ? "Select an ability to begin" : "No targets remaining");
 
   const list = $("abilityList");
   list.innerHTML = "";
@@ -446,7 +447,8 @@ function renderCombatPanel() {
     button.addEventListener("click", () => {
       if (button.disabled) return;
       pendingMoveId = move.id;
-      log(`${move.name} selected. Now choose a living Hydra target.`, "good");
+      selectedTargetId = null;
+      log(`${move.name} selected. Now click a living Hydra soldier.`, "good");
       renderAll();
     });
 
@@ -473,12 +475,12 @@ function selectUnit(unit) {
     }
     selectedHeroId = unit.id;
   } else {
+    // Enemies cannot be selected until the player chooses an ability.
+    if (!pendingMoveId || !currentActor || currentActor.team !== "hero") return;
     selectedTargetId = unit.id;
-    if (pendingMoveId && currentActor && currentActor.team === "hero") {
-      const moveId = pendingMoveId;
-      useMove(moveId, unit);
-      return;
-    }
+    const moveId = pendingMoveId;
+    useMove(moveId, unit);
+    return;
   }
 
   renderAll();
@@ -591,16 +593,44 @@ function endRound() {
   startRound();
 }
 
-function triggerCombatAnimation(actor, target) {
+function triggerCombatAnimation(actor, target, move) {
   animatingActorId = actor.id;
   animatingTargetId = target.id;
   const token = ++animationToken;
+  const actorCard = document.querySelector(`.unit[data-unit-id="${actor.id}"]`);
+  const targetCard = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
+
+  if (actorCard) {
+    const effect = document.createElement("span");
+    effect.className = move && move.type === "ranged" ? "combat-effect projectile" : "combat-effect slash";
+    effect.setAttribute("aria-hidden", "true");
+    actorCard.appendChild(effect);
+  }
+
+  if (targetCard) {
+    const impact = document.createElement("span");
+    impact.className = "combat-effect impact-burst";
+    impact.setAttribute("aria-hidden", "true");
+    targetCard.appendChild(impact);
+  }
+
   window.setTimeout(() => {
     if (token !== animationToken) return;
     animatingActorId = null;
     animatingTargetId = null;
     renderAll();
-  }, 520);
+  }, 760);
+}
+
+function showDamageNumber(target, amount, critical = false, missed = false) {
+  const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
+  if (!card) return;
+  const number = document.createElement("span");
+  number.className = `damage-number${critical ? " critical" : ""}${missed ? " miss-number" : ""}`;
+  number.textContent = missed ? "MISS!" : (critical ? `CRIT! -${amount}` : `-${amount}`);
+  number.setAttribute("aria-hidden", "true");
+  card.appendChild(number);
+  window.setTimeout(() => number.remove(), 950);
 }
 
 /* =========================================
@@ -642,7 +672,7 @@ function useMove(moveId, chosenTarget = null) {
   actor.sta -= move.cost;
   pendingMoveId = null;
   selectedTargetId = target.id;
-  triggerCombatAnimation(actor, target);
+  triggerCombatAnimation(actor, target, move);
 
   if (move.type === "debuff") {
     useWidowmaker(actor, target, move);
@@ -685,6 +715,7 @@ function performAttack(actor, target, move) {
 
     if (Math.random() > hitChance) {
       log(`${move.name} misses ${target.name}!`, "miss");
+      showDamageNumber(target, 0, false, true);
       continue;
     }
 
@@ -692,6 +723,7 @@ function performAttack(actor, target, move) {
     target.hp = Math.max(0, target.hp - damage.amount);
 
     const critical = damage.critical;
+    showDamageNumber(target, damage.amount, critical);
     log(
       `${critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`,
       "damage"
