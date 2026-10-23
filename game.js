@@ -534,7 +534,20 @@ function openMoveInfo(moveId) {
   const select = $("selectMoveBtn");
   select.disabled = unavailable;
   select.textContent = cooldown > 0 ? `Cooldown: ${cooldown} turn(s)` : !hero ? "Your turn only" : !affordable ? "Not enough stamina" : "Select Move";
-  $("moveInfoOverlay").classList.remove("hidden");
+  const overlay = $("moveInfoOverlay");
+  const card = overlay.querySelector(".move-info-card");
+  overlay.classList.remove("hidden");
+  // Anchor the compact popup just above the move dock so the icons stay visible
+  // and another ability can be tapped without first closing the details.
+  requestAnimationFrame(() => {
+    const dock = $("moveDock");
+    const dockRect = dock.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const top = Math.max(8, dockRect.top - cardRect.height - 8);
+    card.style.top = `${top}px`;
+    card.style.left = "50%";
+    card.style.transform = "translateX(-50%)";
+  });
 }
 
 function closeMoveInfo() {
