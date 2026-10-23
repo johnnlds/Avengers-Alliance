@@ -261,6 +261,7 @@ function setCharacterImage(img, imageName) {
 function renderAll() {
   renderTeam("heroTeam", heroes);
   renderTeam("enemyTeam", enemies);
+  applyCombatAnimationPath();
 
   $("heroCount").textContent =
     `${heroes.filter(u => u.alive).length} ACTIVE`;
@@ -611,6 +612,29 @@ function endRound() {
   startRound();
 }
 
+function applyCombatAnimationPath() {
+  if (!animatingActorId || !animatingTargetId) return;
+
+  const actorCard = document.querySelector(`.unit[data-unit-id="${animatingActorId}"]`);
+  const targetCard = document.querySelector(`.unit[data-unit-id="${animatingTargetId}"]`);
+  if (!actorCard || !targetCard) return;
+
+  const actorRect = actorCard.getBoundingClientRect();
+  const targetRect = targetCard.getBoundingClientRect();
+  const dx = (targetRect.left + targetRect.width / 2) - (actorRect.left + actorRect.width / 2);
+  const dy = (targetRect.top + targetRect.height / 2) - (actorRect.top + actorRect.height / 2);
+  const distance = Math.hypot(dx, dy) || 1;
+  // Move toward the target but stop short so the portraits never cover one another completely.
+  const travel = Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70)));
+  const x = dx / distance * travel;
+  const y = dy / distance * travel;
+
+  actorCard.style.setProperty("--attack-x", `${x}px`);
+  actorCard.style.setProperty("--attack-y", `${y}px`);
+  actorCard.style.setProperty("--target-x", `${dx}px`);
+  actorCard.style.setProperty("--target-y", `${dy}px`);
+}
+
 function triggerCombatAnimation(actor, target, move) {
   animatingActorId = actor.id;
   animatingTargetId = target.id;
@@ -830,7 +854,7 @@ function enemyAct() {
     ];
 
     actor.sta -= move.cost;
-    triggerCombatAnimation(actor, target);
+    triggerCombatAnimation(actor, target, move);
     performAttack(actor, target, move);
   }
 
