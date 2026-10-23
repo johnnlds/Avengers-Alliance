@@ -332,7 +332,15 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    card.append(portrait, name, status);
+    const healthTrack = document.createElement("div");
+    healthTrack.className = "unit-health-track";
+    healthTrack.setAttribute("aria-label", "Health");
+    const healthFill = document.createElement("div");
+    healthFill.className = "unit-health-fill";
+    healthFill.style.width = `${Math.max(0, unit.hp / unit.maxHp * 100)}%`;
+    healthTrack.appendChild(healthFill);
+
+    card.append(portrait, name, healthTrack, status);
 
     card.addEventListener("click", () => selectUnit(unit));
     card.addEventListener("keydown", event => {
@@ -369,7 +377,7 @@ function renderCombatPanel() {
     heroes.find(h => h.id === selectedHeroId && h.alive) ||
     heroes.find(h => h.alive);
 
-  const hero = actor && actor.team === "hero" ? actor : displayHero;
+  const hero = displayHero || (actor && actor.team === "hero" ? actor : null);
 
   if (!hero) {
     $("activeName").textContent = "No heroes remaining";
@@ -466,11 +474,9 @@ function selectUnit(unit) {
   if (!unit.alive || battleOver) return;
 
   if (unit.team === "hero") {
-    if (currentActor && currentActor.team === "hero" && currentActor.id !== unit.id) {
-      log(`${currentActor.name} must act before another hero.`);
-      return;
-    }
+    // Selection is for inspection only; currentActor remains the sole unit allowed to act.
     selectedHeroId = unit.id;
+    pendingMoveId = null;
   } else {
     // Enemies cannot be selected until the player chooses an ability.
     if (!pendingMoveId || !currentActor || currentActor.team !== "hero") return;
