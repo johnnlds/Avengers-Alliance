@@ -153,6 +153,10 @@ let turnIndex = 0;
 let currentActor = null;
 let selectedHeroId = null;
 let selectedTargetId = null;
+let pendingMoveId = null;
+let animatingActorId = null;
+let animatingTargetId = null;
+let animationToken = 0;
 let battleOver = false;
 let waitingForEnemy = false;
 let imageExtensions = {};
@@ -181,6 +185,9 @@ function resetBattle() {
   currentActor = null;
   selectedHeroId = heroes[0].id;
   selectedTargetId = enemies[0].id;
+  pendingMoveId = null;
+  animatingActorId = null;
+  animatingTargetId = null;
   battleOver = false;
   waitingForEnemy = false;
 
@@ -188,7 +195,7 @@ function resetBattle() {
   $("battleLog").innerHTML = "";
 
   log("Battle started! S.H.I.E.L.D. versus Hydra.", "good");
-  log("Select an enemy, then choose an ability.");
+  log("Choose an ability first, then select a Hydra target.");
 
   renderAll();
   startRound();
@@ -283,6 +290,8 @@ function renderTeam(containerId, units) {
       unit.team,
       isSelected ? "selected" : "",
       isActive ? "active-turn" : "",
+      animatingActorId === unit.id ? "attacking" : "",
+      animatingTargetId === unit.id ? "taking-hit" : "",
       !unit.alive ? "dead" : ""
     ].filter(Boolean).join(" ");
 
@@ -386,27 +395,27 @@ function renderCombatPanel() {
     e => e.id === selectedTargetId && e.alive
   ) || enemies.find(e => e.alive);
 
-  $("targetName").textContent = target ? target.name : "No targets remaining";
+  $("targetName").textContent = pendingMoveId
+    ? `Choose target for ${MOVE_DATA.find(m => m.id === pendingMoveId)?.name || "ability"}`
+    : (target ? target.name : "No targets remaining");
 
   const list = $("abilityList");
   list.innerHTML = "";
 
   for (const move of MOVE_DATA) {
     const button = document.createElement("button");
-    button.className = "ability";
+    button.className = "ability" + (pendingMoveId === move.id ? " chosen-ability" : "");
 
     const cooldown = hero.cooldowns[move.id] || 0;
     const affordable = hero.sta >= move.cost;
     const correctTurn =
       actor && actor.team === "hero" && actor.id === hero.id;
-    const hasTarget = !!target;
     const disabled =
       battleOver ||
       waitingForEnemy ||
       !correctTurn ||
       !affordable ||
       cooldown > 0 ||
-      !hasTarget ||
       !hero.alive;
 
     button.disabled = disabled;
@@ -434,7 +443,12 @@ function renderCombatPanel() {
 
     button.append(info, cost);
 
-    button.addEventListener("click", () => useMove(move.id));
+    button.addEventListener("click", () => {
+      if (button.disabled) return;
+      pendingMoveId = move.id;
+      log(`${move.name} selected. Now choose a living Hydra target.`, "good");
+      renderAll();
+    });
 
     list.appendChild(button);
   }
@@ -453,16 +467,18 @@ function selectUnit(unit) {
   if (!unit.alive || battleOver) return;
 
   if (unit.team === "hero") {
-    if (currentActor && currentActor.team === "hero") {
-      if (currentActor.id !== unit.id) {
-        log(`${currentActor.name} must act before another hero.`);
-        return;
-      }
+    if (currentActor && currentActor.team === "hero" && currentActor.id !== unit.id) {
+      log(`${currentActor.name} must act before another hero.`);
+      return;
     }
-
     selectedHeroId = unit.id;
   } else {
     selectedTargetId = unit.id;
+    if (pendingMoveId && currentActor && currentActor.team === "hero") {
+      const moveId = pendingMoveId;
+      useMove(moveId, unit);
+      return;
+    }
   }
 
   renderAll();
@@ -575,11 +591,23 @@ function endRound() {
   startRound();
 }
 
+function triggerCombatAnimation(actor, target) {
+  animatingActorId = actor.id;
+  animatingTargetId = target.id;
+  const token = ++animationToken;
+  window.setTimeout(() => {
+    if (token !== animationToken) return;
+    animatingActorId = null;
+    animatingTargetId = null;
+    renderAll();
+  }, 520);
+}
+
 /* =========================================
    PLAYER ABILITIES
    ========================================= */
 
-function useMove(moveId) {
+function useMove(moveId, chosenTarget = null) {
   if (
     battleOver ||
     waitingForEnemy ||
@@ -592,9 +620,9 @@ function useMove(moveId) {
 
   const actor = currentActor;
   const move = MOVE_DATA.find(m => m.id === moveId);
-  const target = enemies.find(
-    e => e.id === selectedTargetId && e.alive
-  );
+  const target = chosenTarget && chosenTarget.alive
+    ? chosenTarget
+    : enemies.find(e => e.id === selectedTargetId && e.alive);
 
   if (!move || !target) {
     log("Select a living enemy first.", "miss");
@@ -612,6 +640,9 @@ function useMove(moveId) {
   }
 
   actor.sta -= move.cost;
+  pendingMoveId = null;
+  selectedTargetId = target.id;
+  triggerCombatAnimation(actor, target);
 
   if (move.type === "debuff") {
     useWidowmaker(actor, target, move);
@@ -658,7 +689,7 @@ function performAttack(actor, target, move) {
     }
 
     const damage = calculateDamage(actor, target, move);
-    target.hp = Math.max(0, target.hp - damage);
+    target.hp = Math.max(0, target.hp - damage.amount);
 
     const critical = damage.critical;
     log(
@@ -763,6 +794,7 @@ function enemyAct() {
     ];
 
     actor.sta -= move.cost;
+    triggerCombatAnimation(actor, target);
     performAttack(actor, target, move);
   }
 
@@ -838,6 +870,7 @@ $("endTurnBtn").addEventListener("click", () => {
     return;
   }
 
+  pendingMoveId = null;
   log(`${currentActor.name} skips their turn.`);
   turnIndex++;
   nextTurn();
