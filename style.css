@@ -2348,3 +2348,12 @@ body {
   .move-info-card { width: min(205px, calc(100vw - 28px)); padding: 7px; }
   #moveInfoDescription { font-size: 9px; }
 }
+
+
+/* Prevent iOS Safari double-tap zoom on the ability icons. */
+.move-dock-icon {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
