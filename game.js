@@ -452,17 +452,31 @@ function renderCombatPanel() {
       title.className = "ability-name";
       title.textContent = move.name;
 
-      const description = document.createElement("span");
-      description.className = "ability-description";
-      description.textContent = move.description;
+      const damage = document.createElement("span");
+      damage.className = "ability-stat ability-damage";
+      damage.textContent = `Base damage: ${move.damage > 0 ? move.damage : "—"}${move.hits > 1 ? ` × ${move.hits} hits` : ""}`;
 
       const cost = document.createElement("span");
-      cost.className = "ability-cost";
+      cost.className = "ability-stat ability-cost";
       cost.textContent = cooldown > 0
-        ? `Cooldown: ${cooldown} turn(s)`
-        : `${move.cost} stamina`;
+        ? `Stamina: ${move.cost} • Cooldown: ${cooldown} turn(s)`
+        : `Stamina: ${move.cost}`;
 
-      card.append(title, description, cost);
+      const accuracy = document.createElement("span");
+      accuracy.className = "ability-stat ability-accuracy";
+      accuracy.textContent = `ACC/CRIT: ${move.accuracy}% / ${move.crit}%`;
+
+      const info = document.createElement("span");
+      info.className = "ability-description";
+      info.textContent = move.id === "combo"
+        ? "Two melee hits"
+        : move.id === "bite"
+          ? "Ranged attack"
+          : move.id === "kick"
+            ? "Powerful melee attack"
+            : "Reduces target Attack by 50% for 1 turn. Your next attack has a 75% chance to stun.";
+
+      card.append(title, damage, cost, accuracy, info);
       card.disabled = disabled;
       if (disabled) {
         card.title = cooldown > 0 ? `On cooldown for ${cooldown} more turn(s)` : !affordable ? "Not enough stamina" : "Unavailable";
@@ -656,17 +670,34 @@ function triggerCombatAnimation(actor, target, move) {
 }
 
 function showDamageNumber(target, amount, critical = false, missed = false) {
-  // A viewport-fixed overlay avoids clipping and stacking issues on mobile.
+  // On mobile, centralize combat feedback above the VS marker so it is never
+  // hidden by the narrow battlefield columns. Desktop keeps feedback by target.
   window.setTimeout(() => {
-    const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
     const number = document.createElement("span");
     number.className = "damage-number damage-overlay" + (critical ? " critical" : "") + (missed ? " miss-number" : "");
     number.textContent = missed ? "DODGE" : String(Math.round(amount));
     number.setAttribute("aria-hidden", "true");
-    number.style.left = Math.max(12, Math.min(window.innerWidth - 12, rect.left + rect.width / 2)) + "px";
-    number.style.top = Math.max(16, rect.top + rect.height * 0.32) + "px";
+
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight * 0.3;
+    if (window.matchMedia("(max-width: 760px)").matches) {
+      const vs = document.querySelector(".battle-divider span");
+      if (vs) {
+        const rect = vs.getBoundingClientRect();
+        x = rect.left + rect.width / 2;
+        y = Math.max(8, rect.top - 34);
+      }
+    } else {
+      const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        x = rect.left + rect.width / 2;
+        y = Math.max(16, rect.top + rect.height * 0.32);
+      }
+    }
+
+    number.style.left = x + "px";
+    number.style.top = y + "px";
     document.body.appendChild(number);
     window.setTimeout(() => number.remove(), 950);
   }, 80);
