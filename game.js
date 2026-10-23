@@ -681,14 +681,18 @@ function triggerCombatAnimation(actor, target, move) {
 }
 
 function showDamageNumber(target, amount, critical = false, missed = false) {
-  const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
-  if (!card) return;
-  const number = document.createElement("span");
-  number.className = `damage-number ${target.team === "enemy" ? "damage-left" : "damage-right"}${critical ? " critical" : ""}${missed ? " miss-number" : ""}`;
-  number.textContent = missed ? "MISS" : String(Math.round(amount));
-  number.setAttribute("aria-hidden", "true");
-  card.appendChild(number);
-  window.setTimeout(() => number.remove(), 950);
+  // Rendering rebuilds the unit cards after damage is applied, so attach the
+  // floating number on the next frame to ensure it stays visible.
+  window.setTimeout(() => {
+    const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
+    if (!card) return;
+    const number = document.createElement("span");
+    number.className = `damage-number ${target.team === "enemy" ? "damage-left" : "damage-right"}${critical ? " critical" : ""}${missed ? " miss-number" : ""}`;
+    number.textContent = missed ? "MISS" : String(Math.round(amount));
+    number.setAttribute("aria-hidden", "true");
+    card.appendChild(number);
+    window.setTimeout(() => number.remove(), 950);
+  }, 80);
 }
 
 /* =========================================
