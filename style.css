@@ -2443,3 +2443,32 @@ body {
     height: 9px !important;
   }
 }
+
+
+/* Hard reset: the active-turn cue is only a thin ground ring, never a glow. */
+.battlefield .unit.active-turn,
+.battlefield .unit.active-turn *,
+.battlefield .unit.selected,
+.battlefield .unit.selected *,
+.battlefield .unit.enemy.selected,
+.battlefield .unit.enemy.selected * {
+  outline: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.battlefield .unit.active-turn .portrait img,
+.battlefield .unit.selected .portrait img,
+.battlefield .unit.enemy.selected .portrait img,
+.battlefield .unit:hover:not(.dead) .portrait img {
+  filter: none !important;
+}
+.battlefield .unit.active-turn::after {
+  content: "" !important;
+  border: 2px solid #fff !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit.active-turn::after { border-width: 1.5px !important; }
+}
