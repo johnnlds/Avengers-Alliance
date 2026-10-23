@@ -1380,3 +1380,19 @@ button:focus-visible {
   .battlefield .portrait { height: 66px !important; }
   .battle-divider span { width: 20px; height: 20px; font-size: 8px; }
 }
+
+
+/* Active turn is shown with a crisp white outline around the whole character. */
+.battlefield .unit.active-turn::after { display: none !important; }
+.battlefield .unit.active-turn {
+  outline: 2px solid rgba(255,255,255,.98) !important;
+  outline-offset: 2px;
+  border-radius: 10px;
+  filter: drop-shadow(0 0 7px rgba(255,255,255,.28));
+}
+.battlefield .unit.active-turn .portrait img {
+  filter: drop-shadow(0 0 9px rgba(255,255,255,.2));
+}
+@media (max-width: 760px) {
+  .battlefield .unit.active-turn { outline-width: 1.5px !important; outline-offset: 1px; }
+}
