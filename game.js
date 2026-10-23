@@ -265,6 +265,7 @@ function setCharacterImage(img, imageName) {
 function renderAll() {
   renderTeam("heroTeam", heroes);
   renderTeam("enemyTeam", enemies);
+  renderRoster();
   applyCombatAnimationPath();
 
   $("heroCount").textContent =
@@ -276,6 +277,36 @@ function renderAll() {
   $("roundLabel").textContent = `ROUND ${round}`;
 
   renderCombatPanel();
+}
+
+
+function renderRoster() {
+  const root = $("teamRoster");
+  if (!root) return;
+  root.innerHTML = "";
+  for (const [teamName, units] of [["YOUR TEAM", heroes], ["HYDRA", enemies]]) {
+    const group = document.createElement("div");
+    group.className = "roster-group";
+    const heading = document.createElement("h3");
+    heading.textContent = teamName;
+    group.appendChild(heading);
+    for (const unit of units) {
+      const row = document.createElement("div");
+      row.className = "roster-row" + (!unit.alive ? " defeated" : "") + (currentActor?.id === unit.id ? " roster-active" : "");
+      const name = document.createElement("span");
+      name.className = "roster-name";
+      name.textContent = unit.name;
+      const hp = document.createElement("span");
+      hp.className = "roster-hp";
+      hp.textContent = `HP ${Math.ceil(unit.hp)}/${unit.maxHp}`;
+      const sta = document.createElement("span");
+      sta.className = "roster-stamina";
+      sta.textContent = `STA ${Math.floor(unit.sta)}/${unit.maxSta}`;
+      row.append(name, hp, sta);
+      group.appendChild(row);
+    }
+    root.appendChild(group);
+  }
 }
 
 function renderTeam(containerId, units) {
@@ -409,55 +440,68 @@ function renderCombatPanel() {
   list.innerHTML = "";
 
   for (const move of MOVE_DATA) {
-    const button = document.createElement("button");
-    button.className = "ability" + (pendingMoveId === move.id ? " chosen-ability" : "");
-
+    const card = document.createElement("div");
+    card.className = "ability-card" + (pendingMoveId === move.id ? " chosen-ability" : "");
     const cooldown = hero.cooldowns[move.id] || 0;
     const affordable = hero.sta >= move.cost;
-    const correctTurn =
-      actor && actor.team === "hero" && actor.id === hero.id;
-    const disabled =
-      battleOver ||
-      waitingForEnemy ||
-      !correctTurn ||
-      !affordable ||
-      cooldown > 0 ||
-      !hero.alive;
+    const correctTurn = actor && actor.team === "hero" && actor.id === hero.id;
+    const disabled = battleOver || waitingForEnemy || !correctTurn || !affordable || cooldown > 0 || !hero.alive;
 
-    button.disabled = disabled;
+    const icon = document.createElement("span");
+    icon.className = "ability-icon";
+    icon.textContent = move.type === "debuff" ? "?" : (move.attackType === "ranged-gun" ? "🔫" : "✊");
+    icon.setAttribute("aria-hidden", "true");
 
-    const info = document.createElement("span");
-
-    const moveName = document.createElement("span");
-    moveName.className = "ability-name";
-    moveName.textContent = move.name;
-
-    const description = document.createElement("span");
-    description.className = "ability-description";
-    description.textContent = `${move.attackType === "ranged-gun" ? "Ranged Gun" : move.attackType === "flying-melee" ? "Flying Melee" : "Unarmed Melee"} • ${move.description}`;
-
-    info.append(moveName, description);
+    const title = document.createElement("strong");
+    title.className = "ability-name";
+    title.textContent = move.name;
 
     const cost = document.createElement("span");
     cost.className = "ability-cost";
+    cost.textContent = cooldown > 0 ? `CD ${cooldown}` : `${move.cost} STA`;
 
-    if (cooldown > 0) {
-      cost.textContent = `CD ${cooldown}`;
-    } else {
-      cost.textContent = `${move.cost} STA`;
-    }
-
-    button.append(info, cost);
-
-    button.addEventListener("click", () => {
-      if (button.disabled) return;
+    const details = document.createElement("div");
+    details.className = "move-popover hidden";
+    const detailsTitle = document.createElement("strong");
+    detailsTitle.textContent = move.name;
+    const detailsDescription = document.createElement("p");
+    detailsDescription.textContent = move.description;
+    const detailsMeta = document.createElement("p");
+    detailsMeta.className = "move-meta";
+    detailsMeta.textContent = `${move.type === "debuff" ? "Buff / Debuff" : move.attackType === "ranged-gun" ? "Ranged attack" : "Melee attack"} · ${move.cost} stamina`;
+    const choose = document.createElement("button");
+    choose.className = "choose-move";
+    choose.textContent = disabled ? (cooldown > 0 ? `Cooldown: ${cooldown}` : !affordable ? "Not enough stamina" : "Not your turn") : "Choose Move";
+    choose.disabled = disabled;
+    choose.addEventListener("click", event => {
+      event.stopPropagation();
+      if (choose.disabled) return;
       pendingMoveId = move.id;
       selectedTargetId = null;
       log(`${move.name} selected. Now click a living Hydra soldier.`, "good");
       renderAll();
     });
+    details.append(detailsTitle, detailsDescription, detailsMeta, choose);
 
-    list.appendChild(button);
+    card.append(icon, title, cost, details);
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    const toggleDetails = () => {
+      const wasOpen = !details.classList.contains("hidden");
+      list.querySelectorAll(".move-popover").forEach(pop => pop.classList.add("hidden"));
+      details.classList.toggle("hidden", wasOpen);
+    };
+    card.addEventListener("click", event => {
+      if (event.target.closest(".move-popover")) return;
+      toggleDetails();
+    });
+    card.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggleDetails();
+      }
+    });
+    list.appendChild(card);
   }
 
   $("endTurnBtn").disabled =
@@ -609,7 +653,9 @@ function applyCombatAnimationPath() {
   const dy = (targetRect.top + targetRect.height / 2) - (actorRect.top + actorRect.height / 2);
   const distance = Math.hypot(dx, dy) || 1;
   // Move toward the target but stop short so the portraits never cover one another completely.
-  const travel = Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70)));
+  const move = MOVE_DATA.find(m => m.id === animatingMoveId);
+  const isMelee = !move || move.attackType !== "ranged-gun";
+  const travel = isMelee ? Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70))) : 0;
   const x = dx / distance * travel;
   const y = dy / distance * travel;
 
@@ -638,8 +684,8 @@ function showDamageNumber(target, amount, critical = false, missed = false) {
   const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
   if (!card) return;
   const number = document.createElement("span");
-  number.className = `damage-number${critical ? " critical" : ""}${missed ? " miss-number" : ""}`;
-  number.textContent = missed ? "MISS!" : (critical ? `CRIT! -${amount}` : `-${amount}`);
+  number.className = `damage-number ${target.team === "enemy" ? "damage-left" : "damage-right"}${critical ? " critical" : ""}${missed ? " miss-number" : ""}`;
+  number.textContent = missed ? "MISS" : String(Math.round(amount));
   number.setAttribute("aria-hidden", "true");
   card.appendChild(number);
   window.setTimeout(() => number.remove(), 950);
