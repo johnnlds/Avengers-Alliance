@@ -1674,3 +1674,295 @@ button:focus-visible {
   top: 30%;
   z-index: 999999 !important;
 }
+
+
+/* =========================================
+   ORIGINAL-ERA AVENGERS ALLIANCE HUD REDESIGN
+   ========================================= */
+:root {
+  --bg: #080f19;
+  --panel: #111e2d;
+  --panel-light: #1a3046;
+  --border: #45617d;
+  --text: #f3f7fb;
+  --muted: #9eafc2;
+  --red: #e3484e;
+  --blue: #3a9ce8;
+  --green: #49d7a0;
+  --gold: #ffd65a;
+}
+body {
+  background:
+    radial-gradient(ellipse at 50% 5%, rgba(39, 87, 126, .26), transparent 50%),
+    linear-gradient(180deg, #0b1420 0%, #070c13 100%);
+  font-family: Arial, Helvetica, sans-serif;
+}
+.topbar {
+  position: relative;
+  padding: 12px clamp(12px, 3vw, 34px);
+  background: linear-gradient(180deg, #20364d 0%, #101d2b 48%, #0a121c 100%);
+  border-bottom: 2px solid #3b5873;
+  box-shadow: 0 4px 16px #0008, inset 0 1px rgba(255,255,255,.13);
+}
+.topbar::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #68baff 22%, #d5eaff 50%, #ff6269 78%, transparent);
+  opacity: .65;
+}
+.topbar h1 {
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: clamp(22px, 3vw, 32px);
+  font-style: italic;
+  letter-spacing: 1.8px;
+  text-shadow: 0 2px 3px #000, 0 0 14px #000;
+}
+.topbar h1 span { color: #f05b60; }
+.subtitle { margin-top: 3px; letter-spacing: 2.4px; color: #9db9d4; }
+.battle-info { gap: 5px; }
+#roundLabel, #turnLabel {
+  padding: 4px 8px;
+  border: 1px solid rgba(143,183,218,.28);
+  background: linear-gradient(180deg, #182c40, #0c1724);
+  box-shadow: inset 0 1px rgba(255,255,255,.07);
+}
+.game {
+  width: min(1540px, 100%);
+  padding: 12px clamp(8px, 1.6vw, 22px) 24px;
+  gap: 12px;
+}
+.battlefield {
+  min-height: 390px;
+  padding: clamp(12px, 1.8vw, 24px);
+  border: 1px solid #3e5c78;
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(11,22,34,.58), rgba(5,10,17,.82)),
+    radial-gradient(ellipse at 50% 95%, rgba(81,107,131,.2), transparent 58%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0, rgba(255,255,255,.018) 1px, transparent 1px, transparent 38px),
+    linear-gradient(90deg, #13273a, #0b1420 48%, #291b25);
+  box-shadow: inset 0 0 50px #0008, 0 8px 22px #0006;
+}
+.battlefield::before {
+  top: 8%; bottom: 8%;
+  background: linear-gradient(transparent, rgba(169,195,219,.25), transparent);
+}
+.team-heading {
+  min-height: 26px;
+  padding: 4px 8px;
+  border-top: 1px solid rgba(255,255,255,.11);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(90deg, rgba(48,106,151,.26), rgba(8,15,24,.18));
+}
+.enemy-heading { background: linear-gradient(90deg, rgba(130,37,45,.12), rgba(129,39,45,.27)); }
+.team-heading h2 { font-size: 12px; letter-spacing: 1.5px; }
+.team-heading > span { font-size: 9px; }
+.battle-divider span {
+  border: 1px solid #526a82;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #1d2d3e, #0a111a);
+  color: #ff666b;
+  box-shadow: 0 0 18px #0009, inset 0 1px rgba(255,255,255,.12);
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-style: italic;
+}
+.battlefield .portrait {
+  background: radial-gradient(ellipse at 50% 75%, rgba(108,147,181,.24), transparent 70%);
+}
+.battlefield .unit.selected .portrait img {
+  filter: drop-shadow(0 0 10px rgba(255,213,90,.55)) drop-shadow(0 7px 9px rgba(0,0,0,.6));
+}
+.battlefield .unit.enemy.selected .portrait img {
+  filter: drop-shadow(0 0 10px rgba(255,84,84,.65)) drop-shadow(0 7px 9px rgba(0,0,0,.6));
+}
+#teamRoster {
+  padding: 8px 10px;
+  gap: 12px;
+  border: 1px solid #3d5871;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #16283a, #0c1723);
+  box-shadow: inset 0 1px rgba(255,255,255,.08), 0 5px 12px #0004;
+}
+.roster-group h3 {
+  margin-bottom: 4px;
+  padding: 4px 6px;
+  color: #9bc8ef;
+  background: linear-gradient(90deg, rgba(50,115,166,.26), transparent);
+  border-bottom: 1px solid rgba(125,172,211,.2);
+  font-size: 9px;
+  letter-spacing: 1.4px;
+}
+.roster-group:nth-child(2) h3 {
+  color: #ff999d;
+  background: linear-gradient(90deg, rgba(175,55,63,.22), transparent);
+  border-bottom-color: rgba(230,95,100,.2);
+}
+.roster-row { border-top-color: rgba(255,255,255,.055); }
+.roster-active .roster-name { color: #ffe17b; }
+.roster-bar { background: #050a10; border: 1px solid rgba(255,255,255,.08); }
+.combat-panel, .log-panel {
+  padding: 12px;
+  border: 1px solid #3d5871;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #17283a, #0d1723);
+  box-shadow: inset 0 1px rgba(255,255,255,.07), 0 6px 16px #0004;
+}
+.section-heading, .log-heading h2 {
+  padding: 5px 7px;
+  border-left: 3px solid #58a9e9;
+  background: linear-gradient(90deg, rgba(52,126,183,.2), transparent);
+  color: #d7e9fa;
+  font-size: 10px;
+  letter-spacing: 1.3px;
+}
+.log-heading h2 { border-left-color: #e35c61; }
+.ability-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+}
+.ability-card {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto auto auto auto !important;
+  align-items: start !important;
+  justify-content: start;
+  gap: 3px 8px !important;
+  min-height: 0 !important;
+  padding: 9px !important;
+  border: 1px solid #3a536c;
+  border-radius: 3px;
+  background: linear-gradient(145deg, #20364b, #101d2b 72%);
+  box-shadow: inset 0 1px rgba(255,255,255,.07), 0 2px 4px #0004;
+}
+.ability-card:hover:not(:disabled), .ability-card:focus-visible {
+  border-color: #6bbcff;
+  background: linear-gradient(145deg, #294966, #132438 72%);
+}
+.ability-card.chosen-ability {
+  border-color: #ffdb61;
+  background: linear-gradient(145deg, #3a3b30, #172535 75%);
+  box-shadow: 0 0 0 1px rgba(255,219,97,.25), inset 0 0 14px rgba(255,219,97,.08);
+}
+.ability-icon {
+  grid-column: 1;
+  grid-row: 1 / 6;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 38px;
+  height: 42px;
+  border: 1px solid #6b8298;
+  border-radius: 3px;
+  color: #f3f8ff;
+  background: radial-gradient(circle at 35% 25%, #405e78, #111d2a 72%);
+  font-size: 22px;
+  text-shadow: 0 2px 4px #000;
+  box-shadow: inset 0 1px rgba(255,255,255,.17), 0 2px 5px #0006;
+}
+.ability-card .ability-name { grid-column: 2; grid-row: 1; font-size: 12px; color: #fff; }
+.ability-card .ability-damage { grid-column: 2; grid-row: 2; font-size: 10px; }
+.ability-card .ability-cost { grid-column: 2; grid-row: 3; font-size: 10px; }
+.ability-card .ability-accuracy { grid-column: 2; grid-row: 4; font-size: 9px; }
+.ability-card .ability-description { grid-column: 2; grid-row: 5; font-size: 9px; }
+.action-row { padding-top: 8px; border-top: 1px solid rgba(143,177,208,.15); }
+.primary-button, .secondary-button {
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  box-shadow: inset 0 1px rgba(255,255,255,.09), 0 2px 4px #0004;
+}
+.secondary-button { background: linear-gradient(180deg, #263d52, #152638); border-color: #4b6680; }
+.primary-button { background: linear-gradient(180deg, #ffe783, #dba82f); border-color: #ffe58a; }
+.log-panel { max-height: 340px; }
+.battle-log { max-height: 260px; }
+.log-entry { padding: 6px 4px; }
+.turn-order {
+  width: min(1540px, 100%);
+  margin: 10px auto 0;
+  padding: 8px clamp(8px, 1.6vw, 22px) 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.turn-order-label {
+  flex: 0 0 auto;
+  color: #9db9d4;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.turn-order-track {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 5px 2px 8px;
+}
+.turn-chip {
+  position: relative;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 48px;
+  padding: 3px;
+  border: 1px solid #3b526a;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #203448, #0c1622);
+  box-shadow: inset 0 1px rgba(255,255,255,.08), 0 2px 4px #0006;
+  opacity: .72;
+}
+.turn-chip img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.turn-chip.hero { border-bottom: 3px solid #3a9ce8; }
+.turn-chip.enemy { border-bottom: 3px solid #e3484e; }
+.turn-chip.current {
+  border-color: #ffe06a;
+  box-shadow: 0 0 0 1px #ffe06a, 0 0 13px rgba(255,215,80,.25);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+.turn-chip.current::after {
+  content: "NOW";
+  position: absolute;
+  left: 50%; bottom: -12px;
+  transform: translateX(-50%);
+  padding: 1px 3px;
+  color: #111820;
+  background: #ffe06a;
+  font-size: 7px;
+  font-weight: 900;
+}
+.turn-chip.past { opacity: .32; filter: grayscale(.8); }
+.turn-chip.defeated { opacity: .18; filter: grayscale(1); }
+@media (max-width: 760px) {
+  .topbar { padding: 10px 12px; }
+  .game { padding: 8px 8px 18px; gap: 8px; }
+  .battlefield { min-height: 0; padding: 10px 5px; }
+  .battlefield .portrait { height: clamp(76px, 18vw, 120px) !important; }
+  .team-heading { padding: 4px 3px; }
+  .team-heading h2 { font-size: 8px; letter-spacing: .5px; }
+  #teamRoster { padding: 7px 6px; gap: 7px; }
+  .roster-row { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr) !important; gap: 5px !important; }
+  .roster-vital-line { grid-template-columns: 22px minmax(15px, 1fr) auto; gap: 2px; }
+  .roster-value { min-width: 26px; font-size: 8px; }
+  .combat-panel, .log-panel { padding: 9px; }
+  .ability-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 5px !important; }
+  .ability-card { grid-template-columns: 27px minmax(0, 1fr) !important; gap: 3px 5px !important; padding: 7px !important; }
+  .ability-icon { width: 27px; height: 32px; font-size: 17px; }
+  .ability-card .ability-name { font-size: 10px; }
+  .ability-card .ability-damage, .ability-card .ability-cost { font-size: 8px; }
+  .ability-card .ability-accuracy, .ability-card .ability-description { font-size: 8px; }
+  .turn-order { margin-top: 5px; padding: 5px 8px 0; gap: 6px; }
+  .turn-order-label { font-size: 8px; letter-spacing: .6px; }
+  .turn-order-track { gap: 4px; }
+  .turn-chip { flex-basis: 37px; width: 37px; height: 39px; }
+}
+@media (max-width: 380px) {
+  .turn-order { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .turn-chip { flex-basis: 34px; width: 34px; height: 36px; }
+  .ability-card { grid-template-columns: 23px minmax(0, 1fr) !important; padding: 5px !important; }
+  .ability-icon { width: 23px; height: 28px; font-size: 15px; }
+}
