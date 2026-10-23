@@ -454,7 +454,11 @@ function renderCombatPanel() {
 
       const damage = document.createElement("span");
       damage.className = "ability-stat ability-damage";
-      damage.textContent = `Base damage: ${move.damage > 0 ? move.damage : "—"}${move.hits > 1 ? ` × ${move.hits} hits` : ""}`;
+      damage.textContent = move.damage > 0
+        ? move.hits > 1
+          ? `Base damage: ${Math.round(move.damage / move.hits)} per hit • ${move.hits} hits`
+          : `Base damage: ${Math.round(move.damage)}`
+        : "Base damage: —";
 
       const cost = document.createElement("span");
       cost.className = "ability-stat ability-cost";
@@ -669,7 +673,7 @@ function triggerCombatAnimation(actor, target, move) {
   }, 1280);
 }
 
-function showDamageNumber(target, amount, critical = false, missed = false) {
+function showDamageNumber(target, amount, critical = false, missed = false, delay = 80) {
   // On mobile, centralize combat feedback above the VS marker so it is never
   // hidden by the narrow battlefield columns. Desktop keeps feedback by target.
   window.setTimeout(() => {
@@ -696,11 +700,11 @@ function showDamageNumber(target, amount, critical = false, missed = false) {
       }
     }
 
-    number.style.left = x + "px";
-    number.style.top = y + "px";
+    number.style.setProperty("left", x + "px", "important");
+    number.style.setProperty("top", y + "px", "important");
     document.body.appendChild(number);
     window.setTimeout(() => number.remove(), 950);
-  }, 80);
+  }, delay);
 }
 
 /* =========================================
@@ -785,7 +789,7 @@ function performAttack(actor, target, move) {
 
     if (Math.random() > hitChance) {
       log(`${move.name} misses ${target.name}!`, "miss");
-      showDamageNumber(target, 0, false, true);
+      showDamageNumber(target, 0, false, true, 80 + (hitNumber - 1) * 480);
       continue;
     }
 
@@ -793,7 +797,7 @@ function performAttack(actor, target, move) {
     target.hp = Math.max(0, target.hp - damage.amount);
 
     const critical = damage.critical;
-    showDamageNumber(target, damage.amount, critical);
+    showDamageNumber(target, damage.amount, critical, false, 80 + (hitNumber - 1) * 480);
     log(
       `${critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`,
       "damage"
