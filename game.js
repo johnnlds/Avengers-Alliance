@@ -271,12 +271,6 @@ function renderAll() {
   renderMoveDock();
   applyCombatAnimationPath();
 
-  $("heroCount").textContent =
-    `${heroes.filter(u => u.alive).length} ACTIVE`;
-
-  $("enemyCount").textContent =
-    `${enemies.filter(u => u.alive).length} ACTIVE`;
-
   $("roundLabel").textContent = `ROUND ${round}`;
 
   renderCombatPanel();
