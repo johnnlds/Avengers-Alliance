@@ -2514,3 +2514,33 @@ body {
   #teamRoster .roster-value { min-width: 34px !important; font-size: 8px !important; }
   #teamRoster .roster-bar { height: 8px !important; }
 }
+
+
+/* Extra-compact mobile HP/STA roster while keeping Hydra stacked below heroes. */
+@media (max-width: 760px) {
+  #teamRoster {
+    padding: 4px 8px !important;
+    gap: 4px !important;
+  }
+  #teamRoster .roster-group h3 {
+    font-size: 8px !important;
+    margin: 0 0 2px !important;
+    letter-spacing: .7px !important;
+  }
+  #teamRoster .roster-row {
+    grid-template-columns: minmax(68px, .55fr) minmax(0, 1.45fr) !important;
+    gap: 6px !important;
+    padding: 2px 1px !important;
+    line-height: 1 !important;
+  }
+  #teamRoster .roster-name { font-size: 9px !important; }
+  #teamRoster .roster-vitals { gap: 1px !important; }
+  #teamRoster .roster-vital-line {
+    grid-template-columns: 22px minmax(0, 1fr) auto !important;
+    gap: 3px !important;
+  }
+  #teamRoster .roster-hp-label,
+  #teamRoster .roster-sta-label { font-size: 7px !important; }
+  #teamRoster .roster-value { min-width: 30px !important; font-size: 7px !important; }
+  #teamRoster .roster-bar { height: 6px !important; }
+}
