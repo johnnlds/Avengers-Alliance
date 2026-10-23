@@ -2357,3 +2357,48 @@ body {
   -webkit-user-select: none;
   user-select: none;
 }
+
+
+/* Turn indicator: a flat white ring on the ground, not an aura or character box. */
+.battlefield .unit.active-turn {
+  outline: none !important;
+  filter: none !important;
+}
+.battlefield .unit.active-turn::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 13px !important;
+  width: 48% !important;
+  height: 12px !important;
+  transform: translateX(-50%) !important;
+  border: 2px solid rgba(255,255,255,.96) !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,.05) !important;
+  box-shadow: 0 0 5px rgba(255,255,255,.3), inset 0 0 3px rgba(255,255,255,.15) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+.battlefield .unit.active-turn .portrait img {
+  filter: drop-shadow(0 7px 9px rgba(0,0,0,.6)) !important;
+}
+.battlefield .unit.enemy.selected:not(.active-turn) {
+  outline: none !important;
+  outline-offset: 0 !important;
+}
+.battlefield .unit.selected .portrait img,
+.battlefield .unit.enemy.selected .portrait img {
+  filter: drop-shadow(0 7px 9px rgba(0,0,0,.6)) !important;
+}
+.battlefield .unit .portrait img {
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 760px) {
+  .battlefield .unit.active-turn::after {
+    bottom: 13px !important;
+    height: 9px !important;
+    border-width: 1.5px !important;
+  }
+}
