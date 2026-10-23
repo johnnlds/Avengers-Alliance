@@ -1015,3 +1015,62 @@ button:focus-visible {
   .selected-info h2 { font-size: 13px; }
   .ability-description { font-size: 7.5px; }
 }
+
+
+/* Hotfix: force browsers to use the new compact layout and prevent legacy
+   per-character bars from reappearing beneath the portraits. */
+.unit .bar,
+.unit .bar-label,
+.unit .stamina-summary,
+.unit .hp-bar,
+.unit .health-bar,
+.unit .stamina-bar,
+.unit .hp-label,
+.unit .health-label,
+.unit .stamina-label {
+  display: none !important;
+}
+.battlefield .team-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  justify-items: center !important;
+}
+.hero-side .team-grid {
+  grid-template-areas: "back-top front" "back-bottom front" !important;
+}
+.enemy-side .team-grid {
+  grid-template-areas: "front back-top" "front back-bottom" !important;
+}
+.hero-side .unit:nth-child(1),
+.enemy-side .unit:nth-child(1) { grid-area: back-top !important; }
+.hero-side .unit:nth-child(2),
+.enemy-side .unit:nth-child(2) { grid-area: back-bottom !important; }
+.hero-side .unit:nth-child(3),
+.enemy-side .unit:nth-child(3) { grid-area: front !important; }
+.battlefield .portrait {
+  height: clamp(52px, 9vw, 112px) !important;
+  margin-bottom: 1px !important;
+}
+.battlefield .unit {
+  width: 100%;
+  max-width: 150px;
+  padding: 1px 0 !important;
+}
+.battlefield .unit-name {
+  min-height: 0 !important;
+  margin: 1px auto !important;
+  padding: 3px 5px !important;
+  font-size: clamp(8px, 1vw, 11px) !important;
+}
+@media (max-width: 760px) {
+  .battlefield { padding: 5px 3px !important; gap: 2px !important; }
+  .battlefield .portrait { height: clamp(40px, 11vw, 66px) !important; }
+  .battlefield .unit-name { font-size: clamp(7px, 2.3vw, 9px) !important; }
+  .team-heading { margin-bottom: 0 !important; }
+  .hero-side .team-grid, .enemy-side .team-grid { margin-top: 2px !important; }
+}
+@media (max-width: 380px) {
+  .battlefield .portrait { height: 38px !important; }
+}
