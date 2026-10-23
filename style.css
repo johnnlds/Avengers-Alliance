@@ -2805,3 +2805,22 @@ body {
   pointer-events: auto !important;
   touch-action: manipulation;
 }
+
+
+/* Latest character placement: larger portraits, with the formations lower. */
+.battlefield .team-grid {
+  transform: translateY(2svh) !important;
+}
+.battlefield .unit .portrait img {
+  transform: scale(1.34) !important;
+  transform-origin: center bottom !important;
+}
+@media (max-width: 760px) {
+  .battlefield .team-grid {
+    transform: translateY(2.5svh) !important;
+  }
+  .battlefield .unit .portrait img {
+    transform: scale(1.42) !important;
+    transform-origin: center bottom !important;
+  }
+}
