@@ -2015,3 +2015,15 @@ body {
   }
   #teamRoster .roster-bar { height: 5px; }
 }
+
+
+/* Turn-order portraits focus on the character's head/upper third. */
+.turn-chip {
+  overflow: hidden;
+}
+.turn-chip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
