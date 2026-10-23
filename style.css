@@ -2027,3 +2027,56 @@ body {
   object-fit: cover;
   object-position: top center;
 }
+
+
+/* Further zoom turn-order portraits toward faces; keep the crop top-aligned. */
+.turn-chip {
+  position: relative;
+  overflow: hidden;
+}
+.turn-chip img {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 180%;
+  height: 180%;
+  max-width: none;
+  object-fit: cover;
+  object-position: top center;
+  transform: translateX(-50%);
+}
+
+/* Thicker HP/STA bars inside a tighter roster section. */
+#teamRoster {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  row-gap: 2px !important;
+}
+#teamRoster .roster-row {
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+  line-height: 1.05;
+}
+#teamRoster .roster-vitals {
+  gap: 1px !important;
+}
+#teamRoster .roster-bar {
+  height: 9px !important;
+}
+@media (max-width: 760px) {
+  #teamRoster {
+    padding: 3px 5px !important;
+    row-gap: 1px !important;
+  }
+  #teamRoster .roster-row {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1 !important;
+  }
+  #teamRoster .roster-vitals {
+    gap: 1px !important;
+  }
+  #teamRoster .roster-bar {
+    height: 8px !important;
+  }
+}
