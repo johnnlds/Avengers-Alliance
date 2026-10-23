@@ -2286,3 +2286,65 @@ body {
   .move-dock-icon { width: 31px; height: 32px; }
   .move-info-card { width: calc(100vw - 52px); }
 }
+
+
+/* Small ability details panel, positioned directly above the move icons. */
+.move-info-card {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: min(220px, calc(100vw - 32px));
+  max-height: 34vh;
+  padding: 8px 9px 8px;
+  border-radius: 6px;
+}
+.move-info-close {
+  top: 3px;
+  right: 3px;
+  width: 21px;
+  height: 21px;
+  font-size: 17px;
+}
+.move-info-icon {
+  width: 25px;
+  height: 25px;
+  margin-bottom: 3px;
+  font-size: 15px;
+}
+.move-info-card .eyebrow {
+  margin-bottom: 2px;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+.move-info-card h2 {
+  margin: 0 23px 4px 0;
+  font-size: 13px;
+  line-height: 1.15;
+}
+#moveInfoDescription {
+  margin-bottom: 6px;
+  font-size: 10px;
+  line-height: 1.25;
+}
+.move-info-stats {
+  gap: 3px;
+  margin-bottom: 6px;
+}
+.move-info-stat {
+  gap: 1px;
+  padding: 4px 5px;
+}
+.move-info-stat span {
+  font-size: 6px;
+  letter-spacing: .4px;
+}
+.move-info-stat strong { font-size: 10px; }
+.move-select-button {
+  min-height: 27px;
+  padding: 5px 8px;
+  font-size: 10px;
+}
+@media (max-width: 380px) {
+  .move-info-card { width: min(205px, calc(100vw - 28px)); padding: 7px; }
+  #moveInfoDescription { font-size: 9px; }
+}
