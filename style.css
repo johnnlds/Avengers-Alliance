@@ -1247,3 +1247,136 @@ button:focus-visible {
   .ability-icon { width: 26px; height: 26px; font-size: 18px; }
   .ability-card .ability-name { font-size: 10px; }
 }
+
+
+/* Reference-inspired battlefield: oversized character art, clear opposing
+   formations, and a cinematic dark arena with no labels over the portraits. */
+.game {
+  width: min(1600px, 100%);
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr);
+  gap: 14px;
+}
+.battlefield {
+  position: relative;
+  isolation: isolate;
+  min-height: 390px;
+  padding: clamp(14px, 2vw, 28px);
+  overflow: visible;
+  background:
+    radial-gradient(ellipse at 18% 48%, rgba(35, 102, 164, .24), transparent 42%),
+    radial-gradient(ellipse at 82% 48%, rgba(164, 43, 48, .22), transparent 42%),
+    linear-gradient(180deg, #111d2b 0%, #0a111b 100%);
+  border-color: #3a4b60;
+  box-shadow: inset 0 0 42px rgba(0,0,0,.38), 0 12px 28px rgba(0,0,0,.18);
+}
+.battlefield::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 12%;
+  bottom: 12%;
+  width: 1px;
+  background: linear-gradient(transparent, rgba(190,205,225,.25), transparent);
+}
+.battle-side { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+.team-heading { padding: 0 8px; }
+.team-heading h2 { font-size: 13px; letter-spacing: 1.8px; }
+.team-heading > span { font-size: 10px; }
+.hero-side .team-heading h2 { color: #7fc5ff; }
+.enemy-side .team-heading h2 { color: #ff8585; }
+.hero-side .team-grid, .enemy-side .team-grid {
+  flex: 1;
+  min-height: 300px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  grid-template-rows: minmax(130px, 1fr) minmax(130px, 1fr) !important;
+  gap: 6px 10px;
+  margin-top: 10px;
+}
+.battlefield .unit {
+  width: 100%;
+  max-width: 230px;
+  min-height: 0;
+  align-self: center;
+  justify-self: center;
+  padding: 4px 3px 8px !important;
+  border-radius: 10px;
+}
+.battlefield .portrait {
+  height: clamp(150px, 15vw, 220px) !important;
+  margin: 0 auto 3px !important;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 50% 65%, rgba(91,119,150,.24), rgba(10,18,29,0) 72%);
+  overflow: visible;
+}
+.battlefield .portrait img {
+  object-fit: contain;
+  filter: drop-shadow(0 7px 9px rgba(0,0,0,.6));
+  transform-origin: 50% 80%;
+}
+.battlefield .unit-name { display: none !important; }
+.battlefield .unit-health-track {
+  width: 76%;
+  height: 5px;
+  margin-top: -1px;
+  box-shadow: 0 1px 5px rgba(0,0,0,.7);
+}
+.battlefield .unit.active-turn::after {
+  left: 18%;
+  right: 18%;
+  bottom: -4px;
+  height: 4px;
+  box-shadow: 0 0 14px rgba(255,216,74,.85);
+}
+.battle-divider { align-self: center; padding: 0 5px; }
+.battle-divider span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 50%;
+  background: #111a27;
+  box-shadow: 0 0 22px rgba(0,0,0,.45);
+  color: #ff5f64;
+  font-size: 17px;
+}
+#teamRoster { grid-column: 1 / -1; }
+.combat-panel { grid-column: 1; }
+.log-panel { grid-column: 2; }
+@media (min-width: 761px) {
+  .battlefield .unit:hover:not(.dead) .portrait img { filter: drop-shadow(0 0 12px rgba(120,190,255,.45)); }
+  .battlefield .unit.enemy:hover:not(.dead) .portrait img { filter: drop-shadow(0 0 12px rgba(255,90,90,.4)); }
+}
+@media (max-width: 760px) {
+  .game { grid-template-columns: minmax(0, 1fr); }
+  .battlefield {
+    min-height: 0;
+    padding: 12px 6px;
+    gap: 2px;
+  }
+  .battlefield::before { top: 17%; bottom: 17%; }
+  .team-heading { padding: 0 3px; }
+  .team-heading h2 { font-size: 8px; letter-spacing: .6px; }
+  .team-heading > span { font-size: 7px; }
+  .hero-side .team-grid, .enemy-side .team-grid {
+    min-height: 0;
+    grid-template-rows: minmax(70px, 1fr) minmax(70px, 1fr) !important;
+    gap: 3px 1px;
+    margin-top: 5px;
+  }
+  .battlefield .unit { max-width: 100%; padding: 2px 0 5px !important; }
+  .battlefield .portrait {
+    height: clamp(78px, 18vw, 125px) !important;
+    border-radius: 5px;
+  }
+  .battlefield .unit-health-track { width: 82%; height: 3px; }
+  .battle-divider { padding: 0; }
+  .battle-divider span { width: 25px; height: 25px; font-size: 9px; }
+  .team-roster { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .roster-row { grid-template-columns: minmax(0,1fr) auto auto; font-size: 9px; gap: 3px; }
+}
+@media (max-width: 380px) {
+  .battlefield .portrait { height: 66px !important; }
+  .battle-divider span { width: 20px; height: 20px; font-size: 8px; }
+}
