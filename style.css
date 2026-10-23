@@ -2472,3 +2472,45 @@ body {
 @media (max-width: 760px) {
   .battlefield .unit.active-turn::after { border-width: 1.5px !important; }
 }
+
+
+/* Mobile roster: stack Hydra beneath the heroes and use the full screen width. */
+@media (max-width: 760px) {
+  #teamRoster {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: calc(100% + 16px) !important;
+    max-width: none !important;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+    padding: 7px 10px !important;
+    box-sizing: border-box !important;
+    gap: 8px !important;
+  }
+  #teamRoster .roster-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    min-width: 0;
+  }
+  #teamRoster .roster-group h3 {
+    font-size: 9px !important;
+    margin-bottom: 4px !important;
+  }
+  #teamRoster .roster-row {
+    grid-template-columns: minmax(76px, .65fr) minmax(0, 1.35fr) !important;
+    gap: 8px !important;
+    padding: 4px 2px !important;
+    line-height: 1.1 !important;
+  }
+  #teamRoster .roster-name { font-size: 10px !important; }
+  #teamRoster .roster-vitals { gap: 3px !important; }
+  #teamRoster .roster-vital-line {
+    grid-template-columns: 25px minmax(0, 1fr) auto !important;
+    gap: 4px !important;
+  }
+  #teamRoster .roster-hp-label,
+  #teamRoster .roster-sta-label { font-size: 8px !important; }
+  #teamRoster .roster-value { min-width: 34px !important; font-size: 8px !important; }
+  #teamRoster .roster-bar { height: 8px !important; }
+}
