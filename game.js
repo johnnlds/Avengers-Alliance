@@ -403,105 +403,53 @@ function renderTeam(containerId, units) {
 
 function renderCombatPanel() {
   const actor = currentActor;
-
-  const displayHero =
-    heroes.find(h => h.id === selectedHeroId && h.alive) ||
-    heroes.find(h => h.alive);
-
-  const hero = displayHero || (actor && actor.team === "hero" ? actor : null);
-
-  if (!hero) {
-    $("activeName").textContent = "No heroes remaining";
-    $("activeDescription").textContent = "Battle over";
-    $("activeHpText").textContent = "0/0";
-    $("activeStaminaText").textContent = "0/0";
-    $("activeHpFill").style.width = "0%";
-    $("activeStaminaFill").style.width = "0%";
-    $("abilityList").innerHTML = "";
-    return;
-  }
-
-  $("activeName").textContent = hero.name;
-  $("activeDescription").textContent = hero.description;
-  $("activeHpText").textContent = `${Math.ceil(hero.hp)}/${hero.maxHp}`;
-  $("activeHpFill").style.width = `${Math.max(0, hero.hp / hero.maxHp * 100)}%`;
-  $("activeStaminaText").textContent = `${Math.floor(hero.sta)}/${hero.maxSta}`;
-  $("activeStaminaFill").style.width = `${Math.max(0, hero.sta / hero.maxSta * 100)}%`;
-
-  const target = enemies.find(
-    e => e.id === selectedTargetId && e.alive
-  ) || enemies.find(e => e.alive);
-
-  $("targetName").textContent = pendingMoveId
-    ? "Choose a Hydra soldier on the battlefield"
-    : (target ? "Select an ability to begin" : "No targets remaining");
-
+  const hero = actor && actor.team === "hero" ? actor : null;
   const list = $("abilityList");
   list.innerHTML = "";
 
-  for (const move of MOVE_DATA) {
-    const card = document.createElement("div");
-    card.className = "ability-card" + (pendingMoveId === move.id ? " chosen-ability" : "");
-    const cooldown = hero.cooldowns[move.id] || 0;
-    const affordable = hero.sta >= move.cost;
-    const correctTurn = actor && actor.team === "hero" && actor.id === hero.id;
-    const disabled = battleOver || waitingForEnemy || !correctTurn || !affordable || cooldown > 0 || !hero.alive;
+  if (!hero || !hero.alive) {
+    list.innerHTML = '<p class="no-moves">Waiting for your next turn…</p>';
+  } else {
+    for (const move of MOVE_DATA) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "ability-card";
+      const cooldown = hero.cooldowns[move.id] || 0;
+      const affordable = hero.sta >= move.cost;
+      const disabled = battleOver || waitingForEnemy || !affordable || cooldown > 0;
 
-    const icon = document.createElement("span");
-    icon.className = "ability-icon";
-    icon.textContent = move.type === "debuff" ? "?" : (move.attackType === "ranged-gun" ? "🔫" : "✊");
-    icon.setAttribute("aria-hidden", "true");
+      const title = document.createElement("strong");
+      title.className = "ability-name";
+      title.textContent = move.name;
 
-    const title = document.createElement("strong");
-    title.className = "ability-name";
-    title.textContent = move.name;
+      const description = document.createElement("span");
+      description.className = "ability-description";
+      description.textContent = move.description;
 
-    const cost = document.createElement("span");
-    cost.className = "ability-cost";
-    cost.textContent = cooldown > 0 ? `CD ${cooldown}` : `${move.cost} STA`;
+      const cost = document.createElement("span");
+      cost.className = "ability-cost";
+      cost.textContent = cooldown > 0
+        ? `Cooldown: ${cooldown} turn(s)`
+        : `${move.cost} stamina`;
 
-    const details = document.createElement("div");
-    details.className = "move-popover hidden";
-    const detailsTitle = document.createElement("strong");
-    detailsTitle.textContent = move.name;
-    const detailsDescription = document.createElement("p");
-    detailsDescription.textContent = move.description;
-    const detailsMeta = document.createElement("p");
-    detailsMeta.className = "move-meta";
-    detailsMeta.textContent = `${move.type === "debuff" ? "Buff / Debuff" : move.attackType === "ranged-gun" ? "Ranged attack" : "Melee attack"} · ${move.cost} stamina`;
-    const choose = document.createElement("button");
-    choose.className = "choose-move";
-    choose.textContent = disabled ? (cooldown > 0 ? `Cooldown: ${cooldown}` : !affordable ? "Not enough stamina" : "Not your turn") : "Choose Move";
-    choose.disabled = disabled;
-    choose.addEventListener("click", event => {
-      event.stopPropagation();
-      if (choose.disabled) return;
-      pendingMoveId = move.id;
-      selectedTargetId = null;
-      log(`${move.name} selected. Now click a living Hydra soldier.`, "good");
-      renderAll();
-    });
-    details.append(detailsTitle, detailsDescription, detailsMeta, choose);
-
-    card.append(icon, title, cost, details);
-    card.setAttribute("role", "button");
-    card.setAttribute("tabindex", "0");
-    const toggleDetails = () => {
-      const wasOpen = !details.classList.contains("hidden");
-      list.querySelectorAll(".move-popover").forEach(pop => pop.classList.add("hidden"));
-      details.classList.toggle("hidden", wasOpen);
-    };
-    card.addEventListener("click", event => {
-      if (event.target.closest(".move-popover")) return;
-      toggleDetails();
-    });
-    card.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        toggleDetails();
+      card.append(title, description, cost);
+      card.disabled = disabled;
+      if (disabled) {
+        card.title = cooldown > 0 ? `On cooldown for ${cooldown} more turn(s)` : !affordable ? "Not enough stamina" : "Unavailable";
+      } else {
+        card.addEventListener("click", () => {
+          const target = enemies.find(e => e.id === selectedTargetId && e.alive)
+            || enemies.find(e => e.alive);
+          if (!target) {
+            log("No living Hydra targets remain.", "miss");
+            return;
+          }
+          selectedTargetId = target.id;
+          useMove(move.id, target);
+        });
       }
-    });
-    list.appendChild(card);
+      list.appendChild(card);
+    }
   }
 
   $("endTurnBtn").disabled =
@@ -516,20 +464,11 @@ function renderCombatPanel() {
 
 function selectUnit(unit) {
   if (!unit.alive || battleOver) return;
+  if (unit.team === "hero") return;
 
-  if (unit.team === "hero") {
-    // Selection is for inspection only; currentActor remains the sole unit allowed to act.
-    selectedHeroId = unit.id;
-    pendingMoveId = null;
-  } else {
-    // Enemies cannot be selected until the player chooses an ability.
-    if (!pendingMoveId || !currentActor || currentActor.team !== "hero") return;
-    selectedTargetId = unit.id;
-    const moveId = pendingMoveId;
-    useMove(moveId, unit);
-    return;
-  }
-
+  // Tap an enemy to set the target, then tap a move to attack immediately.
+  if (!currentActor || currentActor.team !== "hero" || waitingForEnemy) return;
+  selectedTargetId = unit.id;
   renderAll();
 }
 
