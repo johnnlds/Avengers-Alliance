@@ -165,6 +165,7 @@ let animationToken = 0;
 let battleOver = false;
 let waitingForEnemy = false;
 let imageExtensions = {};
+let inspectedMoveId = null;
 
 function createUnit(template) {
   return {
@@ -267,6 +268,7 @@ function renderAll() {
   renderTeam("enemyTeam", enemies);
   renderRoster();
   renderTurnOrder();
+  renderMoveDock();
   applyCombatAnimationPath();
 
   $("heroCount").textContent =
@@ -468,87 +470,86 @@ function renderTeam(containerId, units) {
   }
 }
 
-function renderCombatPanel() {
+function moveIconGlyph(moveId) {
+  return moveId === "combo" ? "⚔" : moveId === "bite" ? "⚡" : moveId === "kick" ? "➤" : "◎";
+}
+
+function renderMoveDock() {
+  const dock = $("moveDock");
+  if (!dock) return;
+  dock.innerHTML = "";
+  for (const move of MOVE_DATA) {
+    const actor = currentActor;
+    const hero = actor && actor.team === "hero" ? actor : null;
+    const cooldown = hero ? (hero.cooldowns[move.id] || 0) : 0;
+    const affordable = !!hero && hero.sta >= move.cost;
+    const unavailable = !hero || !hero.alive || battleOver || waitingForEnemy || !affordable || cooldown > 0;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "move-dock-icon" + (pendingMoveId === move.id ? " selected" : "") + (unavailable ? " unavailable" : "");
+    button.setAttribute("aria-label", move.name + " details");
+    button.title = move.name;
+    const glyph = document.createElement("span");
+    glyph.className = "move-dock-glyph";
+    glyph.textContent = moveIconGlyph(move.id);
+    const cost = document.createElement("small");
+    cost.textContent = String(move.cost);
+    button.append(glyph, cost);
+    button.addEventListener("click", () => openMoveInfo(move.id));
+    dock.appendChild(button);
+  }
+}
+
+function openMoveInfo(moveId) {
+  const move = MOVE_DATA.find(item => item.id === moveId);
+  if (!move) return;
+  inspectedMoveId = moveId;
   const actor = currentActor;
   const hero = actor && actor.team === "hero" ? actor : null;
-  const list = $("abilityList");
-  list.innerHTML = "";
-
-  if (!hero || !hero.alive) {
-    list.innerHTML = '<p class="no-moves">Waiting for your next turn…</p>';
-  } else {
-    for (const move of MOVE_DATA) {
-      const card = document.createElement("button");
-      card.type = "button";
-      card.className = "ability-card" + (pendingMoveId === move.id ? " chosen-ability" : "");
-      const cooldown = hero.cooldowns[move.id] || 0;
-      const affordable = hero.sta >= move.cost;
-      const disabled = battleOver || waitingForEnemy || !affordable || cooldown > 0;
-
-      const icon = document.createElement("span");
-      icon.className = "ability-icon";
-      icon.setAttribute("aria-hidden", "true");
-      icon.textContent = move.id === "combo" ? "⚔" : move.id === "bite" ? "⚡" : move.id === "kick" ? "➤" : "◎";
-
-      const title = document.createElement("strong");
-      title.className = "ability-name";
-      title.textContent = move.name;
-
-      const damage = document.createElement("span");
-      damage.className = "ability-stat ability-damage";
-      damage.textContent = move.damage > 0
-        ? move.hits > 1
-          ? `Base damage: ${Math.round(move.damage / move.hits)} per hit • ${move.hits} hits`
-          : `Base damage: ${Math.round(move.damage)}`
-        : "Base damage: —";
-
-      const cost = document.createElement("span");
-      cost.className = "ability-stat ability-cost";
-      cost.textContent = cooldown > 0
-        ? `Stamina: ${move.cost} • Cooldown: ${cooldown} turn(s)`
-        : `Stamina: ${move.cost}`;
-
-      const accuracy = document.createElement("span");
-      accuracy.className = "ability-stat ability-accuracy";
-      accuracy.textContent = `ACC/CRIT: ${move.accuracy}% / ${move.crit}%`;
-
-      const info = document.createElement("span");
-      info.className = "ability-description";
-      info.textContent = move.id === "combo"
-        ? "Two melee hits"
-        : move.id === "bite"
-          ? "Ranged attack"
-          : move.id === "kick"
-            ? "Powerful melee attack"
-            : "Reduces target Attack by 50% for 1 turn. Your next attack has a 75% chance to stun.";
-
-      card.append(icon, title, damage, cost, accuracy, info);
-      card.disabled = disabled;
-      if (disabled) {
-        card.title = cooldown > 0 ? `On cooldown for ${cooldown} more turn(s)` : !affordable ? "Not enough stamina" : "Unavailable";
-      } else {
-        card.addEventListener("click", () => {
-          if (!enemies.some(e => e.alive)) {
-            log("No living Hydra targets remain.", "miss");
-            return;
-          }
-          pendingMoveId = move.id;
-          renderCombatPanel();
-          log(`${move.name} selected. Now select a Hydra target.`, "good");
-        });
-      }
-      list.appendChild(card);
-    }
+  const cooldown = hero ? (hero.cooldowns[move.id] || 0) : 0;
+  const affordable = !!hero && hero.sta >= move.cost;
+  const unavailable = !hero || !hero.alive || battleOver || waitingForEnemy || !affordable || cooldown > 0;
+  $("moveInfoIcon").textContent = moveIconGlyph(move.id);
+  $("moveInfoTitle").textContent = move.name;
+  $("moveInfoDescription").textContent = move.description;
+  const stats = $("moveInfoStats");
+  stats.innerHTML = "";
+  const values = [
+    ["BASE DAMAGE", move.damage > 0 ? (move.hits > 1 ? `${Math.round(move.damage / move.hits)} × ${move.hits} hits` : String(Math.round(move.damage))) : "—"],
+    ["STAMINA", String(move.cost)],
+    ["ACCURACY", `${move.accuracy}%`],
+    ["CRITICAL", `${move.crit}%`]
+  ];
+  if (cooldown > 0) values.push(["COOLDOWN", `${cooldown} turn(s)`]);
+  for (const [label, value] of values) {
+    const item = document.createElement("div");
+    item.className = "move-info-stat";
+    const name = document.createElement("span");
+    name.textContent = label;
+    const val = document.createElement("strong");
+    val.textContent = value;
+    item.append(name, val);
+    stats.appendChild(item);
   }
+  const select = $("selectMoveBtn");
+  select.disabled = unavailable;
+  select.textContent = cooldown > 0 ? `Cooldown: ${cooldown} turn(s)` : !hero ? "Your turn only" : !affordable ? "Not enough stamina" : "Select Move";
+  $("moveInfoOverlay").classList.remove("hidden");
+}
 
+function closeMoveInfo() {
+  $("moveInfoOverlay").classList.add("hidden");
+  inspectedMoveId = null;
+}
+
+function renderCombatPanel() {
+  const actor = currentActor;
   $("endTurnBtn").disabled =
     battleOver ||
     waitingForEnemy ||
     !actor ||
     actor.team !== "hero";
-
-  $("endTurnBtn").style.opacity =
-    $("endTurnBtn").disabled ? "0.5" : "1";
+  $("endTurnBtn").style.opacity = $("endTurnBtn").disabled ? "0.5" : "1";
 }
 
 function selectUnit(unit) {
@@ -1025,6 +1026,25 @@ $("endTurnBtn").addEventListener("click", () => {
 });
 
 $("restartBtn").addEventListener("click", resetBattle);
+$("closeMoveInfoBtn").addEventListener("click", closeMoveInfo);
+$("moveInfoOverlay").addEventListener("click", event => {
+  if (event.target === $("moveInfoOverlay")) closeMoveInfo();
+});
+$("selectMoveBtn").addEventListener("click", () => {
+  if (!inspectedMoveId) return;
+  const move = MOVE_DATA.find(item => item.id === inspectedMoveId);
+  const actor = currentActor;
+  if (!move || !actor || actor.team !== "hero" || !actor.alive || battleOver || waitingForEnemy) return;
+  const cooldown = actor.cooldowns[move.id] || 0;
+  if (actor.sta < move.cost || cooldown > 0) return;
+  pendingMoveId = move.id;
+  closeMoveInfo();
+  renderAll();
+  log(`${move.name} selected. Now select a Hydra target.`, "good");
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !$("moveInfoOverlay").classList.contains("hidden")) closeMoveInfo();
+});
 $("playAgainBtn").addEventListener("click", resetBattle);
 
 $("clearLogBtn").addEventListener("click", () => {
