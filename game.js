@@ -453,7 +453,7 @@ function renderCombatPanel() {
 
     const description = document.createElement("span");
     description.className = "ability-description";
-    description.textContent = move.description;
+    description.textContent = `${move.attackType === "ranged-gun" ? "Ranged Gun" : move.attackType === "flying-melee" ? "Flying Melee" : "Unarmed Melee"} • ${move.description}`;
 
     info.append(moveName, description);
 
