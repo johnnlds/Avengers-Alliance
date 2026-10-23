@@ -761,3 +761,100 @@ button:focus-visible {
   .unit.attacking.hero, .unit.attacking.enemy, .unit.taking-hit,
   .combat-effect, .damage-number { animation-duration: .01ms !important; }
 }
+
+
+/* Actual approach-and-strike movement, calculated from the attacker's and target's positions. */
+.unit.attacking {
+  will-change: transform, filter;
+  z-index: 20 !important;
+}
+.unit.attacking.hero,
+.unit.attacking.enemy {
+  animation: approach-strike 900ms cubic-bezier(.18,.78,.22,1) both !important;
+}
+.unit.taking-hit {
+  will-change: transform, filter;
+  animation: target-impact 680ms ease-out both !important;
+  z-index: 21 !important;
+}
+@keyframes approach-strike {
+  0% {
+    transform: translate(0, 0) scale(1);
+    filter: brightness(1);
+  }
+  30% {
+    transform: translate(var(--attack-x, 35px), var(--attack-y, 0px)) scale(1.1);
+    filter: brightness(1.25);
+  }
+  43%, 56% {
+    transform: translate(var(--attack-x, 35px), var(--attack-y, 0px)) scale(1.17) rotate(-2deg);
+    filter: brightness(1.65) saturate(1.25);
+  }
+  66% {
+    transform: translate(calc(var(--attack-x, 35px) - 9px), calc(var(--attack-y, 0px) - 2px)) scale(1.08);
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    filter: brightness(1);
+  }
+}
+@keyframes target-impact {
+  0%, 100% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+  18% { transform: translate(9px, -3px) scale(.94); filter: brightness(2.4) saturate(1.5); }
+  34% { transform: translate(-7px, 2px) scale(1.02); }
+  50% { transform: translate(5px, 0) scale(.98); filter: brightness(1.45); }
+  70% { transform: translate(-2px, 0) scale(1); }
+}
+.combat-effect.slash {
+  width: clamp(45px, 7vw, 95px);
+  height: 10px;
+  transform-origin: center;
+  animation: traveling-slash 420ms ease-out both !important;
+}
+.combat-effect.projectile {
+  animation: traveling-projectile 430ms cubic-bezier(.2,.7,.2,1) both !important;
+}
+.combat-effect.impact-burst {
+  width: 34px;
+  height: 34px;
+  animation: impact-pop 520ms ease-out both !important;
+}
+@keyframes traveling-slash {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-38deg) scaleX(.1);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-38deg) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--target-x, 80px)), calc(-50% + var(--target-y, 0px))) rotate(-38deg) scaleX(.7);
+  }
+}
+@keyframes traveling-projectile {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.45);
+  }
+  12% { opacity: 1; }
+  82% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--target-x, 80px)), calc(-50% + var(--target-y, 0px))) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--target-x, 80px)), calc(-50% + var(--target-y, 0px))) scale(1.7);
+  }
+}
+/* Keep combat feedback visible on phones, including devices with reduced-motion enabled. */
+@media (prefers-reduced-motion: reduce) {
+  .unit.attacking.hero,
+  .unit.attacking.enemy {
+    animation-duration: 900ms !important;
+  }
+  .unit.taking-hit { animation-duration: 680ms !important; }
+  .combat-effect, .damage-number { animation-duration: 420ms !important; }
+}
