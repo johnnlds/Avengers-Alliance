@@ -5,36 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#101722">
   <title>Marvel Alliance - Battle Prototype</title>
-  <link rel="stylesheet" href="style.css?v=20261023-28">
+  <link rel="stylesheet" href="style.css?v=20261023-29">
   <script src="game.js?v=20261023-19" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <h1>MARVEL <span>ALLIANCE</span></h1>
-      <p class="subtitle">TACTICAL COMBAT PROTOTYPE</p>
-    </div>
-    <div class="battle-info">
-      <span id="roundLabel">ROUND 1</span>
-      <span id="turnLabel">YOUR TURN</span>
-    </div>
-  </header>
-
   <section id="turnOrder" class="turn-order" aria-label="Turn order"></section>
 
   <main class="game">
     <section class="battlefield">
       <div class="battle-side hero-side">
-        <div class="team-heading">
-          <h2>YOUR TEAM</h2>
-        </div>
         <div id="heroTeam" class="team-grid"></div>
       </div>
       <div class="battle-divider" aria-hidden="true"><span>VS</span></div>
       <div class="battle-side enemy-side">
-        <div class="team-heading enemy-heading">
-          <h2>HYDRA FORCES</h2>
-undefined        </div>
         <div id="enemyTeam" class="team-grid"></div>
       </div>
     </section>
