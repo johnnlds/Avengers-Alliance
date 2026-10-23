@@ -2544,3 +2544,55 @@ body {
   #teamRoster .roster-value { min-width: 30px !important; font-size: 7px !important; }
   #teamRoster .roster-bar { height: 6px !important; }
 }
+
+
+/* Mobile roster returns to two side-by-side columns. */
+@media (max-width: 760px) {
+  #teamRoster {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 3px 5px !important;
+    gap: 5px !important;
+  }
+  #teamRoster .roster-group {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Enlarge the character art without changing the battlefield's layout dimensions.
+   The lower/back figure is layered in front and nudged upward over the upper figure's legs. */
+.battlefield .unit {
+  position: relative;
+  z-index: 1;
+}
+.battlefield .unit:nth-child(1) {
+  z-index: 2;
+}
+.battlefield .unit:nth-child(2) {
+  z-index: 6;
+  top: -10px;
+}
+.battlefield .unit:nth-child(3) {
+  z-index: 3;
+}
+.battlefield .unit .portrait {
+  overflow: visible !important;
+}
+.battlefield .unit .portrait img {
+  transform: scale(1.24);
+  transform-origin: center bottom;
+}
+@media (max-width: 760px) {
+  .battlefield .unit:nth-child(2) {
+    top: -8px;
+  }
+  .battlefield .unit .portrait img {
+    transform: scale(1.38);
+  }
+}
