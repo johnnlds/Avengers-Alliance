@@ -332,39 +332,7 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    const hpLabel = document.createElement("div");
-    hpLabel.className = "bar-label";
-    hpLabel.innerHTML = `<span>HP</span><span>${Math.ceil(unit.hp)}/${unit.maxHp}</span>`;
-
-    const hpBar = document.createElement("div");
-    hpBar.className = "bar";
-
-    const hpFill = document.createElement("div");
-    hpFill.className = "bar-fill health-fill";
-    hpFill.style.width = `${Math.max(0, unit.hp / unit.maxHp * 100)}%`;
-    hpBar.appendChild(hpFill);
-
-    const staLabel = document.createElement("div");
-    staLabel.className = "bar-label";
-    staLabel.innerHTML = `<span>STA</span><span>${Math.floor(unit.sta)}/${unit.maxSta}</span>`;
-
-    const staBar = document.createElement("div");
-    staBar.className = "bar";
-
-    const staFill = document.createElement("div");
-    staFill.className = "bar-fill stamina-fill";
-    staFill.style.width = `${Math.max(0, unit.sta / unit.maxSta * 100)}%`;
-    staBar.appendChild(staFill);
-
-    card.append(
-      portrait,
-      name,
-      status,
-      hpLabel,
-      hpBar,
-      staLabel,
-      staBar
-    );
+    card.append(portrait, name, status);
 
     card.addEventListener("click", () => selectUnit(unit));
     card.addEventListener("keydown", event => {
@@ -406,15 +374,20 @@ function renderCombatPanel() {
   if (!hero) {
     $("activeName").textContent = "No heroes remaining";
     $("activeDescription").textContent = "Battle over";
-    $("activeStamina").textContent = "STA 0/0";
+    $("activeHpText").textContent = "0/0";
+    $("activeStaminaText").textContent = "0/0";
+    $("activeHpFill").style.width = "0%";
+    $("activeStaminaFill").style.width = "0%";
     $("abilityList").innerHTML = "";
     return;
   }
 
   $("activeName").textContent = hero.name;
   $("activeDescription").textContent = hero.description;
-  $("activeStamina").textContent =
-    `STA ${Math.floor(hero.sta)}/${hero.maxSta}`;
+  $("activeHpText").textContent = `${Math.ceil(hero.hp)}/${hero.maxHp}`;
+  $("activeHpFill").style.width = `${Math.max(0, hero.hp / hero.maxHp * 100)}%`;
+  $("activeStaminaText").textContent = `${Math.floor(hero.sta)}/${hero.maxSta}`;
+  $("activeStaminaFill").style.width = `${Math.max(0, hero.sta / hero.maxSta * 100)}%`;
 
   const target = enemies.find(
     e => e.id === selectedTargetId && e.alive
