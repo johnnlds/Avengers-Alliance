@@ -156,6 +156,7 @@ let selectedTargetId = null;
 let pendingMoveId = null;
 let animatingActorId = null;
 let animatingTargetId = null;
+let animatingMoveId = null;
 let animationToken = 0;
 let battleOver = false;
 let waitingForEnemy = false;
@@ -188,6 +189,7 @@ function resetBattle() {
   pendingMoveId = null;
   animatingActorId = null;
   animatingTargetId = null;
+  animatingMoveId = null;
   battleOver = false;
   waitingForEnemy = false;
 
@@ -367,6 +369,22 @@ function renderTeam(containerId, units) {
     });
 
     container.appendChild(card);
+
+    // Add effects after each render so they survive the UI refresh after an attack.
+    if (animatingActorId === unit.id) {
+      const effect = document.createElement("span");
+      effect.className = animatingMoveId === "bite"
+        ? "combat-effect projectile"
+        : "combat-effect slash";
+      effect.setAttribute("aria-hidden", "true");
+      card.appendChild(effect);
+    }
+    if (animatingTargetId === unit.id) {
+      const impact = document.createElement("span");
+      impact.className = "combat-effect impact-burst";
+      impact.setAttribute("aria-hidden", "true");
+      card.appendChild(impact);
+    }
   }
 }
 
@@ -596,28 +614,14 @@ function endRound() {
 function triggerCombatAnimation(actor, target, move) {
   animatingActorId = actor.id;
   animatingTargetId = target.id;
+  animatingMoveId = move ? move.id : null;
   const token = ++animationToken;
-  const actorCard = document.querySelector(`.unit[data-unit-id="${actor.id}"]`);
-  const targetCard = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
-
-  if (actorCard) {
-    const effect = document.createElement("span");
-    effect.className = move && move.type === "ranged" ? "combat-effect projectile" : "combat-effect slash";
-    effect.setAttribute("aria-hidden", "true");
-    actorCard.appendChild(effect);
-  }
-
-  if (targetCard) {
-    const impact = document.createElement("span");
-    impact.className = "combat-effect impact-burst";
-    impact.setAttribute("aria-hidden", "true");
-    targetCard.appendChild(impact);
-  }
 
   window.setTimeout(() => {
     if (token !== animationToken) return;
     animatingActorId = null;
     animatingTargetId = null;
+    animatingMoveId = null;
     renderAll();
   }, 760);
 }
