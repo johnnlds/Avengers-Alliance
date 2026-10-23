@@ -2596,3 +2596,105 @@ body {
     transform: scale(1.38);
   }
 }
+
+
+/* Full-screen battle presentation: turn order is the topmost UI. */
+html, body {
+  min-height: 100%;
+}
+body {
+  min-height: 100svh;
+}
+.topbar {
+  display: none !important;
+}
+.turn-order {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 54px;
+  min-height: 54px;
+  margin: 0;
+  padding: 5px 10px 4px;
+  gap: 8px;
+  background: linear-gradient(180deg, #17283a, #0b121b);
+  border-bottom: 1px solid #344b61;
+}
+.turn-order-label {
+  font-size: 8px;
+  letter-spacing: .8px;
+}
+.turn-order-track {
+  align-items: center;
+  padding: 3px 2px 4px;
+  overflow-y: hidden;
+}
+.turn-chip {
+  flex-basis: 40px;
+  width: 40px;
+  height: 42px;
+}
+.game {
+  width: 100%;
+  max-width: none;
+  min-height: calc(100svh - 54px);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.battlefield {
+  flex: 1 0 auto;
+  min-height: calc(100svh - 54px);
+  margin: 0;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  align-items: center;
+}
+.battle-side .team-heading {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  .turn-order {
+    height: 48px;
+    min-height: 48px;
+    padding: 4px 7px 3px;
+    gap: 5px;
+  }
+  .turn-order-label {
+    font-size: 7px;
+    letter-spacing: .45px;
+  }
+  .turn-order-track {
+    gap: 4px;
+    padding: 2px 1px 3px;
+  }
+  .turn-chip {
+    flex-basis: 35px;
+    width: 35px;
+    height: 37px;
+  }
+  .game {
+    min-height: calc(100svh - 48px);
+    padding: 0;
+    gap: 0;
+  }
+  .battlefield {
+    min-height: calc(100svh - 48px);
+    padding: 7px 4px;
+    border-radius: 0;
+  }
+  .hero-side .team-grid,
+  .enemy-side .team-grid {
+    margin-top: 0;
+  }
+}
+@media (max-width: 380px) {
+  .turn-order {
+    align-items: center;
+    flex-direction: row;
+  }
+}
