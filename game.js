@@ -266,6 +266,7 @@ function renderAll() {
   renderTeam("heroTeam", heroes);
   renderTeam("enemyTeam", enemies);
   renderRoster();
+  renderTurnOrder();
   applyCombatAnimationPath();
 
   $("heroCount").textContent =
@@ -337,6 +338,42 @@ function renderRoster() {
     }
     root.appendChild(group);
   }
+}
+
+function renderTurnOrder() {
+  const root = $("turnOrder");
+  if (!root) return;
+  root.innerHTML = "";
+
+  const label = document.createElement("span");
+  label.className = "turn-order-label";
+  label.textContent = "TURN ORDER";
+  root.appendChild(label);
+
+  const track = document.createElement("div");
+  track.className = "turn-order-track";
+  const orderedIds = initiative.length ? initiative : [...heroes, ...enemies].map(unit => unit.id);
+  orderedIds.forEach((id, index) => {
+    const unit = [...heroes, ...enemies].find(candidate => candidate.id === id);
+    if (!unit) return;
+    const chip = document.createElement("div");
+    chip.className = [
+      "turn-chip",
+      unit.team,
+      currentActor?.id === unit.id ? "current" : "",
+      index < turnIndex && currentActor?.id !== unit.id ? "past" : "",
+      !unit.alive ? "defeated" : ""
+    ].filter(Boolean).join(" ");
+    chip.title = unit.name + (currentActor?.id === unit.id ? " — current turn" : "");
+    chip.setAttribute("aria-label", chip.title);
+    const img = document.createElement("img");
+    img.alt = unit.name;
+    img.loading = "eager";
+    setCharacterImage(img, unit.image);
+    chip.appendChild(img);
+    track.appendChild(chip);
+  });
+  root.appendChild(track);
 }
 
 function renderTeam(containerId, units) {
@@ -448,6 +485,11 @@ function renderCombatPanel() {
       const affordable = hero.sta >= move.cost;
       const disabled = battleOver || waitingForEnemy || !affordable || cooldown > 0;
 
+      const icon = document.createElement("span");
+      icon.className = "ability-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = move.id === "combo" ? "⚔" : move.id === "bite" ? "⚡" : move.id === "kick" ? "➤" : "◎";
+
       const title = document.createElement("strong");
       title.className = "ability-name";
       title.textContent = move.name;
@@ -480,7 +522,7 @@ function renderCombatPanel() {
             ? "Powerful melee attack"
             : "Reduces target Attack by 50% for 1 turn. Your next attack has a 75% chance to stun.";
 
-      card.append(title, damage, cost, accuracy, info);
+      card.append(icon, title, damage, cost, accuracy, info);
       card.disabled = disabled;
       if (disabled) {
         card.title = cooldown > 0 ? `On cooldown for ${cooldown} more turn(s)` : !affordable ? "Not enough stamina" : "Unavailable";
