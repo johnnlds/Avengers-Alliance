@@ -1,1 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alliance Protocol — Battle Prototype</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark">A</div>
+      <div>
+        <p class="eyebrow">S.H.I.E.L.D. TACTICAL SIMULATION</p>
+        <h1>ALLIANCE <span>PROTOCOL</span></h1>
+      </div>
+      <div class="topbar-right">
+        <span class="status-dot"></span>
+        <span>SIMULATION ACTIVE</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="mission-strip">
+        <div>
+          <p class="eyebrow">OPERATION 001</p>
+          <h2>HYDRA OUTPOST</h2>
+          <p class="mission-subtitle">Eliminate hostile forces to secure the area.</p>
+        </div>
+        <div class="mission-meta">
+          <div><span>OBJECTIVE</span><strong>DEFEAT ALL ENEMIES</strong></div>
+          <div><span>TURN</span><strong id="turn-count">01</strong></div>
+          <div><span>STATUS</span><strong id="battle-status">READY</strong></div>
+        </div>
+      </section>
+
+      <section class="battlefield" aria-label="Battlefield">
+        <div class="battle-lane heroes-lane">
+          <div class="lane-label"><span>01</span> ALLIANCE</div>
+          <div id="hero-team" class="combatants"></div>
+        </div>
+        <div class="battle-divider">
+          <span>VS</span>
+          <div class="divider-line"></div>
+        </div>
+        <div class="battle-lane hydra-lane">
+          <div class="lane-label"><span>02</span> HYDRA FORCES</div>
+          <div id="enemy-team" class="combatants"></div>
+        </div>
+        <div id="battle-message" class="battle-message" role="status">Select a hero to begin your turn.</div>
+      </section>
+
+      <section class="command-panel">
+        <div class="selected-unit">
+          <div id="selected-avatar" class="portrait large portrait-agent"><span>AG</span></div>
+          <div class="selected-copy">
+            <p class="eyebrow">ACTIVE OPERATIVE</p>
+            <h2 id="selected-name">S.H.I.E.L.D. Agent</h2>
+            <p id="selected-description">A versatile field operative. Choose a move.</p>
+          </div>
+        </div>
+        <div class="command-content">
+          <div class="command-heading">
+            <h3>AVAILABLE ACTIONS</h3>
+            <span id="action-hint">Choose an action, then a target.</span>
+          </div>
+          <div id="move-list" class="move-list"></div>
+        </div>
+      </section>
+
+      <section class="bottom-row">
+        <div class="combat-log-panel">
+          <div class="panel-heading"><h3>COMBAT LOG</h3><span>LIVE FEED</span></div>
+          <ol id="combat-log" class="combat-log"></ol>
+        </div>
+        <aside class="save-panel">
+          <div class="panel-heading"><h3>MISSION DATA</h3><span>LOCAL</span></div>
+          <p id="save-status">Progress is saved in this browser after each action.</p>
+          <div class="save-actions">
+            <button id="save-button" class="secondary-button">SAVE NOW</button>
+            <button id="restart-button" class="danger-button">RESTART BATTLE</button>
+          </div>
+          <p class="small-note">Prototype save data stays on this device and browser.</p>
+        </aside>
+      </section>
+    </main>
+    <footer>ALLIANCE PROTOCOL <span>•</span> FAN-MADE GAMEPLAY PROTOTYPE <span>•</span> NOT AN OFFICIAL MARVEL PRODUCT</footer>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
 
