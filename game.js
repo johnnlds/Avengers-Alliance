@@ -432,15 +432,7 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    const healthTrack = document.createElement("div");
-    healthTrack.className = "unit-health-track" + (currentActor?.id === unit.id ? " active-turn-bar" : "");
-    healthTrack.setAttribute("aria-label", "Health");
-    const healthFill = document.createElement("div");
-    healthFill.className = "unit-health-fill";
-    healthFill.style.width = `${Math.max(0, unit.hp / unit.maxHp * 100)}%`;
-    healthTrack.appendChild(healthFill);
-
-    card.append(portrait, name, healthTrack, status);
+    card.append(portrait, name, status);
 
     card.addEventListener("click", () => selectUnit(unit));
     card.addEventListener("keydown", event => {
