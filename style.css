@@ -2698,3 +2698,43 @@ body {
     flex-direction: row;
   }
 }
+
+
+/* Shorten the battlefield from the bottom by 30%, keeping the top fixed.
+   Reposition and scale the figures to fit the shallower combat stage. */
+.battlefield {
+  height: 70svh !important;
+  min-height: 0 !important;
+  max-height: 70svh !important;
+  flex: 0 0 70svh !important;
+  overflow: visible;
+}
+.battlefield .team-grid {
+  align-content: center;
+}
+.battlefield .unit .portrait img {
+  transform: scale(1.05) !important;
+  transform-origin: center bottom;
+}
+.battlefield .unit:nth-child(2) {
+  top: -5px;
+}
+@media (max-width: 760px) {
+  .battlefield {
+    height: 70svh !important;
+    min-height: 0 !important;
+    max-height: 70svh !important;
+    flex: 0 0 70svh !important;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+  }
+  .battlefield .portrait {
+    height: clamp(55px, 14vw, 95px) !important;
+  }
+  .battlefield .unit .portrait img {
+    transform: scale(1.16) !important;
+  }
+  .battlefield .unit:nth-child(2) {
+    top: -4px;
+  }
+}
