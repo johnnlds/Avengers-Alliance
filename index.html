@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#101722">
   <title>Marvel Alliance - Battle Prototype</title>
-  <link rel="stylesheet" href="style.css?v=20261023-18">
-  <script src="game.js?v=20261023-14" defer></script>
+  <link rel="stylesheet" href="style.css?v=20261023-19">
+  <script src="game.js?v=20261023-15" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -32,6 +32,7 @@
         <div id="heroTeam" class="team-grid"></div>
       </div>
       <div class="battle-divider" aria-hidden="true"><span>VS</span></div>
+      <div id="moveDock" class="move-dock" aria-label="Available attacks"></div>
       <div class="battle-side enemy-side">
         <div class="team-heading enemy-heading">
           <h2>HYDRA FORCES</h2>
@@ -44,8 +45,7 @@
     <section id="teamRoster" class="team-roster" aria-label="Team health and stamina"></section>
 
     <section class="combat-panel">
-      <h3 class="section-heading">AVAILABLE MOVES — TAP TO USE</h3>
-      <div id="abilityList" class="ability-list"></div>
+      <h3 class="section-heading">BATTLE ACTIONS</h3>
 
       <div class="action-row">
         <button id="endTurnBtn" class="secondary-button">Skip Turn</button>
@@ -61,6 +61,18 @@
       <div id="battleLog" class="battle-log" aria-live="polite"></div>
     </section>
   </main>
+
+  <div id="moveInfoOverlay" class="move-info-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="moveInfoTitle">
+    <div class="move-info-card">
+      <button id="closeMoveInfoBtn" class="move-info-close" type="button" aria-label="Close move information">×</button>
+      <div id="moveInfoIcon" class="move-info-icon" aria-hidden="true"></div>
+      <p class="eyebrow">ABILITY DETAILS</p>
+      <h2 id="moveInfoTitle">Move</h2>
+      <p id="moveInfoDescription"></p>
+      <div id="moveInfoStats" class="move-info-stats"></div>
+      <button id="selectMoveBtn" class="primary-button move-select-button" type="button">Select Move</button>
+    </div>
+  </div>
 
   <div id="resultOverlay" class="overlay hidden">
     <div class="result-card">
