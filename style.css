@@ -917,3 +917,13 @@ button:focus-visible {
     animation-duration: inherit !important;
   }
 }
+
+/* More specific selectors let attack type override the default lunge. */
+.unit.attacking.hero.attack-ranged-gun,
+.unit.attacking.enemy.attack-ranged-gun {
+  animation: gunner-recoil 900ms ease-out both !important;
+}
+.unit.attacking.hero.attack-flying-melee,
+.unit.attacking.enemy.attack-flying-melee {
+  animation: flying-kick 1.28s cubic-bezier(.2,.75,.2,1) both !important;
+}
