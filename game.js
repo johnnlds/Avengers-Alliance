@@ -9,6 +9,7 @@ const $ = (id) => document.getElementById(id);
 const MOVE_DATA = [
   {
     id: "combo",
+    attackType: "unarmed-melee",
     name: "Martial Arts Combo",
     description: "Two melee hits. 88% accuracy and 11% critical chance per hit.",
     cost: 9,
@@ -21,6 +22,7 @@ const MOVE_DATA = [
   },
   {
     id: "bite",
+    attackType: "ranged-gun",
     name: "Widow's Bite",
     description: "Ranged attack. 25 base damage, 88% accuracy.",
     cost: 18,
@@ -33,6 +35,7 @@ const MOVE_DATA = [
   },
   {
     id: "kick",
+    attackType: "flying-melee",
     name: "Flying Kick",
     description: "Powerful melee attack. 28.75 base damage, 77% accuracy.",
     cost: 23,
@@ -45,6 +48,7 @@ const MOVE_DATA = [
   },
   {
     id: "widowmaker",
+    attackType: "ranged-gun",
     name: "Widowmaker",
     description: "Costs 7 stamina. Reduces target Attack by 50% for one turn. Your next attack has a 75% chance to stun.",
     cost: 7,
@@ -294,6 +298,7 @@ function renderTeam(containerId, units) {
       isSelected ? "selected" : "",
       isActive ? "active-turn" : "",
       animatingActorId === unit.id ? "attacking" : "",
+      animatingActorId === unit.id && animatingMoveId ? `attack-${MOVE_DATA.find(m => m.id === animatingMoveId)?.attackType || "unarmed-melee"}` : "",
       animatingTargetId === unit.id ? "taking-hit" : "",
       !unit.alive ? "dead" : ""
     ].filter(Boolean).join(" ");
@@ -374,9 +379,9 @@ function renderTeam(containerId, units) {
     // Add effects after each render so they survive the UI refresh after an attack.
     if (animatingActorId === unit.id) {
       const effect = document.createElement("span");
-      effect.className = animatingMoveId === "bite"
-        ? "combat-effect projectile"
-        : "combat-effect slash";
+      const move = MOVE_DATA.find(m => m.id === animatingMoveId);
+      const attackType = move?.attackType || "unarmed-melee";
+      effect.className = `combat-effect ${attackType === "ranged-gun" ? "projectile" : attackType === "flying-melee" ? "kick-strike" : "slash"} ${attackType}`;
       effect.setAttribute("aria-hidden", "true");
       card.appendChild(effect);
     }
@@ -562,7 +567,7 @@ function nextTurn() {
     renderAll();
 
     turnIndex++;
-    window.setTimeout(nextTurn, 450);
+    window.setTimeout(nextTurn, 750);
     return;
   }
 
@@ -586,7 +591,7 @@ function nextTurn() {
     waitingForEnemy = true;
     renderCombatPanel();
 
-    window.setTimeout(enemyAct, 650);
+    window.setTimeout(enemyAct, 1000);
   }
 }
 
@@ -647,7 +652,7 @@ function triggerCombatAnimation(actor, target, move) {
     animatingTargetId = null;
     animatingMoveId = null;
     renderAll();
-  }, 760);
+  }, 1280);
 }
 
 function showDamageNumber(target, amount, critical = false, missed = false) {
@@ -713,7 +718,7 @@ function useMove(moveId, chosenTarget = null) {
   if (checkBattleEnd()) return;
 
   turnIndex++;
-  window.setTimeout(nextTurn, 350);
+  window.setTimeout(nextTurn, 1550);
 }
 
 function useWidowmaker(actor, target, move) {
@@ -873,7 +878,7 @@ function enemyAct() {
   if (checkBattleEnd()) return;
 
   turnIndex++;
-  window.setTimeout(nextTurn, 450);
+  window.setTimeout(nextTurn, 1550);
 }
 
 /* =========================================
