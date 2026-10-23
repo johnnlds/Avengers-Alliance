@@ -1479,3 +1479,11 @@ button:focus-visible {
   .ability-card .ability-name { font-size: 10px; }
   .ability-card .ability-description { font-size: 8px; }
 }
+
+
+/* Make the currently selected enemy target easy to identify. */
+.battlefield .unit.enemy.selected {
+  outline: 1px solid rgba(255, 115, 115, .75);
+  outline-offset: -1px;
+  border-radius: 10px;
+}
