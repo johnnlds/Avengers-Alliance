@@ -2738,3 +2738,48 @@ body {
     top: -4px;
   }
 }
+
+
+/* Latest battlefield adjustment: restore normal character scale and lift the
+   formations higher in the shortened arena. */
+.battlefield {
+  height: 49svh !important;
+  min-height: 0 !important;
+  max-height: 49svh !important;
+  flex: 0 0 49svh !important;
+}
+.battlefield .unit .portrait img {
+  transform: none !important;
+}
+.battlefield .portrait {
+  height: clamp(90px, 15vw, 170px) !important;
+}
+.battlefield .team-grid {
+  align-content: center;
+  transform: translateY(-5svh);
+}
+.battlefield .unit:nth-child(2) {
+  top: 0 !important;
+}
+@media (max-width: 760px) {
+  .battlefield {
+    height: 49svh !important;
+    min-height: 0 !important;
+    max-height: 49svh !important;
+    flex: 0 0 49svh !important;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+  }
+  .battlefield .portrait {
+    height: clamp(90px, 15vw, 170px) !important;
+  }
+  .battlefield .team-grid {
+    transform: translateY(-4svh);
+  }
+  .battlefield .unit .portrait img {
+    transform: none !important;
+  }
+  .battlefield .unit:nth-child(2) {
+    top: 0 !important;
+  }
+}
