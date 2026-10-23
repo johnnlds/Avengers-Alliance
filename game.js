@@ -271,7 +271,8 @@ function renderAll() {
   renderMoveDock();
   applyCombatAnimationPath();
 
-  $("roundLabel").textContent = `ROUND ${round}`;
+  const roundLabel = $("roundLabel");
+  if (roundLabel) roundLabel.textContent = `ROUND ${round}`;
 
   renderCombatPanel();
 }
@@ -653,13 +654,19 @@ function nextTurn() {
       return;
     }
 
-    $("turnLabel").textContent = "YOUR TURN";
-    $("turnLabel").style.color = "var(--green)";
+    const turnLabel = $("turnLabel");
+    if (turnLabel) {
+      turnLabel.textContent = "YOUR TURN";
+      turnLabel.style.color = "var(--green)";
+    }
     renderAll();
     log(`${unit.name}'s turn.`);
   } else {
-    $("turnLabel").textContent = "HYDRA TURN";
-    $("turnLabel").style.color = "var(--red)";
+    const turnLabel = $("turnLabel");
+    if (turnLabel) {
+      turnLabel.textContent = "HYDRA TURN";
+      turnLabel.style.color = "var(--red)";
+    }
     renderAll();
 
     waitingForEnemy = true;
@@ -1009,7 +1016,8 @@ function checkBattleEnd() {
     ? "Hydra has been defeated. Your team wins the battle!"
     : "Your entire team has been defeated by Hydra.";
 
-  $("turnLabel").textContent = "BATTLE OVER";
+  const turnLabel = $("turnLabel");
+  if (turnLabel) turnLabel.textContent = "BATTLE OVER";
   $("resultOverlay").classList.remove("hidden");
 
   renderAll();
