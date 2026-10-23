@@ -558,3 +558,74 @@ button:focus-visible {
     font-size: 9px;
   }
 }
+
+
+/* Battlefield layout: two opposing triangle formations */
+.game {
+  width: min(1400px, 100%);
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+}
+.battlefield {
+  grid-column: 1 / -1;
+  grid-row: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(8px, 2vw, 24px);
+}
+.battle-side { min-width: 0; }
+.hero-side .team-heading h2 { color: var(--blue); }
+.battle-divider { margin: 0; flex-direction: column; }
+.battle-divider div { display: none; }
+
+.hero-side .team-grid, .enemy-side .team-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(3px, 0.8vw, 12px);
+}
+.hero-side .team-grid { grid-template-areas: "back-top front" "back-bottom front"; }
+.enemy-side .team-grid { grid-template-areas: "front back-top" "front back-bottom"; }
+.hero-side .unit:nth-child(1), .enemy-side .unit:nth-child(1) { grid-area: back-top; }
+.hero-side .unit:nth-child(2), .enemy-side .unit:nth-child(2) { grid-area: back-bottom; }
+.hero-side .unit:nth-child(3), .enemy-side .unit:nth-child(3) { grid-area: front; }
+
+.unit { padding: 4px 2px 8px; background: transparent; border-radius: 6px; }
+.unit:hover:not(.dead) { background: rgba(255,255,255,0.04); }
+.unit.selected { background: rgba(255,200,87,0.08); }
+.unit.enemy.selected { background: rgba(239,83,80,0.08); }
+.portrait { height: clamp(90px, 13vw, 175px); background: transparent; border-radius: 0; }
+
+.unit.attacking.hero { animation: hero-lunge 0.5s ease-in-out; z-index: 2; }
+.unit.attacking.enemy { animation: enemy-lunge 0.5s ease-in-out; z-index: 2; }
+.unit.taking-hit { animation: hit-flash 0.5s ease-in-out; z-index: 2; }
+@keyframes hero-lunge {
+  0%, 100% { transform: translateX(0) scale(1); }
+  35%, 65% { transform: translateX(18px) scale(1.05); }
+}
+@keyframes enemy-lunge {
+  0%, 100% { transform: translateX(0) scale(1); }
+  35%, 65% { transform: translateX(-18px) scale(1.05); }
+}
+@keyframes hit-flash {
+  0%, 100% { transform: translateX(0); filter: brightness(1); }
+  20%, 60% { transform: translateX(-5px); filter: brightness(2) saturate(1.5); }
+  40%, 80% { transform: translateX(5px); filter: brightness(0.8); }
+}
+.ability.chosen-ability { border-color: var(--gold); background: #3a3020; box-shadow: 0 0 0 1px var(--gold); }
+.combat-panel { grid-column: 1; }
+.log-panel { grid-column: 2; }
+
+@media (max-width: 760px) {
+  .game { grid-template-columns: minmax(0, 1fr); padding: 10px; gap: 10px; }
+  .battlefield { grid-column: 1; grid-row: auto; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 4px; padding: 10px 6px; }
+  .combat-panel, .log-panel { grid-column: 1; padding: 13px; }
+  .team-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .team-heading h2 { font-size: 10px; letter-spacing: 1px; }
+  .hero-side .team-grid, .enemy-side .team-grid { gap: 3px; }
+  .unit { padding: 3px 1px 5px; }
+  .portrait { height: clamp(60px, 17vw, 115px); }
+  .unit-name { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .unit.attacking.hero, .unit.attacking.enemy, .unit.taking-hit { animation-duration: 0.01ms; }
+}
