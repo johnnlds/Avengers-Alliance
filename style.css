@@ -1647,3 +1647,30 @@ button:focus-visible {
     text-shadow: 0 2px 5px #000, 0 0 12px #ff382d;
   }
 }
+
+
+/* Align all move details to one left edge, including stamina costs. */
+.ability-card {
+  align-items: stretch !important;
+}
+.ability-card .ability-name,
+.ability-card .ability-stat,
+.ability-card .ability-description {
+  width: 100% !important;
+  align-self: stretch !important;
+  text-align: left !important;
+  box-sizing: border-box;
+}
+.ability-card .ability-cost {
+  align-self: stretch !important;
+  width: 100% !important;
+  text-align: left !important;
+}
+
+/* Inline important positioning places mobile damage above VS despite legacy rules. */
+.damage-number.damage-overlay {
+  position: fixed !important;
+  left: 50%;
+  top: 30%;
+  z-index: 999999 !important;
+}
