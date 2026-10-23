@@ -2783,3 +2783,25 @@ body {
     top: 0 !important;
   }
 }
+
+
+/* Character readability: enlarge artwork without changing battlefield layout. */
+.battlefield .unit .portrait img {
+  transform: scale(1.16) !important;
+  transform-origin: center bottom;
+}
+@media (max-width: 760px) {
+  .battlefield .unit .portrait img {
+    transform: scale(1.2) !important;
+    transform-origin: center bottom;
+  }
+}
+/* Keep ability buttons reliably tappable above character cards on touch screens. */
+.move-dock {
+  z-index: 30 !important;
+  pointer-events: auto !important;
+}
+.move-dock-icon {
+  pointer-events: auto !important;
+  touch-action: manipulation;
+}
