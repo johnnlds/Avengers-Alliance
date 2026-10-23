@@ -549,6 +549,7 @@ function nextTurn() {
   }
 
   currentActor = unit;
+  pendingMoveId = null;
 
   if (unit.stunned) {
     unit.stunned = false;
