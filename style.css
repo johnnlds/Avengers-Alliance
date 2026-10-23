@@ -629,3 +629,135 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .unit.attacking.hero, .unit.attacking.enemy, .unit.taking-hit { animation-duration: 0.01ms; }
 }
+
+
+/* Selection is indicated around the name only, not the whole character. */
+.unit,
+.unit:hover:not(.dead),
+.unit.selected,
+.unit.enemy.selected {
+  border-color: transparent;
+  box-shadow: none;
+  background: transparent;
+  transform: none;
+}
+.unit-name {
+  width: fit-content;
+  max-width: 100%;
+  margin: 2px auto 4px;
+  padding: 5px 9px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.unit.selected .unit-name {
+  border-color: var(--gold);
+  background: rgba(255, 200, 87, 0.12);
+}
+.unit.enemy.selected .unit-name {
+  border-color: var(--red);
+  background: rgba(239, 83, 80, 0.14);
+}
+.unit.active-turn .unit-name {
+  text-shadow: 0 0 10px rgba(77, 163, 255, 0.9);
+}
+
+/* More readable, arcade-style combat animation effects. */
+.unit.attacking.hero { animation: hero-charge 0.72s cubic-bezier(.2,.8,.2,1); z-index: 4; }
+.unit.attacking.enemy { animation: enemy-charge 0.72s cubic-bezier(.2,.8,.2,1); z-index: 4; }
+.unit.taking-hit { animation: hit-reaction 0.65s ease-out; z-index: 5; }
+
+@keyframes hero-charge {
+  0% { transform: translateX(0) scale(1); }
+  28% { transform: translateX(22px) scale(1.08); }
+  48% { transform: translateX(34px) scale(1.12); filter: brightness(1.45); }
+  68% { transform: translateX(18px) scale(1.04); }
+  100% { transform: translateX(0) scale(1); filter: brightness(1); }
+}
+@keyframes enemy-charge {
+  0% { transform: translateX(0) scale(1); }
+  28% { transform: translateX(-22px) scale(1.08); }
+  48% { transform: translateX(-34px) scale(1.12); filter: brightness(1.45); }
+  68% { transform: translateX(-18px) scale(1.04); }
+  100% { transform: translateX(0) scale(1); filter: brightness(1); }
+}
+@keyframes hit-reaction {
+  0%, 100% { transform: translateX(0) scale(1); filter: brightness(1); }
+  15% { transform: translateX(-12px) rotate(-3deg) scale(.96); filter: brightness(2.3); }
+  32% { transform: translateX(10px) rotate(3deg); }
+  49% { transform: translateX(-7px) rotate(-2deg); filter: brightness(1.35); }
+  66% { transform: translateX(4px); }
+}
+.combat-effect {
+  position: absolute;
+  z-index: 8;
+  pointer-events: none;
+  left: 50%;
+  top: 38%;
+}
+.combat-effect.slash {
+  width: 80%;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #fff 25%, #8fe8ff 55%, #fff 75%, transparent);
+  box-shadow: 0 0 12px #63d8ff, 0 0 24px #369dff;
+  transform: translate(-50%, -50%) rotate(-35deg) scaleX(0);
+  animation: slash-strike .38s ease-out forwards;
+}
+.combat-effect.projectile {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #9ff4ff;
+  box-shadow: 0 0 8px 4px #42bfff, 0 0 24px 10px #1678ff;
+  animation: projectile-shot .5s ease-in forwards;
+}
+.combat-effect.impact-burst {
+  width: 28px;
+  height: 28px;
+  border: 4px solid #fff3a1;
+  border-radius: 50%;
+  box-shadow: 0 0 16px 5px #ff673d, inset 0 0 10px #ffb13b;
+  transform: translate(-50%, -50%) scale(.1);
+  animation: impact-pop .42s ease-out forwards;
+}
+.damage-number {
+  position: absolute;
+  z-index: 12;
+  left: 50%;
+  top: 22%;
+  color: #fff;
+  font-size: clamp(16px, 2vw, 25px);
+  font-weight: 900;
+  letter-spacing: .5px;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 2px 3px #000, 0 0 10px #ff382d;
+  animation: damage-rise .9s ease-out forwards;
+}
+.damage-number.critical { color: #ffe36e; font-size: clamp(20px, 2.4vw, 30px); }
+.damage-number.miss-number { color: #b9e5ff; text-shadow: 0 2px 3px #000, 0 0 10px #399dff; }
+@keyframes slash-strike {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-35deg) scaleX(0); }
+  25% { opacity: 1; transform: translate(-50%, -50%) rotate(-35deg) scaleX(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(-35deg) scaleX(.5) translateY(-16px); }
+}
+@keyframes projectile-shot {
+  0% { opacity: 0; transform: translate(-50%, -50%) translateX(-22px) scale(.5); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) translateX(90px) scale(1.35); }
+}
+@keyframes impact-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.1); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.8); }
+}
+@keyframes damage-rise {
+  0% { opacity: 0; transform: translate(-50%, 10px) scale(.7); }
+  18% { opacity: 1; transform: translate(-50%, -4px) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -42px) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .unit.attacking.hero, .unit.attacking.enemy, .unit.taking-hit,
+  .combat-effect, .damage-number { animation-duration: .01ms !important; }
+}
