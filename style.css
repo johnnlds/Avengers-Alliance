@@ -1597,3 +1597,10 @@ button:focus-visible {
   .team-roster { grid-template-columns: 1fr !important; }
   .roster-row { grid-template-columns: minmax(84px, .7fr) minmax(0, 1.3fr) !important; }
 }
+
+
+/* Fixed viewport overlay keeps damage feedback visible on narrow mobile screens. */
+.damage-number.damage-overlay { position: fixed !important; z-index: 99999 !important; display: block !important; width: max-content !important; max-width: calc(100vw - 16px) !important; left: 50%; right: auto !important; top: 30%; transform: translate(-50%, 0); margin: 0; padding: 2px 5px; border-radius: 5px; color: #fff; font-size: clamp(22px, 5vw, 36px) !important; line-height: 1.1 !important; font-weight: 900 !important; text-align: center; white-space: nowrap; pointer-events: none; text-shadow: 0 2px 5px #000, 0 0 10px #ff382d; animation: damage-overlay-rise 950ms ease-out forwards !important; }
+.damage-number.damage-overlay.critical { color: #ffe34d !important; }
+.damage-number.damage-overlay.miss-number { color: #fff !important; text-shadow: 0 2px 5px #000, 0 0 10px rgba(255,255,255,.7) !important; }
+@keyframes damage-overlay-rise { 0% { opacity: 0; transform: translate(-50%, 8px) scale(.75); } 18% { opacity: 1; transform: translate(-50%, -3px) scale(1.12); } 100% { opacity: 0; transform: translate(-50%, -38px) scale(1); } }
