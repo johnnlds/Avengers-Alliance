@@ -375,8 +375,8 @@ function renderTeam(containerId, units) {
       unit.team === "enemy" && unit.alive && !!pendingMoveId ? "pending-target" : "",
       animatingActorId === unit.id ? "attacking" : "",
       animatingActorId === unit.id && animatingMoveId ? `attack-${getMove(animatingMoveId)?.attackType || "unarmed-melee"}` : "",
-    animatingActorId === unit.id && animatingMode === "sweep" ? "attack-sweep" : "",
-    animatingActorId === unit.id && animatingMode === "buff" ? "attack-buff" : "",
+      animatingActorId === unit.id && animatingMode === "sweep" ? "attack-sweep" : "",
+      animatingActorId === unit.id && animatingMode === "buff" ? "attack-buff" : "",
       animatingTargetId === unit.id ? "taking-hit" : "",
       !unit.alive ? "dead" : ""
     ].filter(Boolean).join(" ");
@@ -766,7 +766,7 @@ function applyCombatAnimationPath() {
   const dy = (targetRect.top + targetRect.height / 2) - (actorRect.top + actorRect.height / 2);
   const distance = Math.hypot(dx, dy) || 1;
   // Move toward the target but stop short so the portraits never cover one another completely.
-  const move = MOVE_DATA.find(m => m.id === animatingMoveId);
+  const move = getMove(animatingMoveId);
   const isMelee = !move || !["ranged-gun","buff"].includes(move.attackType);
   const travel = isMelee ? Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70))) : 0;
   const x = dx / distance * travel;
@@ -789,7 +789,6 @@ function applyCombatAnimationPath() {
     actorCard.style.setProperty("--attack-x", `${x}px`);
     actorCard.style.setProperty("--attack-y", `${y}px`);
   }
-  actorCard.style.setProperty("--attack-y", `${y}px`);
   actorCard.style.setProperty("--target-x", `${dx}px`);
   actorCard.style.setProperty("--target-y", `${dy}px`);
 }
@@ -849,8 +848,9 @@ function useMove(moveId, chosenTarget = null) {
   if ((actor.cooldowns[move.id] || 0) > 0) { log(`${move.name} is still on cooldown.`, "miss"); return; }
 
   const targetTeam = move.target === "ally" ? heroes : enemies;
-  const target = chosenTarget && chosenTarget.alive && targetTeam.some(unit => unit.id === chosenTarget.id)
-    ? chosenTarget : targetTeam.find(unit => unit.id === selectedTargetId && unit.alive);
+  const requiresTarget = ["enemy","ally"].includes(move.target);
+  const target = !requiresTarget ? null : (chosenTarget && chosenTarget.alive && targetTeam.some(unit => unit.id === chosenTarget.id)
+    ? chosenTarget : targetTeam.find(unit => unit.id === selectedTargetId && unit.alive));
   if (["enemy","ally"].includes(move.target) && !target) {
     log(move.target === "ally" ? "Select a living ally first." : "Select a living enemy first.", "miss");
     return;
@@ -922,6 +922,11 @@ function performAttack(actor, target, move) {
       log(`${move.name} misses ${target.name}!`, "miss");
       showDamageNumber(target, 0, false, true, 80 + (hitNumber - 1) * 480);
       continue;
+    }
+    if (target.protectedUntilAttack) {
+      target.protectedUntilAttack = false;
+      log(`${target.name} is protected by S.H.I.E.L.D and takes no damage!`, "good");
+      break;
     }
     const damage = calculateDamage(actor, target, move);
     target.hp = Math.max(0, target.hp - damage.amount);
