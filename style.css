@@ -3632,3 +3632,64 @@ body {
   .move-dock-stats { padding: 2px !important; gap: 2px !important; }
   .move-dock-stats > span { font-size: 6.5px !important; }
 }
+
+
+/* Stack move stats in a single column under a centered attack name. */
+@media (max-width: 760px) {
+  .move-dock-name {
+    top: 4px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 8px) !important;
+    text-align: center !important;
+    font-size: clamp(7px, 2.3vw, 10px) !important;
+    line-height: 1.08 !important;
+  }
+  .move-dock-stats {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 2px !important;
+    position: absolute !important;
+    top: 29% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 3px !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 5px !important;
+    box-sizing: border-box !important;
+  }
+  .move-dock-stats > span {
+    position: static !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: baseline !important;
+    justify-content: flex-end !important;
+    gap: 3px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    font-size: clamp(7px, 2.25vw, 10px) !important;
+    line-height: 1.05 !important;
+    text-align: right !important;
+  }
+  .move-dock-stats .move-stat-label {
+    display: inline !important;
+    font-size: 1em !important;
+  }
+  .move-dock-stats .move-stat-value {
+    display: inline !important;
+    font-size: 1.05em !important;
+    font-weight: 900 !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock-stats {
+    top: 28% !important;
+    padding: 0 3px !important;
+    gap: 2px !important;
+  }
+  .move-dock-stats > span { font-size: 7px !important; }
+}
