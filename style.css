@@ -2824,3 +2824,78 @@ body {
     transform-origin: center bottom !important;
   }
 }
+
+
+/* Mobile ability list: full-width, equal-sized rows with readable move stats. */
+@media (max-width: 760px) {
+  .move-dock {
+    box-sizing: border-box !important;
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-rows: 43px !important;
+    gap: 5px !important;
+    padding: 5px !important;
+    margin: 4px auto 8px !important;
+    border-radius: 8px !important;
+  }
+  .move-dock-icon {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 43px !important;
+    padding: 4px 10px !important;
+    text-align: left !important;
+    border-radius: 5px !important;
+  }
+  .move-dock-glyph {
+    display: flex !important;
+    flex: 0 0 28px !important;
+    width: 28px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 22px !important;
+  }
+  .move-dock-details {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    line-height: 1.1 !important;
+  }
+  .move-dock-name {
+    display: block !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+  }
+  .move-dock-stats {
+    display: block !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    color: #d5e1ee !important;
+    white-space: nowrap !important;
+    letter-spacing: -.1px !important;
+  }
+  .move-dock-cost { display: none !important; }
+}
+@media (max-width: 380px) {
+  .move-dock {
+    width: calc(100vw - 12px) !important;
+    max-width: calc(100vw - 12px) !important;
+    grid-auto-rows: 42px !important;
+    gap: 4px !important;
+  }
+  .move-dock-icon { height: 42px !important; padding: 3px 7px !important; gap: 7px !important; }
+  .move-dock-glyph { flex-basis: 25px !important; width: 25px !important; font-size: 20px !important; }
+  .move-dock-name { font-size: 10px !important; }
+  .move-dock-stats { font-size: 8px !important; letter-spacing: -.2px !important; }
+}
