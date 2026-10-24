@@ -4543,3 +4543,11 @@ body {
 .move-dock-icon small {
   transform: translateY(3px) !important;
 }
+
+
+/* Match the second, third, and fourth move-button outlines to the first. */
+.move-dock-icon:nth-child(2),
+.move-dock-icon:nth-child(3),
+.move-dock-icon:nth-child(4) {
+  border-color: #617b95 !important;
+}
