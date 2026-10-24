@@ -91,6 +91,7 @@ function render() {
   startButton.disabled = selected.size === 0;
 }
 document.getElementById("selectAllBtn").addEventListener("click", () => {
+  selected.clear();
   HEROES.slice(0, 3).forEach(hero => selected.add(hero.id));
   error.textContent = "";
   render();
