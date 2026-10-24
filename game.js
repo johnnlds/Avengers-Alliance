@@ -392,6 +392,7 @@ function renderTeam(containerId, units) {
       unit.team,
       isSelected ? "selected" : "",
       isActive ? "active-turn" : "",
+      unit.team === "enemy" && unit.alive && !!pendingMoveId ? "pending-target" : "",
       animatingActorId === unit.id ? "attacking" : "",
       animatingActorId === unit.id && animatingMoveId ? `attack-${MOVE_DATA.find(m => m.id === animatingMoveId)?.attackType || "unarmed-melee"}` : "",
       animatingTargetId === unit.id ? "taking-hit" : "",
