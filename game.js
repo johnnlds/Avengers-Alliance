@@ -310,7 +310,7 @@ function renderRoster() {
       hpTrack.appendChild(hpFill);
       const hpValue = document.createElement("span");
       hpValue.className = "roster-value";
-      hpValue.textContent = `${Math.ceil(unit.hp)}/${unit.maxHp}`;
+      hpValue.textContent = `${Math.ceil(unit.hp)}`;
       hpLine.append(hpLabel, hpTrack, hpValue);
 
       const staLine = document.createElement("div");
@@ -326,7 +326,7 @@ function renderRoster() {
       staTrack.appendChild(staFill);
       const staValue = document.createElement("span");
       staValue.className = "roster-value";
-      staValue.textContent = `${Math.floor(unit.sta)}/${unit.maxSta}`;
+      staValue.textContent = `${Math.floor(unit.sta)}`;
       staLine.append(staLabel, staTrack, staValue);
 
       vitals.append(hpLine, staLine);
