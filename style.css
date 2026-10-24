@@ -4283,3 +4283,19 @@ body {
     height: 6px !important;
   }
 }
+
+
+/* Keep character art in front of the overlapping nameplate and resource bars without moving either. */
+.battlefield .unit .portrait {
+  position: relative !important;
+  z-index: 10 !important;
+}
+.battlefield .unit .portrait img {
+  position: relative !important;
+  z-index: 11 !important;
+}
+.battlefield .unit .unit-name,
+.battlefield .unit .battle-unit-hp,
+.battlefield .unit .battle-unit-sta {
+  z-index: 5 !important;
+}
