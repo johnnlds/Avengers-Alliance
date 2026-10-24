@@ -487,8 +487,8 @@ function renderMoveDock() {
     const statValues = [
       ["move-stat-damage", damage],
       ["move-stat-stamina", String(move.cost)],
-      ["move-stat-accuracy", String(move.accuracy)],
-      ["move-stat-crit", String(move.crit)]
+      ["move-stat-accuracy", `${move.accuracy}%`],
+      ["move-stat-crit", `${move.crit}%`]
     ];
     for (const [className, value] of statValues) {
       const stat = document.createElement("span");
