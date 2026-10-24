@@ -390,7 +390,74 @@ function setCharacterImage(img, imageName) {
    RENDERING
    ========================================= */
 
+
+function renderBuffsDebuffs() {
+  const root = $("buffsDebuffsList");
+  if (!root) return;
+  root.innerHTML = "";
+
+  const activeUnits = [...heroes, ...enemies].filter(unit => unit.alive);
+  let count = 0;
+  for (const unit of activeUnits) {
+    const effects = [];
+    if (unit.damageBoost > 0) effects.push({
+      type: "buff",
+      name: "Pep Talk",
+      description: `Damage increased by ${Math.ceil(unit.damageBoost * 100)}% for their next attack.`
+    });
+    if (unit.protectedUntilAttack) effects.push({
+      type: "buff",
+      name: "S.H.I.E.L.D",
+      description: "Blocks the next incoming attack completely, then protection wears off."
+    });
+    if (unit.stunPrimed) effects.push({
+      type: "buff",
+      name: "Stun ready",
+      description: "Their next attack has a 75% chance to stun the target and make them lose their next action."
+    });
+    if (unit.attackDebuffTurns > 0) effects.push({
+      type: "debuff",
+      name: "Attack reduced",
+      description: "Attack is reduced by 50% until this character takes their next action."
+    });
+    if (unit.stunned) effects.push({
+      type: "debuff",
+      name: "Stunned",
+      description: "This character loses their next action."
+    });
+    if (!effects.length) continue;
+
+    const character = document.createElement("div");
+    character.className = "buffs-debuffs-character";
+    const name = document.createElement("strong");
+    name.className = "buffs-debuffs-name";
+    name.textContent = unit.name + (unit.team === "enemy" ? " (Enemy)" : "");
+    character.appendChild(name);
+
+    for (const effect of effects) {
+      const item = document.createElement("div");
+      item.className = `buffs-debuffs-effect ${effect.type}`;
+      const title = document.createElement("strong");
+      title.textContent = `${effect.type === "buff" ? "+" : "−"} ${effect.name}`;
+      const description = document.createElement("span");
+      description.textContent = effect.description;
+      item.append(title, description);
+      character.appendChild(item);
+    }
+    root.appendChild(character);
+    count++;
+  }
+
+  if (!count) {
+    const empty = document.createElement("p");
+    empty.className = "buffs-debuffs-empty";
+    empty.textContent = "No active buffs or debuffs.";
+    root.appendChild(empty);
+  }
+}
+
 function renderAll() {
+  renderBuffsDebuffs();
   renderTeam("heroTeam", heroes);
   renderTeam("enemyTeam", enemies);
   renderRoster();
