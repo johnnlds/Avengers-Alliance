@@ -3019,3 +3019,42 @@ body {
     text-align: left !important;
   }
 }
+
+
+/* Make mobile ability buttons square and improve text readability. */
+@media (max-width: 760px) {
+  .move-dock {
+    grid-auto-rows: calc((100vw - 36px) / 4) !important;
+  }
+  .move-dock-icon {
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    justify-content: flex-start !important;
+    padding: 6px 5px !important;
+    gap: 4px !important;
+  }
+  .move-dock-glyph {
+    font-size: 18px !important;
+  }
+  .move-dock-name {
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+  .move-dock-stats {
+    font-size: 8px !important;
+    line-height: 1.2 !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock {
+    grid-auto-rows: calc((100vw - 33px) / 4) !important;
+  }
+  .move-dock-icon {
+    padding: 4px 3px !important;
+    gap: 3px !important;
+  }
+  .move-dock-glyph { font-size: 15px !important; }
+  .move-dock-name { font-size: 8px !important; }
+  .move-dock-stats { font-size: 7px !important; }
+}
