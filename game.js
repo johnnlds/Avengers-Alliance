@@ -444,6 +444,7 @@ function renderTurnOrder() {
 
 function renderTeam(containerId, units) {
   const container = $(containerId);
+  container.dataset.count = String(units.length);
   container.innerHTML = "";
 
   for (const unit of units) {
