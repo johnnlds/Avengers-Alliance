@@ -233,7 +233,17 @@ function resetBattle() {
     announcement.classList.remove("wave-announcement-show");
   }
   wave = 1;
-  heroes = HERO_TEMPLATES.map(createUnit);
+  let selectedHeroIds = null;
+  try {
+    const savedSelection = JSON.parse(localStorage.getItem("avengersAllianceSelectedHeroes") || "null");
+    if (Array.isArray(savedSelection)) {
+      selectedHeroIds = savedSelection.filter(id => HERO_TEMPLATES.some(hero => hero.id === id));
+    }
+  } catch (_) {
+    selectedHeroIds = null;
+  }
+  if (!selectedHeroIds || selectedHeroIds.length === 0) selectedHeroIds = HERO_TEMPLATES.map(hero => hero.id);
+  heroes = HERO_TEMPLATES.filter(hero => selectedHeroIds.includes(hero.id)).map(createUnit);
   enemies = createWaveEnemies();
 
   round = 1;
@@ -273,7 +283,7 @@ function setCharacterImage(img, imageName) {
   const savedExtension = imageExtensions[imageName];
 
   if (savedExtension) {
-    img.src = `assets/${imageName}${savedExtension}`;
+    img.src = `../assets/${imageName}${savedExtension}`;
     return;
   }
 
@@ -297,7 +307,7 @@ function setCharacterImage(img, imageName) {
     }
 
     const extension = extensions[attempt++];
-    img.src = `assets/${encodeURIComponent(imageName)}${extension}`;
+    img.src = `../assets/${encodeURIComponent(imageName)}${extension}`;
   }
 
   img.onerror = tryNextExtension;
@@ -341,7 +351,7 @@ function renderRoster() {
     const heading = document.createElement("h3");
     heading.textContent = teamName;
     group.appendChild(heading);
-    for (const unit of [units[0], units[2], units[1]]) {
+    for (const unit of [units[0], units[2], units[1]].filter(Boolean)) {
       const row = document.createElement("div");
       row.className = "roster-row" + (!unit.alive ? " defeated" : "") + (currentActor?.id === unit.id ? " roster-active" : "");
       const name = document.createElement("span");
