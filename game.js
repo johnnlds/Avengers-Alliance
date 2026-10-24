@@ -616,6 +616,81 @@ function renderTeam(containerId, units) {
     } else if (unit.team === "enemy") card.append(portrait, name, hpBar, status);
     else card.append(portrait, name, status);
 
+    // Show compact, clickable indicators for any active buffs and debuffs.
+    const buffs = [];
+    const debuffs = [];
+    if (unit.damageBoost > 0) buffs.push({
+      name: "Pep Talk",
+      description: `Damage increased by ${Math.ceil(unit.damageBoost * 100)}% for the next attack.`
+    });
+    if (unit.protectedUntilAttack) buffs.push({
+      name: "S.H.I.E.L.D",
+      description: "Blocks the next incoming attack completely, then the protection wears off."
+    });
+    if (unit.stunPrimed) buffs.push({
+      name: "Stun ready",
+      description: "The next attack has a 75% chance to stun its target, making them lose their next action."
+    });
+    if (unit.attackDebuffTurns > 0) debuffs.push({
+      name: "Attack reduced",
+      description: "Attack is reduced by 50% until this character takes their next action."
+    });
+    if (unit.stunned) debuffs.push({
+      name: "Stunned",
+      description: "This character loses their next action."
+    });
+
+    if (buffs.length || debuffs.length) {
+      const indicators = document.createElement("div");
+      indicators.className = "unit-effect-indicators";
+      const details = document.createElement("div");
+      details.className = "unit-effect-details hidden";
+      details.setAttribute("aria-live", "polite");
+
+      const makeIndicator = (kind, symbol, label, effects) => {
+        if (!effects.length) return;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `unit-effect-indicator ${kind}`;
+        button.textContent = symbol;
+        button.setAttribute("aria-label", `Show ${label.toLowerCase()} on ${unit.name}`);
+        button.setAttribute("aria-expanded", "false");
+        button.title = `Show ${label.toLowerCase()}`;
+        button.addEventListener("click", event => {
+          event.stopPropagation();
+          const alreadyShowing = !details.classList.contains("hidden") && details.dataset.kind === kind;
+          details.replaceChildren();
+          indicators.querySelectorAll("button").forEach(item => item.setAttribute("aria-expanded", "false"));
+          if (alreadyShowing) {
+            details.classList.add("hidden");
+            delete details.dataset.kind;
+            return;
+          }
+          const heading = document.createElement("div");
+          heading.className = `unit-effect-heading ${kind}`;
+          heading.textContent = label;
+          details.appendChild(heading);
+          for (const effect of effects) {
+            const item = document.createElement("div");
+            item.className = "unit-effect-item";
+            const effectName = document.createElement("strong");
+            effectName.textContent = effect.name;
+            const description = document.createElement("span");
+            description.textContent = effect.description;
+            item.append(effectName, description);
+            details.appendChild(item);
+          }
+          details.dataset.kind = kind;
+          details.classList.remove("hidden");
+          button.setAttribute("aria-expanded", "true");
+        });
+        indicators.appendChild(button);
+      };
+      makeIndicator("buff", "+", "Buffs", buffs);
+      makeIndicator("debuff", "−", "Debuffs", debuffs);
+      card.append(indicators, details);
+    }
+
     card.addEventListener("click", () => selectUnit(unit));
     card.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") {
