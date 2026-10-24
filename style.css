@@ -3126,3 +3126,28 @@ body {
   .move-dock-stats,
   .move-dock-stats > span { font-size: 8px !important; }
 }
+
+
+/* Make the four corner stats the dominant elements in each square ability tile. */
+@media (max-width: 760px) {
+  .move-dock-details {
+    gap: 5px !important;
+  }
+  .move-dock-stats {
+    flex: 1 1 auto !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 2px 4px !important;
+  }
+  .move-dock-stats > span {
+    font-size: clamp(15px, 4.4vw, 22px) !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.4px !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock-stats > span {
+    font-size: clamp(13px, 4.1vw, 17px) !important;
+  }
+}
