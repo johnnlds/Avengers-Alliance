@@ -3455,3 +3455,26 @@ body {
   .move-dock-stats { padding: 2px !important; }
   .move-dock-stats > span { font-size: 9px !important; }
 }
+
+
+/* Latest positioning tweak: lower the second-row characters and pin move stats tighter to tile corners. */
+.battlefield .unit:nth-child(2) {
+  transform: translateY(-14px) !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit:nth-child(2) {
+    transform: translateY(-10px) !important;
+  }
+  .move-dock-stats {
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  .move-dock-stats > span {
+    line-height: 1 !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock-stats {
+    padding: 0 !important;
+  }
+}
