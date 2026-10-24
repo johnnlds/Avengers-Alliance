@@ -3867,3 +3867,30 @@ body {
     transform: scale(0.92) !important;
   }
 }
+
+
+/* Comparison layout: duplicate-style team vitals stacked vertically. */
+#teamRoster {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+#teamRoster .roster-group {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  width: 100% !important;
+}
+#teamRoster .roster-group + .roster-group {
+  border-top: 1px solid rgba(255,255,255,.14) !important;
+  padding-top: 6px !important;
+}
+@media (max-width: 760px) {
+  #teamRoster {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 7px !important;
+  }
+  #teamRoster .roster-group {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
