@@ -3693,3 +3693,23 @@ body {
   }
   .move-dock-stats > span { font-size: 7px !important; }
 }
+
+
+/* Push the stat stack flush to the right edge below the centered attack name. */
+@media (max-width: 760px) {
+  .move-dock-stats {
+    left: auto !important;
+    right: 0 !important;
+    width: max-content !important;
+    min-width: 0 !important;
+    padding: 0 2px 0 0 !important;
+    align-items: flex-end !important;
+  }
+  .move-dock-stats > span {
+    width: max-content !important;
+    max-width: none !important;
+    align-self: flex-end !important;
+    justify-content: flex-end !important;
+    text-align: right !important;
+  }
+}
