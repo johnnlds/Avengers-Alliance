@@ -652,7 +652,11 @@ function startRound() {
   initiative = [...heroes, ...enemies]
     .filter(unit => unit.alive)
     .map((unit, index) => ({ id: unit.id, evasion: unit.eva, index }))
-    .sort((a, b) => b.evasion - a.evasion || a.index - b.index)
+    .sort((a, b) => {
+      const evasionDifference = b.evasion - a.evasion;
+      // Higher evasion acts first; equal evasion is broken randomly.
+      return evasionDifference || (Math.random() < 0.5 ? -1 : 1);
+    })
     .map(item => item.id);
 
   turnIndex = 0;
