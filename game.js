@@ -741,6 +741,7 @@ function openEffectsInfo(unitName, buffs, debuffs) {
 
 function closeEffectsInfo() {
   $("effectsInfoOverlay").classList.add("hidden");
+  // Closing the details window must not alter any active effect or its marker.
 }
 
 function moveIconGlyph(moveId) {
