@@ -12,7 +12,7 @@ h1 { margin:0; font-size:clamp(30px,6vw,54px); letter-spacing:2px; } h1 span { c
 h2 { margin:0; font-size:clamp(22px,4vw,30px); }
 .selection-count { margin:0; padding:8px 12px; border:1px solid #a17b2e; border-radius:6px; color:var(--gold); font-weight:800; white-space:nowrap; }
 .instructions { margin:12px 0 20px; color:var(--muted); font-size:14px; }
-.character-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.character-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
 .character-card { min-width:0; padding:0; overflow:hidden; text-align:left; color:var(--text); background:#131d2a; border:2px solid #34465b; border-radius:10px; cursor:pointer; transition:border-color .16s,transform .16s,background .16s; }
 .character-card:hover { transform:translateY(-3px); background:#1a293a; } .character-card.selected { border-color:var(--gold); box-shadow:0 0 0 1px #ffc85755,0 8px 25px #0003; }
 .character-art { height:220px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; background:linear-gradient(180deg,#263a50,#111a27); }
@@ -21,7 +21,7 @@ h2 { margin:0; font-size:clamp(22px,4vw,30px); }
 .character-content { padding:15px; } .character-content h3 { margin:0; font-size:19px; }
 .character-role { margin:5px 0 10px; color:var(--blue); font-size:12px; font-weight:700; }
 .character-description { min-height:56px; margin:0 0 13px; color:#c3ceda; font-size:13px; line-height:1.45; }
-.character-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; padding:10px 0; border-top:1px solid #34465b; border-bottom:1px solid #34465b; }
+.character-stats { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:4px; padding:10px 0; border-top:1px solid #34465b; border-bottom:1px solid #34465b; }
 .character-stats span { display:grid; gap:3px; text-align:center; } .character-stats small { color:var(--muted); font-size:9px; font-weight:800; } .character-stats b { font-size:14px; }
 .selection-badge { display:block; margin-top:13px; color:var(--muted); font-size:10px; font-weight:900; letter-spacing:1px; } .character-card.selected .selection-badge { color:var(--gold); }
 .selection-error { min-height:18px; margin:10px 0 0; color:#ff8585; font-size:13px; }
