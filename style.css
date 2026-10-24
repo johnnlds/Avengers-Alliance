@@ -5950,3 +5950,36 @@ body {
     grid-template-columns: 24px minmax(0, 1fr) 40px !important;
   }
 }
+
+
+/* Keep the hero roster on the left and the enemy roster on the right, including mobile. */
+#teamRoster.team-roster {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 10px !important;
+}
+#teamRoster .roster-group {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+@media (max-width: 520px) {
+  #teamRoster.team-roster {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+  #teamRoster .roster-row,
+  #teamRoster .roster-row:not(.roster-active) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 3px !important;
+  }
+  #teamRoster .roster-name {
+    font-size: 9px !important;
+  }
+  #teamRoster .roster-vital-line,
+  #teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+    grid-template-columns: 20px minmax(0, 1fr) 30px !important;
+    column-gap: 3px !important;
+  }
+  #teamRoster .roster-value { font-size: 7px !important; }
+}
