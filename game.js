@@ -459,6 +459,7 @@ function renderTeam(containerId, units) {
     status.textContent = statuses.join(" • ");
 
     if (unit.team === "hero" && isActive) card.append(name, hpBar, staBar, portrait, status);
+    else if (unit.team === "enemy") card.append(portrait, name, hpBar, status);
     else card.append(portrait, name, status);
 
     card.addEventListener("click", () => selectUnit(unit));
