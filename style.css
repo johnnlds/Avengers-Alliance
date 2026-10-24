@@ -4029,3 +4029,26 @@ body {
 #teamRoster .roster-group:last-child .roster-vital-line:nth-child(2) {
   display: none !important;
 }
+
+
+/* Final roster refinement: remove headings and evenly distribute enemy HP rows. */
+#teamRoster .roster-group h3 {
+  display: none !important;
+}
+#teamRoster .roster-group:last-child {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-evenly !important;
+  align-self: stretch !important;
+  min-height: 100% !important;
+}
+#teamRoster .roster-group:first-child,
+#teamRoster .roster-group:last-child {
+  box-sizing: border-box !important;
+  align-self: stretch !important;
+}
+#teamRoster .roster-group:last-child .roster-row {
+  flex: 1 1 0 !important;
+  display: grid !important;
+  align-content: center !important;
+}
