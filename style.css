@@ -3189,3 +3189,60 @@ body {
     padding: 3px 6px 6px !important;
   }
 }
+
+
+/* Compact battlefield and overlap the lower back-line character with the upper one. */
+.battlefield {
+  height: 40svh !important;
+  min-height: 0 !important;
+  max-height: 40svh !important;
+  flex: 0 0 40svh !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+.battle-divider { display: none !important; }
+.battlefield .battle-side {
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+.battlefield .team-grid {
+  min-height: 0 !important;
+  grid-template-rows: auto auto !important;
+  row-gap: 0 !important;
+  overflow: visible !important;
+  transform: translateY(0) !important;
+}
+.battlefield .unit {
+  position: relative !important;
+  overflow: visible !important;
+}
+.battlefield .unit:nth-child(1) { z-index: 1 !important; }
+.battlefield .unit:nth-child(2) {
+  z-index: 2 !important;
+  transform: translateY(-24px) !important;
+}
+.battlefield .unit:nth-child(3) { z-index: 3 !important; }
+.battlefield .unit .portrait img {
+  transform: scale(1.34) !important;
+  transform-origin: center bottom !important;
+}
+@media (max-width: 760px) {
+  .battlefield {
+    height: 40svh !important;
+    min-height: 0 !important;
+    max-height: 40svh !important;
+    flex: 0 0 40svh !important;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+  }
+  .battlefield .portrait {
+    height: clamp(90px, 15vw, 170px) !important;
+  }
+  .battlefield .unit:nth-child(2) {
+    transform: translateY(-20px) !important;
+  }
+  .battlefield .unit .portrait img {
+    transform: scale(1.42) !important;
+    transform-origin: center bottom !important;
+  }
+}
