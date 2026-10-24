@@ -677,10 +677,14 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    // Keep the nameplate and health visible for every unit. Heroes also show stamina;
-    // enemies do not use stamina, so their cards omit that bar entirely.
-    if (unit.team === "hero") card.append(name, hpBar, staBar, portrait, status);
-    else card.append(name, hpBar, portrait, status);
+    // Only create overhead nameplates and bars for the current actor.
+    // This is enforced in the DOM, not just CSS, so legacy styles cannot reveal them.
+    if (isActive) {
+      if (unit.team === "hero") card.append(name, hpBar, staBar, portrait, status);
+      else card.append(name, hpBar, portrait, status);
+    } else {
+      card.append(portrait, status);
+    }
 
     // Active effects are shown only on the unit that actually has them.
     const buffs = [];
