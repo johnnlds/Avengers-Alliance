@@ -3894,3 +3894,103 @@ body {
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+
+/* Return HP/STA comparison to side-by-side teams, with thicker team-colored bars. */
+#teamRoster {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: start !important;
+  gap: 5px !important;
+  padding: 4px !important;
+}
+#teamRoster .roster-group {
+  display: block !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+#teamRoster .roster-group + .roster-group {
+  border-top: 0 !important;
+  border-left: 1px solid rgba(255,255,255,.13) !important;
+  padding-top: 0 !important;
+  padding-left: 5px !important;
+}
+#teamRoster .roster-group h3 {
+  margin: 0 0 2px !important;
+  font-size: 9px !important;
+  line-height: 1.1 !important;
+}
+#teamRoster .roster-row {
+  grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr) !important;
+  gap: 3px !important;
+  padding: 1px 0 !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+}
+#teamRoster .roster-name {
+  overflow-wrap: anywhere !important;
+  font-size: 9px !important;
+}
+#teamRoster .roster-vitals {
+  gap: 1px !important;
+  min-width: 0 !important;
+}
+#teamRoster .roster-vital-line {
+  grid-template-columns: 18px minmax(0, 1fr) auto !important;
+  gap: 2px !important;
+}
+#teamRoster .roster-bar {
+  height: 10px !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+  background: rgba(0,0,0,.7) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+}
+#teamRoster .roster-bar-fill {
+  height: 100% !important;
+  border-radius: 2px !important;
+  transition: width .2s ease !important;
+}
+#teamRoster .roster-group:first-child .roster-bar-fill {
+  background: linear-gradient(180deg, #62c5ff 0%, #0878e8 55%, #0750a8 100%) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.35) !important;
+}
+#teamRoster .roster-group:last-child .roster-bar-fill {
+  background: linear-gradient(180deg, #ff7379 0%, #ef263b 55%, #a80e24 100%) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.3) !important;
+}
+#teamRoster .roster-value {
+  min-width: 25px !important;
+  font-size: 7px !important;
+}
+@media (max-width: 760px) {
+  #teamRoster {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    padding: 3px !important;
+  }
+  #teamRoster .roster-group + .roster-group {
+    border-left: 1px solid rgba(255,255,255,.13) !important;
+    padding-left: 4px !important;
+  }
+  #teamRoster .roster-group h3 {
+    font-size: 8px !important;
+    margin-bottom: 2px !important;
+  }
+  #teamRoster .roster-row {
+    grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr) !important;
+    gap: 2px !important;
+    padding: 1px 0 !important;
+  }
+  #teamRoster .roster-name { font-size: 8px !important; }
+  #teamRoster .roster-vital-line {
+    grid-template-columns: 15px minmax(0, 1fr) auto !important;
+    gap: 1px !important;
+  }
+  #teamRoster .roster-bar { height: 9px !important; }
+  #teamRoster .roster-value {
+    min-width: 22px !important;
+    font-size: 6px !important;
+  }
+}
