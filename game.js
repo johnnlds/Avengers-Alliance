@@ -523,8 +523,13 @@ function renderRoster() {
       staValue.textContent = `${Math.ceil(unit.sta)}`;
       staLine.append(staLabel, staTrack, staValue);
 
-      vitals.append(hpLine, staLine);
-      row.append(name, vitals);
+      // Keep the roster compact: only the active fighter gets roster vitals.
+      if (currentActor?.id === unit.id) {
+        vitals.append(hpLine, staLine);
+        row.append(name, vitals);
+      } else {
+        row.append(name);
+      }
       group.appendChild(row);
     }
     root.appendChild(group);
@@ -677,11 +682,16 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    // Only create overhead nameplates and bars for the current actor.
-    // This is enforced in the DOM, not just CSS, so legacy styles cannot reveal them.
+    // Show overhead vitals for the active fighter. When a hero selects an
+    // enemy-targeting attack, show enemy HP bars so the player can preview damage.
+    const attackTargetsEnemies = !!pendingMove && pendingMove.type === "attack" &&
+      ["enemy", "all-enemies"].includes(pendingMove.target);
+    const showEnemyHealth = unit.team === "enemy" && unit.alive && attackTargetsEnemies;
     if (isActive) {
       if (unit.team === "hero") card.append(name, hpBar, staBar, portrait, status);
       else card.append(name, hpBar, portrait, status);
+    } else if (showEnemyHealth) {
+      card.append(hpBar, portrait, status);
     } else {
       card.append(portrait, status);
     }
