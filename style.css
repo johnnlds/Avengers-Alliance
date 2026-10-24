@@ -6469,3 +6469,29 @@ body {
   text-align: center !important;
   transform: translateY(2px) !important;
 }
+
+
+/* Precisely center move names inside each button, independent of inherited flex sizing. */
+#moveDock .move-dock-icon {
+  position: relative !important;
+}
+#moveDock .move-dock-icon .move-dock-details {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#moveDock .move-dock-icon .move-dock-name {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 0 2px !important;
+  text-align: center !important;
+  transform: translate(-50%, calc(-50% + 2px)) !important;
+}
