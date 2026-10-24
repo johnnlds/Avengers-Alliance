@@ -3569,3 +3569,21 @@ body {
     gap: 1px !important;
   }
 }
+
+
+/* Slightly enlarge move stat icons and values for easier mobile reading. */
+@media (max-width: 760px) {
+  .move-dock-stats > span {
+    font-size: clamp(10px, 3vw, 14px) !important;
+    gap: 3px !important;
+  }
+  .move-dock-stats .move-stat-glyph {
+    font-size: 1em !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock-stats > span {
+    font-size: 9px !important;
+    gap: 2px !important;
+  }
+}
