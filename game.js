@@ -485,22 +485,21 @@ function renderMoveDock() {
     moveStats.className = "move-dock-stats";
     const damage = move.damage > 0 ? String(Math.round(move.damage)) : "0";
     const statValues = [
-      ["move-stat-damage", "⚔", damage],
-      ["move-stat-stamina", "⚡", String(Math.round(move.cost))],
-      ["move-stat-accuracy", "🎯", `${Math.round(move.accuracy)}%`],
-      ["move-stat-crit", "✦", `${Math.round(move.crit)}%`]
+      ["move-stat-damage", "Damage", damage],
+      ["move-stat-stamina", "Stamina:", String(Math.round(move.cost))],
+      ["move-stat-accuracy", "Accuracy:", `${Math.round(move.accuracy)}%`],
+      ["move-stat-crit", "Crit:", `${Math.round(move.crit)}%`]
     ];
-    for (const [className, glyph, value] of statValues) {
+    for (const [className, labelText, value] of statValues) {
       const stat = document.createElement("span");
       stat.className = className;
-      const icon = document.createElement("span");
-      icon.className = "move-stat-glyph";
-      icon.setAttribute("aria-hidden", "true");
-      icon.textContent = glyph;
+      const label = document.createElement("span");
+      label.className = "move-stat-label";
+      label.textContent = labelText;
       const number = document.createElement("span");
       number.className = "move-stat-value";
       number.textContent = value;
-      stat.append(icon, number);
+      stat.append(label, number);
       moveStats.appendChild(stat);
     }
     details.append(moveName, moveStats);
