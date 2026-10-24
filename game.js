@@ -424,6 +424,28 @@ function renderTeam(containerId, units) {
     hpFill.style.width = `${Math.max(0, Math.min(100, (unit.hp / unit.maxHp) * 100))}%`;
     hpBar.appendChild(hpFill);
 
+    const staBar = document.createElement("div");
+    staBar.className = "battle-unit-sta";
+    staBar.setAttribute("aria-label", `Stamina: ${Math.max(0, unit.sta)} of ${unit.maxSta}`);
+    const staFill = document.createElement("span");
+    staFill.className = "battle-unit-sta-fill";
+    staFill.style.width = `${Math.max(0, Math.min(100, (unit.sta / unit.maxSta) * 100))}%`;
+    staBar.appendChild(staFill);
+
+    const previewMove = currentActor?.id === unit.id && unit.team === "hero"
+      ? MOVE_DATA.find(move => move.id === pendingMoveId)
+      : null;
+    if (previewMove && previewMove.cost > 0) {
+      const costPreview = document.createElement("span");
+      costPreview.className = "battle-unit-sta-cost";
+      const currentPercent = Math.max(0, Math.min(100, (unit.sta / unit.maxSta) * 100));
+      const costPercent = Math.min(unit.sta, previewMove.cost) / unit.maxSta * 100;
+      costPreview.style.left = `${Math.max(0, currentPercent - costPercent)}%`;
+      costPreview.style.width = `${costPercent}%`;
+      costPreview.setAttribute("aria-label", `${previewMove.cost} stamina cost preview`);
+      staBar.appendChild(costPreview);
+    }
+
     const status = document.createElement("div");
     status.className = "unit-status";
 
@@ -435,7 +457,7 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    if (unit.team === "hero" && isActive) card.append(name, hpBar, portrait, status);
+    if (unit.team === "hero" && isActive) card.append(name, hpBar, staBar, portrait, status);
     else card.append(portrait, name, status);
 
     card.addEventListener("click", () => selectUnit(unit));
