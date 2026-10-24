@@ -850,7 +850,7 @@ function renderMoveDock() {
     moveName.className = "move-dock-name";
     moveName.textContent = move.name;
     const moveTypeLabel = document.createElement("span");
-    moveTypeLabel.className = "move-dock-type";
+    moveTypeLabel.className = "move-dock-type" + (move.type === "attack" ? " attack-type" : " buff-debuff-type");
     moveTypeLabel.textContent = move.type === "attack" ? "Attack" : "Buff/Debuff";
     details.append(moveName, moveTypeLabel);
     button.append(details);
