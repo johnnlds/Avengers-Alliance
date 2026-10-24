@@ -4437,3 +4437,10 @@ body {
 .battlefield .enemy-side .unit:nth-child(1) {
   translate: 0 8px !important;
 }
+
+
+/* Lower only the top-positioned character; leave all other units unchanged. */
+.battlefield .hero-side .unit:nth-child(1),
+.battlefield .enemy-side .unit:nth-child(1) {
+  translate: 0 20px !important;
+}
