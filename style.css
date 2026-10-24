@@ -6382,3 +6382,12 @@ body {
   text-align: center !important;
   white-space: nowrap !important;
 }
+
+
+/* Pull the front/middle fighter on each side inward toward their two teammates. */
+.hero-side .team-grid > .unit:nth-child(3) {
+  transform: translateX(-14px) !important;
+}
+.enemy-side .team-grid > .unit:nth-child(3) {
+  transform: translateX(14px) !important;
+}
