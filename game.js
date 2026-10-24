@@ -128,6 +128,8 @@ const ENEMY_TEMPLATES = [
 let heroes = [];
 let enemies = [];
 let round = 1;
+const TOTAL_WAVES = 10;
+let wave = 1;
 let initiative = [];
 let turnIndex = 0;
 let currentActor = null;
@@ -160,9 +162,52 @@ function createUnit(template) {
   };
 }
 
+function createWaveEnemies() {
+  const multiplier = 1 + (wave - 1) * 0.01;
+  return ENEMY_TEMPLATES.map(template => {
+    const scaled = {
+      ...template,
+      maxHp: Math.round(template.maxHp * multiplier),
+      maxSta: Math.round(template.maxSta * multiplier),
+      atk: Math.round(template.atk * multiplier * 100) / 100,
+      acc: Math.round(template.acc * multiplier * 100) / 100,
+      def: Math.round(template.def * multiplier * 100) / 100,
+      eva: Math.round(template.eva * multiplier * 100) / 100
+    };
+    return createUnit(scaled);
+  });
+}
+
+function beginNextWave() {
+  if (wave >= TOTAL_WAVES || battleOver) return;
+
+  wave++;
+  round = 1;
+  turnIndex = 0;
+  initiative = [];
+  currentActor = null;
+  pendingMoveId = null;
+  selectedTargetId = null;
+  waitingForEnemy = false;
+
+  for (const hero of heroes) {
+    if (!hero.alive) continue;
+    const hpRestored = hero.maxHp * 0.30;
+    const staRestored = hero.maxSta * 0.30;
+    hero.hp = Math.min(hero.maxHp, hero.hp + hpRestored);
+    hero.sta = Math.min(hero.maxSta, hero.sta + staRestored);
+  }
+
+  enemies = createWaveEnemies();
+  log(`Wave cleared! Your team recovers 30% of maximum HP and stamina. Wave ${wave} of ${TOTAL_WAVES} begins.`, "good");
+  renderAll();
+  startRound();
+}
+
 function resetBattle() {
+  wave = 1;
   heroes = HERO_TEMPLATES.map(createUnit);
-  enemies = ENEMY_TEMPLATES.map(createUnit);
+  enemies = createWaveEnemies();
 
   round = 1;
   initiative = [];
@@ -182,6 +227,7 @@ function resetBattle() {
   $("battleLog").innerHTML = "";
 
   log("Battle started! S.H.I.E.L.D. versus Hydra.", "good");
+  log(`Wave ${wave} of ${TOTAL_WAVES}: Hydra forces are advancing.`, "good");
   log("Choose an ability first, then select a Hydra target.");
 
   renderAll();
@@ -326,6 +372,12 @@ function renderTurnOrder() {
   label.className = "turn-order-label";
   label.textContent = "TURN ORDER";
   root.appendChild(label);
+
+  const waveCounter = document.createElement("span");
+  waveCounter.className = "wave-counter";
+  waveCounter.textContent = `WAVE ${wave}/${TOTAL_WAVES}`;
+  waveCounter.setAttribute("aria-label", `Wave ${wave} of ${TOTAL_WAVES}`);
+  root.appendChild(waveCounter);
 
   const track = document.createElement("div");
   track.className = "turn-order-track";
@@ -974,6 +1026,9 @@ function calculateDamage(attacker, target, move) {
 
   let amount = move.damage / move.hits;
   amount *= 1 + variance;
+  if (attacker.team === "enemy") {
+    amount *= 1 + (wave - 1) * 0.01;
+  }
   amount *= 1 + (attacker.damageBoost || 0);
 
   const critical = Math.random() < move.crit / 100;
@@ -1068,6 +1123,11 @@ function checkBattleEnd() {
   const enemiesAlive = enemies.some(e => e.alive);
 
   if (heroesAlive && enemiesAlive) return false;
+
+  if (heroesAlive && !enemiesAlive && wave < TOTAL_WAVES) {
+    beginNextWave();
+    return true;
+  }
 
   battleOver = true;
   waitingForEnemy = false;
