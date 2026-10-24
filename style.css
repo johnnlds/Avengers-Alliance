@@ -3587,3 +3587,48 @@ body {
     gap: 2px !important;
   }
 }
+
+
+/* Move buttons show readable labeled stats instead of icon-only values. */
+@media (max-width: 760px) {
+  .move-dock-stats {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    align-content: space-between !important;
+    align-items: start !important;
+    padding: 3px !important;
+    gap: 2px 4px !important;
+  }
+  .move-dock-stats > span {
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 1px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    font-size: clamp(7px, 2.2vw, 10px) !important;
+    line-height: 1.05 !important;
+    text-align: left !important;
+  }
+  .move-dock-stats .move-stat-stamina,
+  .move-dock-stats .move-stat-crit {
+    align-items: flex-end !important;
+    text-align: right !important;
+  }
+  .move-dock-stats .move-stat-label {
+    font-size: 0.9em !important;
+    opacity: 0.92 !important;
+  }
+  .move-dock-stats .move-stat-value {
+    font-size: 1.1em !important;
+    font-weight: 900 !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock-stats { padding: 2px !important; gap: 2px !important; }
+  .move-dock-stats > span { font-size: 6.5px !important; }
+}
