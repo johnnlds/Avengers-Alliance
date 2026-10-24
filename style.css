@@ -6400,3 +6400,8 @@ body {
 #moveDock .move-dock-type.buff-debuff-type {
   color: #4bd49a !important;
 }
+
+/* Move the move-type text down by the same additional distance, with no other changes. */
+#moveDock .move-dock-type {
+  transform: translateY(6px) !important;
+}
