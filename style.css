@@ -6279,3 +6279,56 @@ body {
     gap: 3px !important;
   }
 }
+
+
+/* Extra-condensed roster: preserve the same left/right layout and name > HP > stamina order. */
+#teamRoster.team-roster {
+  gap: 4px !important;
+  margin: 0 !important;
+  padding: 4px !important;
+}
+#teamRoster .roster-group { gap: 1px !important; }
+#teamRoster .roster-group h3 {
+  margin: 0 0 1px !important;
+  font-size: 8px !important;
+  line-height: 1 !important;
+}
+#teamRoster .roster-row,
+#teamRoster .roster-row.roster-active,
+#teamRoster .roster-row:not(.roster-active) {
+  gap: 1px !important;
+  padding: 1px 0 !important;
+}
+#teamRoster .roster-name {
+  font-size: 7px !important;
+  line-height: 1 !important;
+}
+#teamRoster .roster-vitals { gap: 1px !important; }
+#teamRoster .roster-vital-line,
+#teamRoster .roster-row.roster-active .roster-vital-line,
+#teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+  grid-template-columns: 14px minmax(0, 1fr) 24px !important;
+  column-gap: 1px !important;
+  min-height: 5px !important;
+  line-height: 1 !important;
+}
+#teamRoster .roster-hp-label,
+#teamRoster .roster-sta-label { font-size: 6px !important; }
+#teamRoster .roster-value { font-size: 6px !important; padding-right: 2px !important; }
+#teamRoster .roster-bar,
+#teamRoster .roster-hp-track,
+#teamRoster .roster-sta-track {
+  height: 5px !important;
+  min-height: 5px !important;
+  max-height: 5px !important;
+}
+@media (max-width: 520px) {
+  #teamRoster.team-roster { gap: 3px !important; padding: 3px !important; }
+  #teamRoster .roster-name { font-size: 6px !important; }
+  #teamRoster .roster-vital-line,
+  #teamRoster .roster-row.roster-active .roster-vital-line,
+  #teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+    grid-template-columns: 13px minmax(0, 1fr) 22px !important;
+    column-gap: 1px !important;
+  }
+}
