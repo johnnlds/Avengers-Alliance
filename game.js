@@ -7,59 +7,32 @@
 const $ = (id) => document.getElementById(id);
 
 const MOVE_DATA = [
-  {
-    id: "combo",
-    attackType: "unarmed-melee",
-    name: "Martial Arts Combo",
-    description: "Two melee hits. 88% accuracy and 11% critical chance per hit.",
-    cost: 9,
-    damage: 22.5,
-    hits: 2,
-    accuracy: 88,
-    crit: 11,
-    cooldown: 0,
-    type: "attack"
-  },
-  {
-    id: "bite",
-    attackType: "ranged-gun",
-    name: "Widow's Bite",
-    description: "Ranged attack. 25 base damage, 88% accuracy.",
-    cost: 18,
-    damage: 25,
-    hits: 1,
-    accuracy: 88,
-    crit: 11,
-    cooldown: 0,
-    type: "attack"
-  },
-  {
-    id: "kick",
-    attackType: "flying-melee",
-    name: "Flying Kick",
-    description: "Powerful melee attack. 28.75 base damage, 77% accuracy.",
-    cost: 23,
-    damage: 28.75,
-    hits: 1,
-    accuracy: 77,
-    crit: 10,
-    cooldown: 0,
-    type: "attack"
-  },
-  {
-    id: "widowmaker",
-    attackType: "ranged-gun",
-    name: "Widowmaker",
-    description: "Costs 7 stamina. Reduces target Attack by 50% for one turn. Your next attack has a 75% chance to stun.",
-    cost: 7,
-    damage: 0,
-    hits: 0,
-    accuracy: 100,
-    crit: 0,
-    cooldown: 2,
-    type: "debuff"
-  }
+  { id:"shield-training", name:"S.H.I.E.L.D Training", attackType:"unarmed-melee", description:"Two-hit melee strike using S.H.I.E.L.D. combat training.", cost:8, damage:27, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
+  { id:"smith-wesson", name:"Smith & Wesson", attackType:"ranged-gun", description:"A precise ranged shot with Phil's sidearm.", cost:15, damage:30, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
+  { id:"destroyer-prototype", name:"Destroyer Prototype", attackType:"ranged-gun", description:"Fire the Destroyer Prototype at all enemies.", cost:22, damage:34.5, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"all-enemies", owner:"phil" },
+  { id:"pep-talk", name:"Pep Talk", attackType:"buff", description:"Inspire all allies, increasing their damage by 20%. Lasts until battle ends.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"buff", target:"all-allies", owner:"phil" },
+
+  { id:"double-punch", name:"Double Punch", attackType:"unarmed-melee", description:"Two powerful punches against one enemy.", cost:8, damage:16.2, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
+  { id:"shoulder-slam", name:"Shoulder Slam", attackType:"ranged-gun", description:"A forceful ranged strike against one enemy.", cost:15, damage:18, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
+  { id:"spin-throw", name:"Spin Throw", attackType:"spin-melee", description:"Spin through the enemy formation, striking every enemy.", cost:22, damage:12.6, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"all-enemies", owner:"bruiser" },
+  { id:"shield-protect", name:"S.H.I.E.L.D", attackType:"buff", description:"Protect one ally so they cannot lose HP until they attack again.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"protect", target:"ally", owner:"bruiser" },
+
+  { id:"combo", name:"Martial Arts Combo", attackType:"unarmed-melee", description:"Two melee hits against one enemy.", cost:8, damage:22.5, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
+  { id:"bite", name:"Widow's Bite", attackType:"ranged-gun", description:"A ranged electric shot against one enemy.", cost:15, damage:25, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
+  { id:"kick", name:"Flying Kick", attackType:"flying-melee", description:"Leap into one enemy with a powerful kick.", cost:22, damage:28.75, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
+  { id:"widowmaker", name:"Widowmaker", attackType:"ranged-gun", description:"Reduce target Attack by 50% for one round. Your next attack has a 75% chance to stun.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"debuff", target:"enemy", owner:"blackwidow" },
+
+  { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true }
 ];
+
+function getMove(moveId) {
+  return MOVE_DATA.find(move => move.id === moveId);
+}
+function getMovesForUnit(unit) {
+  if (!unit) return [];
+  if (unit.team === "enemy") return MOVE_DATA.filter(move => move.enemyUsable);
+  return (unit.moveIds || []).map(getMove).filter(Boolean);
+}
 
 const HERO_TEMPLATES = [
   {
@@ -73,7 +46,8 @@ const HERO_TEMPLATES = [
     atk: 30,
     acc: 30,
     def: 15,
-    eva: 15
+    eva: 15,
+    moveIds: ["shield-training","smith-wesson","destroyer-prototype","pep-talk"]
   },
   {
     id: "bruiser",
@@ -86,7 +60,8 @@ const HERO_TEMPLATES = [
     atk: 18,
     acc: 20,
     def: 35,
-    eva: 20
+    eva: 20,
+    moveIds: ["double-punch","shoulder-slam","spin-throw","shield-protect"]
   },
   {
     id: "blackwidow",
@@ -99,7 +74,8 @@ const HERO_TEMPLATES = [
     atk: 25,
     acc: 20,
     def: 20,
-    eva: 25
+    eva: 25,
+    moveIds: ["combo","bite","kick","widowmaker"]
   }
 ];
 
@@ -161,6 +137,7 @@ let pendingMoveId = null;
 let animatingActorId = null;
 let animatingTargetId = null;
 let animatingMoveId = null;
+let animatingMode = null;
 let animationToken = 0;
 let battleOver = false;
 let waitingForEnemy = false;
@@ -177,7 +154,9 @@ function createUnit(template) {
     cooldowns: {},
     attackDebuffTurns: 0,
     stunPrimed: false,
-    stunned: false
+    stunned: false,
+    damageBoost: 0,
+    protectedUntilAttack: false
   };
 }
 
@@ -195,6 +174,7 @@ function resetBattle() {
   animatingActorId = null;
   animatingTargetId = null;
   animatingMoveId = null;
+  animatingMode = null;
   battleOver = false;
   waitingForEnemy = false;
 
@@ -394,7 +374,9 @@ function renderTeam(containerId, units) {
       isActive ? "active-turn" : "",
       unit.team === "enemy" && unit.alive && !!pendingMoveId ? "pending-target" : "",
       animatingActorId === unit.id ? "attacking" : "",
-      animatingActorId === unit.id && animatingMoveId ? `attack-${MOVE_DATA.find(m => m.id === animatingMoveId)?.attackType || "unarmed-melee"}` : "",
+      animatingActorId === unit.id && animatingMoveId ? `attack-${getMove(animatingMoveId)?.attackType || "unarmed-melee"}` : "",
+    animatingActorId === unit.id && animatingMode === "sweep" ? "attack-sweep" : "",
+    animatingActorId === unit.id && animatingMode === "buff" ? "attack-buff" : "",
       animatingTargetId === unit.id ? "taking-hit" : "",
       !unit.alive ? "dead" : ""
     ].filter(Boolean).join(" ");
@@ -490,7 +472,7 @@ function renderTeam(containerId, units) {
     // Add effects after each render so they survive the UI refresh after an attack.
     if (animatingActorId === unit.id) {
       const effect = document.createElement("span");
-      const move = MOVE_DATA.find(m => m.id === animatingMoveId);
+      const move = getMove(animatingMoveId);
       const attackType = move?.attackType || "unarmed-melee";
       effect.className = `combat-effect ${attackType === "ranged-gun" ? "projectile" : attackType === "flying-melee" ? "kick-strike" : "slash"} ${attackType}`;
       effect.setAttribute("aria-hidden", "true");
@@ -513,7 +495,7 @@ function renderMoveDock() {
   const dock = $("moveDock");
   if (!dock) return;
   dock.innerHTML = "";
-  for (const move of MOVE_DATA) {
+  for (const move of getMovesForUnit(currentActor)) {
     const actor = currentActor;
     const hero = actor && actor.team === "hero" ? actor : null;
     const cooldown = hero ? (hero.cooldowns[move.id] || 0) : 0;
@@ -574,7 +556,7 @@ function renderMoveDock() {
 }
 
 function openMoveInfo(moveId) {
-  const move = MOVE_DATA.find(item => item.id === moveId);
+  const move = getMove(moveId);
   if (!move) return;
   inspectedMoveId = moveId;
   const actor = currentActor;
@@ -640,18 +622,21 @@ function renderCombatPanel() {
 
 function selectUnit(unit) {
   if (!unit.alive || battleOver) return;
-  if (unit.team === "hero") return;
-
-  // Choose a move first, then tap the enemy to execute it.
   if (!currentActor || currentActor.team !== "hero" || waitingForEnemy) return;
-  selectedTargetId = unit.id;
-  if (pendingMoveId) {
-    const moveId = pendingMoveId;
-    pendingMoveId = null;
-    useMove(moveId, unit);
+  if (!pendingMoveId) {
+    if (unit.team === "enemy") { selectedTargetId = unit.id; renderAll(); }
     return;
   }
-  renderAll();
+  const move = getMove(pendingMoveId);
+  if (!move) return;
+  const validTarget = move.target === "ally" ? unit.team === "hero" : unit.team === "enemy";
+  if (!validTarget) {
+    log(move.target === "ally" ? "Select a living ally for this move." : "Select a living enemy for this move.", "miss");
+    return;
+  }
+  const moveId = pendingMoveId;
+  pendingMoveId = null;
+  useMove(moveId, unit);
 }
 
 /* =========================================
@@ -782,12 +767,28 @@ function applyCombatAnimationPath() {
   const distance = Math.hypot(dx, dy) || 1;
   // Move toward the target but stop short so the portraits never cover one another completely.
   const move = MOVE_DATA.find(m => m.id === animatingMoveId);
-  const isMelee = !move || move.attackType !== "ranged-gun";
+  const isMelee = !move || !["ranged-gun","buff"].includes(move.attackType);
   const travel = isMelee ? Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70))) : 0;
   const x = dx / distance * travel;
   const y = dy / distance * travel;
 
-  actorCard.style.setProperty("--attack-x", `${x}px`);
+  if (move?.target === "all-enemies" || move?.attackType === "spin-melee") {
+    const enemyCards = [...document.querySelectorAll(actorCard.classList.contains("hero") ? ".unit.enemy:not(.defeated)" : ".unit.hero:not(.defeated)")];
+    if (enemyCards.length) {
+      const rects = enemyCards.map(card => card.getBoundingClientRect());
+      const centerX = rects.reduce((sum, rect) => sum + rect.left + rect.width / 2, 0) / rects.length;
+      const centerY = rects.reduce((sum, rect) => sum + rect.top + rect.height / 2, 0) / rects.length;
+      const cdx = centerX - (actorRect.left + actorRect.width / 2);
+      const cdy = centerY - (actorRect.top + actorRect.height / 2);
+      const cd = Math.hypot(cdx, cdy) || 1;
+      const ct = Math.min(cd * 0.62, Math.max(48, cd - 35));
+      actorCard.style.setProperty("--attack-x", `${cdx / cd * ct}px`);
+      actorCard.style.setProperty("--attack-y", `${cdy / cd * ct}px`);
+    }
+  } else {
+    actorCard.style.setProperty("--attack-x", `${x}px`);
+    actorCard.style.setProperty("--attack-y", `${y}px`);
+  }
   actorCard.style.setProperty("--attack-y", `${y}px`);
   actorCard.style.setProperty("--target-x", `${dx}px`);
   actorCard.style.setProperty("--target-y", `${dy}px`);
@@ -797,6 +798,7 @@ function triggerCombatAnimation(actor, target, move) {
   animatingActorId = actor.id;
   animatingTargetId = target.id;
   animatingMoveId = move ? move.id : null;
+  animatingMode = move?.target === "all-enemies" ? "sweep" : move?.target === "all-allies" ? "buff" : null;
   const token = ++animationToken;
 
   window.setTimeout(() => {
@@ -804,6 +806,7 @@ function triggerCombatAnimation(actor, target, move) {
     animatingActorId = null;
     animatingTargetId = null;
     animatingMoveId = null;
+    animatingMode = null;
     renderAll();
   }, 1280);
 }
@@ -838,113 +841,98 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
    ========================================= */
 
 function useMove(moveId, chosenTarget = null) {
-  if (
-    battleOver ||
-    waitingForEnemy ||
-    !currentActor ||
-    currentActor.team !== "hero" ||
-    !currentActor.alive
-  ) {
-    return;
-  }
-
+  if (battleOver || waitingForEnemy || !currentActor || currentActor.team !== "hero" || !currentActor.alive) return;
   const actor = currentActor;
-  const move = MOVE_DATA.find(m => m.id === moveId);
-  const target = chosenTarget && chosenTarget.alive
-    ? chosenTarget
-    : enemies.find(e => e.id === selectedTargetId && e.alive);
+  const move = getMove(moveId);
+  if (!move) return;
+  if (actor.sta < move.cost) { log(`${actor.name} doesn't have enough stamina.`, "miss"); return; }
+  if ((actor.cooldowns[move.id] || 0) > 0) { log(`${move.name} is still on cooldown.`, "miss"); return; }
 
-  if (!move || !target) {
-    log("Select a living enemy first.", "miss");
-    return;
-  }
-
-  if (actor.sta < move.cost) {
-    log(`${actor.name} doesn't have enough stamina.`, "miss");
-    return;
-  }
-
-  if ((actor.cooldowns[move.id] || 0) > 0) {
-    log(`${move.name} is still on cooldown.`, "miss");
+  const targetTeam = move.target === "ally" ? heroes : enemies;
+  const target = chosenTarget && chosenTarget.alive && targetTeam.some(unit => unit.id === chosenTarget.id)
+    ? chosenTarget : targetTeam.find(unit => unit.id === selectedTargetId && unit.alive);
+  if (["enemy","ally"].includes(move.target) && !target) {
+    log(move.target === "ally" ? "Select a living ally first." : "Select a living enemy first.", "miss");
     return;
   }
 
   actor.sta -= move.cost;
   pendingMoveId = null;
-  selectedTargetId = target.id;
-  triggerCombatAnimation(actor, target, move);
+  if (target) selectedTargetId = target.id;
+  const animationTarget = target || (move.target === "all-allies" ? actor : enemies.find(unit => unit.alive));
+  if (animationTarget) triggerCombatAnimation(actor, animationTarget, move);
 
-  if (move.type === "debuff") {
+  if (move.target === "all-enemies") {
+    performAttackOnTargets(actor, enemies.filter(unit => unit.alive), move);
+  } else if (move.target === "all-allies") {
+    for (const ally of heroes.filter(unit => unit.alive)) ally.damageBoost = Math.max(ally.damageBoost || 0, 0.2);
+    actor.cooldowns[move.id] = move.cooldown;
+    log(`${actor.name} uses Pep Talk! All allies gain a 20% damage boost for the rest of the battle.`, "good");
+  } else if (move.type === "protect") {
+    target.protectedUntilAttack = true;
+    actor.cooldowns[move.id] = move.cooldown;
+    log(`${actor.name} uses S.H.I.E.L.D! ${target.name} cannot lose HP until they attack.`, "good");
+  } else if (move.type === "debuff") {
     useWidowmaker(actor, target, move);
   } else {
     performAttack(actor, target, move);
   }
 
   renderAll();
-
   if (checkBattleEnd()) return;
-
   turnIndex++;
   window.setTimeout(nextTurn, 1550);
 }
 
+function performAttackOnTargets(actor, targets, move) {
+  log(`${actor.name} uses ${move.name} against all enemies!`);
+  for (const target of targets) {
+    if (!target.alive || !actor.alive) continue;
+    const hitChance = move.accuracy / 100;
+    if (Math.random() > hitChance) {
+      log(`${move.name} misses ${target.name}!`, "miss");
+      showDamageNumber(target, 0, false, true, 100);
+      continue;
+    }
+    if (target.protectedUntilAttack) {
+      target.protectedUntilAttack = false;
+      log(`${target.name} is protected by S.H.I.E.L.D and takes no damage!`, "good");
+      continue;
+    }
+    const damage = calculateDamage(actor, target, move);
+    target.hp = Math.max(0, target.hp - damage.amount);
+    showDamageNumber(target, damage.amount, damage.critical, false, 100);
+    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`, "damage");
+    if (target.hp <= 0) { target.alive = false; target.hp = 0; log(`${target.name} has been defeated!`, "good"); }
+  }
+}
 function useWidowmaker(actor, target, move) {
   target.attackDebuffTurns = 1;
   target.atk = target.baseAtk * 0.5;
-
   actor.stunPrimed = true;
   actor.cooldowns[move.id] = move.cooldown;
-
-  log(
-    `${actor.name} uses Widowmaker! ${target.name}'s Attack is reduced by 50% until their next action.`,
-    "good"
-  );
-
-  log(
-    `${actor.name}'s next attack has a 75% chance to stun its target.`
-  );
+  log(`${actor.name} uses Widowmaker! ${target.name}'s Attack is reduced by 50% until their next action.`, "good");
+  log(`${actor.name}'s next attack has a 75% chance to stun its target.`);
 }
-
 function performAttack(actor, target, move) {
   log(`${actor.name} uses ${move.name} on ${target.name}.`);
-
   for (let hitNumber = 1; hitNumber <= move.hits; hitNumber++) {
     if (!target.alive || !actor.alive) break;
-
-    const hitChance = move.accuracy / 100;
-
-    if (Math.random() > hitChance) {
+    if (Math.random() > move.accuracy / 100) {
       log(`${move.name} misses ${target.name}!`, "miss");
       showDamageNumber(target, 0, false, true, 80 + (hitNumber - 1) * 480);
       continue;
     }
-
     const damage = calculateDamage(actor, target, move);
     target.hp = Math.max(0, target.hp - damage.amount);
-
-    const critical = damage.critical;
-    showDamageNumber(target, damage.amount, critical, false, 80 + (hitNumber - 1) * 480);
-    log(
-      `${critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`,
-      "damage"
-    );
-
+    showDamageNumber(target, damage.amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
+    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`, "damage");
     if (actor.stunPrimed) {
       actor.stunPrimed = false;
-
-      if (Math.random() < 0.75 && target.alive) {
-        target.stunned = true;
-        log(`${target.name} is stunned and will lose their next action!`, "good");
-      } else {
-        log("The stun attempt fails.");
-      }
+      if (Math.random() < 0.75 && target.alive) { target.stunned = true; log(`${target.name} is stunned and will lose their next action!`, "good"); }
+      else log("The stun attempt fails.");
     }
-
-    if (target.hp <= 0) {
-      target.alive = false;
-      target.hp = 0;
-      log(`${target.name} has been defeated!`, "good");
-    }
+    if (target.hp <= 0) { target.alive = false; target.hp = 0; log(`${target.name} has been defeated!`, "good"); }
   }
 }
 
@@ -968,6 +956,7 @@ function calculateDamage(attacker, target, move) {
 
   let amount = move.damage / move.hits;
   amount *= 1 + variance;
+  amount *= 1 + (attacker.damageBoost || 0);
 
   const critical = Math.random() < move.crit / 100;
 
@@ -1012,7 +1001,7 @@ function enemyAct() {
     livingHeroes[Math.floor(Math.random() * livingHeroes.length)];
 
   const availableMoves = MOVE_DATA.filter(move =>
-    move.type === "attack" &&
+    move.enemyUsable && move.type === "attack" &&
     actor.sta >= move.cost &&
     (actor.cooldowns[move.id] || 0) === 0
   );
@@ -1021,9 +1010,7 @@ function enemyAct() {
     log(`${actor.name} has insufficient stamina and skips their attack.`);
   } else {
     // Hydra chooses an affordable attack, favoring stronger moves.
-    const move = availableMoves[
-      Math.floor(Math.random() * availableMoves.length)
-    ];
+    const move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
 
     actor.sta -= move.cost;
     triggerCombatAnimation(actor, target, move);
@@ -1116,15 +1103,19 @@ $("moveInfoOverlay").addEventListener("click", event => {
 });
 $("selectMoveBtn").addEventListener("click", () => {
   if (!inspectedMoveId) return;
-  const move = MOVE_DATA.find(item => item.id === inspectedMoveId);
+  const move = getMove(inspectedMoveId);
   const actor = currentActor;
   if (!move || !actor || actor.team !== "hero" || !actor.alive || battleOver || waitingForEnemy) return;
   const cooldown = actor.cooldowns[move.id] || 0;
   if (actor.sta < move.cost || cooldown > 0) return;
-  pendingMoveId = move.id;
   closeMoveInfo();
+  if (["all-enemies","all-allies"].includes(move.target)) {
+    useMove(move.id);
+    return;
+  }
+  pendingMoveId = move.id;
   renderAll();
-  log(`${move.name} selected. Now select a Hydra target.`, "good");
+  log(`${move.name} selected. ${move.target === "ally" ? "Now select an ally." : "Now select an enemy."}`, "good");
 });
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !$("moveInfoOverlay").classList.contains("hidden")) closeMoveInfo();
