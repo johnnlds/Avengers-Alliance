@@ -476,9 +476,6 @@ function renderMoveDock() {
     button.className = "move-dock-icon" + (pendingMoveId === move.id ? " selected" : "") + (unavailable ? " unavailable" : "");
     button.setAttribute("aria-label", move.name + " details");
     button.title = move.name;
-    const glyph = document.createElement("span");
-    glyph.className = "move-dock-glyph";
-    glyph.textContent = moveIconGlyph(move.id);
     const details = document.createElement("span");
     details.className = "move-dock-details";
     const moveName = document.createElement("strong");
@@ -487,12 +484,20 @@ function renderMoveDock() {
     const moveStats = document.createElement("span");
     moveStats.className = "move-dock-stats";
     const damage = move.damage > 0 ? String(Number(move.damage.toFixed(2))) : "0";
-    moveStats.textContent = `Damage: ${damage}\nStamina: ${move.cost}\nACC/CRIT: ${move.accuracy}%/${move.crit}%`;
+    const statValues = [
+      ["move-stat-damage", damage],
+      ["move-stat-stamina", String(move.cost)],
+      ["move-stat-accuracy", String(move.accuracy)],
+      ["move-stat-crit", String(move.crit)]
+    ];
+    for (const [className, value] of statValues) {
+      const stat = document.createElement("span");
+      stat.className = className;
+      stat.textContent = value;
+      moveStats.appendChild(stat);
+    }
     details.append(moveName, moveStats);
-    const cost = document.createElement("small");
-    cost.className = "move-dock-cost";
-    cost.textContent = String(move.cost);
-    button.append(glyph, details, cost);
+    button.append(details);
     let lastTapAt = 0;
     button.addEventListener("click", () => {
       const now = Date.now();
