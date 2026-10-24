@@ -610,11 +610,10 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    if (unit.team === "hero" && (isActive || (unit.alive && pendingMove && ["ally","all-allies"].includes(pendingMove.target)))) {
-      if (isActive) card.append(name, hpBar, staBar, portrait, status);
-      else card.append(portrait, name, hpBar, status);
-    } else if (unit.team === "enemy") card.append(portrait, name, hpBar, status);
-    else card.append(portrait, name, status);
+    // Keep the nameplate and health visible for every unit. Heroes also show stamina;
+    // enemies do not use stamina, so their cards omit that bar entirely.
+    if (unit.team === "hero") card.append(name, hpBar, staBar, portrait, status);
+    else card.append(name, hpBar, portrait, status);
 
     // Active effects are shown only on the unit that actually has them.
     const buffs = [];
