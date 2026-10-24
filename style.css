@@ -4791,3 +4791,63 @@ body {
 .unit-effect-item + .unit-effect-item { border-top: 1px solid #26394d; }
 .unit-effect-item strong { color: #f1f5fb; }
 .unit-effect-item span { color: #c2ccda; }
+
+
+/* Small, clear effect markers; effect details use the same modal style as move details. */
+.unit-effect-indicators {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 0;
+  margin: 5px 0 0;
+}
+.unit-effect-indicator {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 19px !important;
+  font-weight: 800 !important;
+  line-height: 18px !important;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.unit-effect-indicator.buff { color: #35df70 !important; }
+.unit-effect-indicator.debuff { color: #ff5151 !important; }
+.unit-effect-indicator:hover,
+.unit-effect-indicator:focus-visible {
+  background: #26394d !important;
+  outline: 1px solid currentColor;
+  outline-offset: 1px;
+}
+.effects-info-card { text-align: left; }
+.effects-info-icon { color: #35df70; font-size: 34px; font-weight: 800; }
+.effects-info-list { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+.effects-info-heading {
+  margin: 12px 0 3px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #52667d;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.effects-info-heading:first-child { margin-top: 0; }
+.effects-info-heading.buff { color: #35df70; }
+.effects-info-heading.debuff { color: #ff6868; }
+.effects-info-item { padding: 8px 0; }
+.effects-info-item + .effects-info-item { border-top: 1px solid #34445b; }
+.effects-info-item strong { display: block; color: #f1f5fb; font-size: 14px; }
+.effects-info-item p { margin: 4px 0 0; color: #c2ccda; font-size: 12px; line-height: 1.45; }
