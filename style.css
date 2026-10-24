@@ -5574,3 +5574,64 @@ body {
     font-size: 11px !important;
   }
 }
+
+
+/* Compact move-name buttons: size to the label instead of stretching across the panel. */
+#moveDock.move-dock {
+  display: grid !important;
+  grid-template-columns: repeat(2, max-content) !important;
+  grid-auto-rows: minmax(30px, auto) !important;
+  justify-content: start !important;
+  align-content: start !important;
+  justify-items: start !important;
+  gap: 5px 6px !important;
+  padding: 5px !important;
+}
+#moveDock .move-dock-icon {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: 180px !important;
+  height: auto !important;
+  min-height: 30px !important;
+  max-height: none !important;
+  padding: 5px 9px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+}
+#moveDock .move-dock-details {
+  display: flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 0 1 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+#moveDock .move-dock-name {
+  display: block !important;
+  width: auto !important;
+  max-width: 160px !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  text-align: center !important;
+}
+@media (max-width: 760px) {
+  #moveDock.move-dock {
+    grid-template-columns: repeat(2, max-content) !important;
+    grid-auto-rows: minmax(28px, auto) !important;
+    gap: 4px !important;
+    padding: 3px !important;
+  }
+  #moveDock .move-dock-icon {
+    min-height: 28px !important;
+    max-width: 155px !important;
+    padding: 4px 7px !important;
+  }
+  #moveDock .move-dock-name {
+    max-width: 140px !important;
+    font-size: 10px !important;
+  }
+}
