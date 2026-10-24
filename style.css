@@ -4236,3 +4236,50 @@ body {
     top: -5px !important;
   }
 }
+
+
+/* Reveal Hydra nameplates and red HP bars only while a move is awaiting a target. */
+.battlefield .unit.enemy.pending-target {
+  position: relative !important;
+}
+.battlefield .unit.enemy.pending-target .unit-name,
+.battlefield .unit.enemy.pending-target .battle-unit-hp {
+  position: absolute !important;
+  left: 9% !important;
+  right: 9% !important;
+  width: 82% !important;
+  margin: 0 !important;
+  z-index: 8 !important;
+}
+.battlefield .unit.enemy.pending-target .unit-name {
+  display: block !important;
+  top: -30px !important;
+  min-height: 0 !important;
+  height: 16px !important;
+  padding: 1px 4px !important;
+  line-height: 14px !important;
+  border-radius: 3px !important;
+  background: rgba(8, 15, 25, .94) !important;
+  border: 1px solid rgba(255, 120, 120, .85) !important;
+  font-size: clamp(8px, 2.2vw, 11px) !important;
+}
+.battlefield .unit.enemy.pending-target .battle-unit-hp {
+  display: block !important;
+  top: -14px !important;
+  height: 7px !important;
+  border-width: 1px !important;
+  border-radius: 2px !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit.enemy.pending-target .unit-name {
+    top: -24px !important;
+    height: 13px !important;
+    padding: 0 2px !important;
+    line-height: 11px !important;
+    font-size: clamp(7px, 2vw, 9px) !important;
+  }
+  .battlefield .unit.enemy.pending-target .battle-unit-hp {
+    top: -11px !important;
+    height: 6px !important;
+  }
+}
