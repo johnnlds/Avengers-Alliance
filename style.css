@@ -4476,3 +4476,33 @@ body {
 .move-dock-icon .move-stat-value {
   color: #a0aec0 !important;
 }
+
+
+/* Make every move button use the first button's consistent text treatment. */
+.move-dock-icon .move-dock-details,
+.move-dock-icon .move-dock-stats,
+.move-dock-icon .move-stat-label,
+.move-dock-icon .move-stat-value {
+  font-family: inherit !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+.move-dock-icon .move-dock-name {
+  display: block !important;
+  color: #fff !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+}
+.move-dock-icon .move-dock-stats,
+.move-dock-icon .move-dock-stats *,
+.move-dock-icon .move-dock-cost,
+.move-dock-icon .move-dock-glyph,
+.move-dock-icon small {
+  color: #a0aec0 !important;
+  font-size: 9px !important;
+  font-weight: 500 !important;
+  line-height: 1.1 !important;
+}
