@@ -3,7 +3,7 @@ const HEROES = [
   { id: "phil", name: "Phil Coulson", role: "S.H.I.E.L.D. Field Leader", image: "Phil", hp: 80, stamina: 80, attack: 30, accuracy: 30, defense: 15, evasion: 15, description: "A versatile leader with ranged attacks and an all-team damage boost." },
   { id: "bruiser", name: "S.H.I.E.L.D. Bruiser", role: "Heavy Frontline Fighter", image: "Bruiser", hp: 120, stamina: 80, attack: 18, accuracy: 20, defense: 35, evasion: 20, description: "A durable frontline fighter with area damage and protective abilities." },
   { id: "blackwidow", name: "Black Widow", role: "Elite Covert Operative", image: "Black Widow", hp: 100, stamina: 100, attack: 25, accuracy: 20, defense: 20, evasion: 25, description: "A fast, evasive attacker with strong single-target moves and debuffs." },
-  { id: "beta-ray-bill", name: "Beta Ray Bill", role: "Korbinite Champion", image: "Bill", hp: 78.68, stamina: 71.53, attack: 15.74, accuracy: 12.88, defense: 15.74, evasion: 11.44, description: "A mighty warrior wielding Stormbreaker, with devastating attacks and stunning lightning." }
+  { id: "beta-ray-bill", name: "Beta Ray Bill", role: "Korbinite Champion", image: "Bill", hp: 7868, stamina: 7153, attack: 1574, accuracy: 1288, defense: 1574, evasion: 1144, description: "A mighty warrior wielding Stormbreaker, with devastating attacks and stunning lightning." }
 ];
 const STORAGE_KEY = "avengersAllianceSelectedHeroes";
 const selected = new Set(HEROES.slice(0, 3).map(hero => hero.id));
