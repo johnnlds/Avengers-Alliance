@@ -4679,3 +4679,25 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .wave-announcement-show { animation-duration: .01ms; }
 }
+
+
+/* Support one- and two-hero squads chosen on the character-select screen. */
+.hero-side .team-grid[data-count="1"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas: "front" !important;
+  justify-items: center !important;
+}
+.hero-side .team-grid[data-count="1"] .unit {
+  grid-area: front !important;
+  width: min(100%, 230px) !important;
+  max-width: 230px !important;
+}
+.hero-side .team-grid[data-count="2"] {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas: "back-top" "back-bottom" !important;
+  justify-items: center !important;
+}
+.hero-side .team-grid[data-count="2"] .unit {
+  width: min(100%, 230px) !important;
+  max-width: 230px !important;
+}
