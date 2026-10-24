@@ -231,10 +231,20 @@ function beginNextWave() {
   const announcement = $("waveAnnouncement");
   if (announcement) {
     announcement.textContent = `Wave ${wave}`;
-    announcement.classList.remove("hidden");
-    announcement.classList.remove("wave-announcement-show");
-    void announcement.offsetWidth;
-    announcement.classList.add("wave-announcement-show");
+    announcement.classList.remove("hidden", "wave-announcement-show");
+    // Use the Web Animations API so the announcement is visible even when
+    // the device requests reduced motion and CSS animations are suppressed.
+    if (typeof announcement.animate === "function") {
+      announcement.animate([
+        { opacity: 0, transform: "translate(-50%, -50%) scale(.72)" },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1.08)", offset: 0.16 },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1)", offset: 0.28 },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1)", offset: 0.82 },
+        { opacity: 0, transform: "translate(-50%, -50%) scale(.94)" }
+      ], { duration: 1500, easing: "ease-out", fill: "both" });
+    } else {
+      announcement.classList.add("wave-announcement-show");
+    }
   }
   waveAnnouncementTimer = setTimeout(() => {
     if (announcement) {
@@ -249,15 +259,31 @@ function beginNextWave() {
     renderAll();
     const enemyTeam = $("enemyTeam");
     if (enemyTeam) {
-      enemyTeam.classList.remove("wave-enemies-enter");
-      void enemyTeam.offsetWidth;
-      enemyTeam.classList.add("wave-enemies-enter");
-      window.setTimeout(() => enemyTeam.classList.remove("wave-enemies-enter"), 700);
+      const enemyCards = [...enemyTeam.querySelectorAll(".unit")];
+      // Animate each enemy from beyond the right edge, independently of CSS
+      // reduced-motion settings and other transforms used by combat effects.
+      enemyCards.forEach((card, index) => {
+        if (typeof card.animate === "function") {
+          card.animate([
+            { opacity: 0, transform: `translateX(${Math.max(window.innerWidth, document.documentElement.clientWidth) + 140}px)` },
+            { opacity: 1, transform: "translateX(0)" }
+          ], {
+            duration: 850,
+            delay: index * 100,
+            easing: "cubic-bezier(.18,.72,.22,1)",
+            fill: "both"
+          });
+        } else {
+          enemyTeam.classList.remove("wave-enemies-enter");
+          void enemyTeam.offsetWidth;
+          enemyTeam.classList.add("wave-enemies-enter");
+        }
+      });
     }
     window.setTimeout(() => {
       if (!battleOver && wave > 1) startRound();
-    }, 650);
-  }, 1200);
+    }, 950);
+  }, 1500);
 }
 
 function resetBattle() {
