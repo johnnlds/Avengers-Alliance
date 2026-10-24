@@ -3722,3 +3722,63 @@ body {
     text-align: left !important;
   }
 }
+
+
+/* Put character name and red health bar above each battlefield portrait. */
+.battlefield .unit {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+.battlefield .unit .unit-name {
+  order: 0 !important;
+  position: relative !important;
+  z-index: 6 !important;
+  width: 100% !important;
+  margin: 0 0 2px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  font-size: clamp(8px, 2.4vw, 12px) !important;
+  line-height: 1.1 !important;
+  color: #fff !important;
+  text-shadow: 0 1px 3px #000, 0 0 4px #000 !important;
+}
+.battlefield .unit .battle-unit-hp {
+  order: 1 !important;
+  position: relative !important;
+  z-index: 6 !important;
+  width: 82% !important;
+  height: 5px !important;
+  margin: 0 auto 3px !important;
+  border: 1px solid rgba(255,255,255,.8) !important;
+  border-radius: 4px !important;
+  background: rgba(30,0,0,.9) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+.battlefield .unit .battle-unit-hp-fill {
+  display: block !important;
+  height: 100% !important;
+  background: #f21f35 !important;
+  transition: width .2s ease !important;
+}
+.battlefield .unit .portrait { order: 2 !important; }
+.battlefield .unit .unit-status { order: 3 !important; }
+@media (max-width: 760px) {
+  .battlefield .unit .unit-name { font-size: clamp(7px, 2.2vw, 10px) !important; }
+  .battlefield .unit .battle-unit-hp { height: 4px !important; width: 78% !important; }
+}
+
+/* Keep all move stats flush-left beneath the centered move name. */
+@media (max-width: 760px) {
+  .move-dock-stats,
+  .move-dock-stats > span {
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+  .move-dock-stats > span {
+    width: 100% !important;
+  }
+}
