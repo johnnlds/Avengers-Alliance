@@ -852,28 +852,7 @@ function renderMoveDock() {
     const moveName = document.createElement("strong");
     moveName.className = "move-dock-name";
     moveName.textContent = move.name;
-    const moveStats = document.createElement("span");
-    moveStats.className = "move-dock-stats";
-    const damage = move.damage > 0 ? formatCombatNumber(move.damage) : "0";
-    const statValues = [
-      ["move-stat-damage", "Damage", damage],
-      ["move-stat-stamina", "Stamina:", formatCombatNumber(move.cost)],
-      ["move-stat-accuracy", "Accuracy:", `${Math.round(move.accuracy)}%`],
-      ["move-stat-crit", "Crit:", `${Math.round(move.crit)}%`]
-    ];
-    for (const [className, labelText, value] of statValues) {
-      const stat = document.createElement("span");
-      stat.className = className;
-      const label = document.createElement("span");
-      label.className = "move-stat-label";
-      label.textContent = labelText;
-      const number = document.createElement("span");
-      number.className = "move-stat-value";
-      number.textContent = value;
-      stat.append(label, number);
-      moveStats.appendChild(stat);
-    }
-    details.append(moveName, moveStats);
+    details.append(moveName);
     button.append(details);
     let lastTapAt = 0;
     button.addEventListener("click", () => {
