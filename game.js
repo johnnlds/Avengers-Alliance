@@ -24,10 +24,10 @@ const MOVE_DATA = [
 
   { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true },
 
-  { id:"stormbreaker", name:"Stormbreaker", attackType:"unarmed-melee", description:"Beta Ray Bill strikes one enemy with Stormbreaker.", cost:572.24, damage:1416.6, hits:1, accuracy:75, crit:2, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
-  { id:"thunderstruck", name:"Thunderstruck", attackType:"ranged-gun", description:"Unleash a ranged thunder attack against one enemy.", cost:1072.95, damage:1574, hits:1, accuracy:87, crit:8, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
-  { id:"flying-kick-bill", name:"Flying Kick", attackType:"flying-melee", description:"A powerful flying kick that hits all enemies.", cost:1573.66, damage:519.42, hits:1, accuracy:100, crit:32, cooldown:0, type:"attack", target:"all-enemies", owner:"beta-ray-bill" },
-  { id:"lightning-strike", name:"Lightning Strike!", attackType:"ranged-gun", description:"Strike all enemies with lightning. Each enemy hit has a 100% chance to be stunned. Cooldown: 2 rounds.", cost:500.71, damage:157.4, hits:1, accuracy:60, crit:0, cooldown:2, type:"attack", target:"all-enemies", stunChance:100, owner:"beta-ray-bill" }
+  { id:"stormbreaker", name:"Stormbreaker", attackType:"unarmed-melee", description:"Beta Ray Bill strikes one enemy with Stormbreaker.", cost:5.7224, damage:14.166, hits:1, accuracy:75, crit:2, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
+  { id:"thunderstruck", name:"Thunderstruck", attackType:"ranged-gun", description:"Unleash a ranged thunder attack against one enemy.", cost:10.7295, damage:15.74, hits:1, accuracy:87, crit:8, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
+  { id:"flying-kick-bill", name:"Flying Kick", attackType:"flying-melee", description:"A powerful flying kick that hits all enemies.", cost:15.7366, damage:5.1942, hits:1, accuracy:100, crit:32, cooldown:0, type:"attack", target:"all-enemies", owner:"beta-ray-bill" },
+  { id:"lightning-strike", name:"Lightning Strike!", attackType:"ranged-gun", description:"Strike all enemies with lightning. Each enemy hit has a 100% chance to be stunned. Cooldown: 2 rounds.", cost:5.0071, damage:1.574, hits:1, accuracy:60, crit:0, cooldown:2, type:"attack", target:"all-enemies", stunChance:100, owner:"beta-ray-bill" }
 ];
 
 function getMove(moveId) {
@@ -88,12 +88,12 @@ const HERO_TEMPLATES = [
     description: "Korbinite champion wielding Stormbreaker",
     image: "Bill",
     team: "hero",
-    maxHp: 7868,
-    maxSta: 7153,
-    atk: 1574,
-    acc: 1288,
-    def: 1574,
-    eva: 1144,
+    maxHp: 78.68,
+    maxSta: 71.53,
+    atk: 15.74,
+    acc: 12.88,
+    def: 15.74,
+    eva: 11.44,
     moveIds: ["stormbreaker","thunderstruck","flying-kick-bill","lightning-strike"]
   }
 ];
