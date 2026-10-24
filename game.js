@@ -15,7 +15,7 @@ const MOVE_DATA = [
   { id:"double-punch", name:"Double Punch", attackType:"unarmed-melee", description:"Two powerful punches against one enemy.", cost:8, damage:16.2, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
   { id:"shoulder-slam", name:"Shoulder Slam", attackType:"ranged-gun", description:"A forceful ranged strike against one enemy.", cost:15, damage:18, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
   { id:"spin-throw", name:"Spin Throw", attackType:"spin-melee", description:"Spin through the enemy formation, striking every enemy.", cost:22, damage:12.6, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"all-enemies", owner:"bruiser" },
-  { id:"shield-protect", name:"S.H.I.E.L.D", attackType:"buff", description:"Protect yourself and one ally from the next incoming attack.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"protect", target:"ally", owner:"bruiser" },
+  { id:"shield-protect", name:"S.H.I.E.L.D", attackType:"buff", description:"Protect one ally from the next incoming attack.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"protect", target:"ally", owner:"bruiser" },
 
   { id:"combo", name:"Martial Arts Combo", attackType:"unarmed-melee", description:"Two melee hits against one enemy.", cost:8, damage:22.5, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
   { id:"bite", name:"Widow's Bite", attackType:"ranged-gun", description:"A ranged electric shot against one enemy.", cost:15, damage:25, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
@@ -616,7 +616,7 @@ function renderTeam(containerId, units) {
     } else if (unit.team === "enemy") card.append(portrait, name, hpBar, status);
     else card.append(portrait, name, status);
 
-    // Show compact, clickable indicators for any active buffs and debuffs.
+    // Active effects are shown only on the unit that actually has them.
     const buffs = [];
     const debuffs = [];
     if (unit.damageBoost > 0) buffs.push({
@@ -643,53 +643,31 @@ function renderTeam(containerId, units) {
     if (buffs.length || debuffs.length) {
       const indicators = document.createElement("div");
       indicators.className = "unit-effect-indicators";
-      const details = document.createElement("div");
-      details.className = "unit-effect-details hidden";
-      details.setAttribute("aria-live", "polite");
-      details.addEventListener("click", event => event.stopPropagation());
-
-      const makeIndicator = (kind, symbol, label, effects) => {
-        if (!effects.length) return;
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `unit-effect-indicator ${kind}`;
-        button.textContent = symbol;
-        button.setAttribute("aria-label", `Show ${label.toLowerCase()} on ${unit.name}`);
-        button.setAttribute("aria-expanded", "false");
-        button.title = `Show ${label.toLowerCase()}`;
-        button.addEventListener("click", event => {
-          event.stopPropagation();
-          const alreadyShowing = !details.classList.contains("hidden") && details.dataset.kind === kind;
-          details.replaceChildren();
-          indicators.querySelectorAll("button").forEach(item => item.setAttribute("aria-expanded", "false"));
-          if (alreadyShowing) {
-            details.classList.add("hidden");
-            delete details.dataset.kind;
-            return;
-          }
-          const heading = document.createElement("div");
-          heading.className = `unit-effect-heading ${kind}`;
-          heading.textContent = label;
-          details.appendChild(heading);
-          for (const effect of effects) {
-            const item = document.createElement("div");
-            item.className = "unit-effect-item";
-            const effectName = document.createElement("strong");
-            effectName.textContent = effect.name;
-            const description = document.createElement("span");
-            description.textContent = effect.description;
-            item.append(effectName, description);
-            details.appendChild(item);
-          }
-          details.dataset.kind = kind;
-          details.classList.remove("hidden");
-          button.setAttribute("aria-expanded", "true");
-        });
-        indicators.appendChild(button);
+      const openEffects = (event) => {
+        event.stopPropagation();
+        openEffectsInfo(unit.name, buffs, debuffs);
       };
-      makeIndicator("buff", "+", "Buffs", buffs);
-      makeIndicator("debuff", "−", "Debuffs", debuffs);
-      card.append(indicators, details);
+      if (buffs.length) {
+        const plus = document.createElement("button");
+        plus.type = "button";
+        plus.className = "unit-effect-indicator buff";
+        plus.textContent = "+";
+        plus.setAttribute("aria-label", `Show active effects on ${unit.name}`);
+        plus.title = "Show buffs and debuffs";
+        plus.addEventListener("click", openEffects);
+        indicators.appendChild(plus);
+      }
+      if (debuffs.length) {
+        const minus = document.createElement("button");
+        minus.type = "button";
+        minus.className = "unit-effect-indicator debuff";
+        minus.textContent = "−";
+        minus.setAttribute("aria-label", `Show active effects on ${unit.name}`);
+        minus.title = "Show buffs and debuffs";
+        minus.addEventListener("click", openEffects);
+        indicators.appendChild(minus);
+      }
+      card.appendChild(indicators);
     }
 
     card.addEventListener("click", () => selectUnit(unit));
@@ -719,6 +697,50 @@ function renderTeam(containerId, units) {
       card.appendChild(impact);
     }
   }
+}
+
+function openEffectsInfo(unitName, buffs, debuffs) {
+  const overlay = $("effectsInfoOverlay");
+  const card = overlay.querySelector(".move-info-card");
+  $("effectsInfoTitle").textContent = `${unitName} — Active Effects`;
+  $("effectsInfoDescription").textContent = "All buffs and debuffs currently affecting this character.";
+  const list = $("effectsInfoList");
+  list.replaceChildren();
+
+  const addGroup = (label, kind, effects) => {
+    if (!effects.length) return;
+    const heading = document.createElement("h3");
+    heading.className = `effects-info-heading ${kind}`;
+    heading.textContent = label;
+    list.appendChild(heading);
+    for (const effect of effects) {
+      const item = document.createElement("div");
+      item.className = "effects-info-item";
+      const name = document.createElement("strong");
+      name.textContent = effect.name;
+      const description = document.createElement("p");
+      description.textContent = effect.description;
+      item.append(name, description);
+      list.appendChild(item);
+    }
+  };
+  addGroup("Buffs", "buff", buffs);
+  addGroup("Debuffs", "debuff", debuffs);
+  overlay.classList.remove("hidden");
+  requestAnimationFrame(() => {
+    const rect = card.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight - 12) {
+      card.style.maxHeight = `${window.innerHeight - 32}px`;
+      card.style.overflowY = "auto";
+    } else {
+      card.style.maxHeight = "";
+      card.style.overflowY = "";
+    }
+  });
+}
+
+function closeEffectsInfo() {
+  $("effectsInfoOverlay").classList.add("hidden");
 }
 
 function moveIconGlyph(moveId) {
@@ -1108,10 +1130,10 @@ function useMove(moveId, chosenTarget = null) {
     actor.cooldowns[move.id] = move.cooldown;
     log(`${actor.name} uses Pep Talk! All living allies, including ${actor.name}, gain a 20% damage boost for their next attack.`, "good");
   } else if (move.type === "protect") {
-    const protectedAllies = [...new Set([target, actor].filter(unit => unit.alive))];
+    const protectedAllies = target && target.alive ? [target] : [];
     for (const ally of protectedAllies) ally.protectedUntilAttack = true;
     actor.cooldowns[move.id] = move.cooldown;
-    log(`${actor.name} uses S.H.I.E.L.D! ${protectedAllies.map(ally => ally.name).join(" and ")} ${protectedAllies.length === 1 ? "is" : "are"} protected from the next attack.`, "good");
+    log(`${actor.name} uses S.H.I.E.L.D! ${protectedAllies.map(ally => ally.name).join(" and ")} is protected from the next attack.`, "good");
   } else if (move.type === "debuff") {
     useWidowmaker(actor, target, move);
   } else {
@@ -1373,6 +1395,16 @@ $("endTurnBtn").addEventListener("click", () => {
 
 $("restartBtn").addEventListener("click", resetBattle);
 $("closeMoveInfoBtn").addEventListener("click", closeMoveInfo);
+$("closeEffectsInfoBtn").addEventListener("click", closeEffectsInfo);
+$("effectsInfoOverlay").addEventListener("click", event => {
+  if (event.target === $("effectsInfoOverlay")) closeEffectsInfo();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeEffectsInfo();
+    if (!$("moveInfoOverlay").classList.contains("hidden")) closeMoveInfo();
+  }
+});
 $("moveInfoOverlay").addEventListener("click", event => {
   if (event.target === $("moveInfoOverlay")) closeMoveInfo();
 });
