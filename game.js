@@ -130,6 +130,7 @@ let enemies = [];
 let round = 1;
 const TOTAL_WAVES = 10;
 let wave = 1;
+let waveAnnouncementTimer = null;
 let initiative = [];
 let turnIndex = 0;
 let currentActor = null;
@@ -201,10 +202,36 @@ function beginNextWave() {
   enemies = createWaveEnemies();
   log(`Wave cleared! Your team recovers 30% of maximum HP and stamina. Wave ${wave} of ${TOTAL_WAVES} begins.`, "good");
   renderAll();
-  startRound();
+
+  if (waveAnnouncementTimer !== null) clearTimeout(waveAnnouncementTimer);
+  const announcement = $("waveAnnouncement");
+  if (announcement) {
+    announcement.textContent = `Wave ${wave}`;
+    announcement.classList.remove("hidden");
+    announcement.classList.remove("wave-announcement-show");
+    void announcement.offsetWidth;
+    announcement.classList.add("wave-announcement-show");
+  }
+  waveAnnouncementTimer = setTimeout(() => {
+    if (announcement) {
+      announcement.classList.add("hidden");
+      announcement.classList.remove("wave-announcement-show");
+    }
+    waveAnnouncementTimer = null;
+    if (!battleOver && wave > 1) startRound();
+  }, 1200);
 }
 
 function resetBattle() {
+  if (waveAnnouncementTimer !== null) {
+    clearTimeout(waveAnnouncementTimer);
+    waveAnnouncementTimer = null;
+  }
+  const announcement = $("waveAnnouncement");
+  if (announcement) {
+    announcement.classList.add("hidden");
+    announcement.classList.remove("wave-announcement-show");
+  }
   wave = 1;
   heroes = HERO_TEMPLATES.map(createUnit);
   enemies = createWaveEnemies();
