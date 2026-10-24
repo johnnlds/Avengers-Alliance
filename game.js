@@ -31,7 +31,7 @@ const MOVE_DATA = [
 ];
 
 function formatCombatNumber(value) {
-  return Number(value.toFixed(2)).toString();
+  return String(Math.ceil(value));
 }
 
 function getMove(moveId) {
@@ -412,7 +412,7 @@ function renderRoster() {
       staTrack.appendChild(staFill);
       const staValue = document.createElement("span");
       staValue.className = "roster-value";
-      staValue.textContent = `${Math.floor(unit.sta)}`;
+      staValue.textContent = `${Math.ceil(unit.sta)}`;
       staLine.append(staLabel, staTrack, staValue);
 
       vitals.append(hpLine, staLine);
@@ -1031,7 +1031,7 @@ function performAttackOnTargets(actor, targets, move) {
     const damage = calculateDamage(actor, target, move);
     target.hp = Math.max(0, target.hp - damage.amount);
     showDamageNumber(target, damage.amount, damage.critical, false, 100);
-    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`, "damage");
+    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
     if (target.hp <= 0) {
       target.alive = false;
       target.hp = 0;
