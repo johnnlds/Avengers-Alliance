@@ -4213,3 +4213,26 @@ body {
     height: 6px !important;
   }
 }
+
+
+/* Lift the compact active-turn nameplate and bars clear of the character's head. */
+.battlefield .unit.active-turn.hero .unit-name {
+  top: -30px !important;
+}
+.battlefield .unit.active-turn.hero .battle-unit-hp {
+  top: -14px !important;
+}
+.battlefield .unit.active-turn.hero .battle-unit-sta {
+  top: -7px !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit.active-turn.hero .unit-name {
+    top: -24px !important;
+  }
+  .battlefield .unit.active-turn.hero .battle-unit-hp {
+    top: -11px !important;
+  }
+  .battlefield .unit.active-turn.hero .battle-unit-sta {
+    top: -5px !important;
+  }
+}
