@@ -5452,3 +5452,22 @@ body {
   visibility: visible !important;
   opacity: 1 !important;
 }
+
+
+/* Definitive active-fighter-only HP display; override older legacy rules above. */
+.battlefield .unit:not(.active-turn):not(.active-turn) .battle-unit-hp,
+.battlefield .unit:not(.active-turn).hero .battle-unit-hp,
+.battlefield .unit:not(.active-turn).enemy .battle-unit-hp {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+.battlefield .unit.active-turn .battle-unit-hp {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+/* The roster mirrors the same rule, so only the current actor has a visible HP track there too. */
+#teamRoster .roster-row:not(.roster-active) .roster-hp-track {
+  display: none !important;
+}
