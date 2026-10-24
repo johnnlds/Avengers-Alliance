@@ -523,13 +523,10 @@ function renderRoster() {
       staValue.textContent = `${Math.ceil(unit.sta)}`;
       staLine.append(staLabel, staTrack, staValue);
 
-      // Keep the roster compact: only the active fighter gets roster vitals.
-      if (currentActor?.id === unit.id) {
-        vitals.append(hpLine, staLine);
-        row.append(name, vitals);
-      } else {
-        row.append(name);
-      }
+      // Show HP and stamina for every hero, and HP only for enemies.
+      vitals.appendChild(hpLine);
+      if (unit.team === "hero") vitals.appendChild(staLine);
+      row.append(name, vitals);
       group.appendChild(row);
     }
     root.appendChild(group);
