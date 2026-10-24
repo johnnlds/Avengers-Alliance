@@ -6391,3 +6391,12 @@ body {
 .enemy-side .team-grid > .unit:nth-child(3) {
   transform: translateX(14px) !important;
 }
+
+
+/* Requested move-label tweaks only: lower both type labels and make Buff/Debuff green. */
+#moveDock .move-dock-type {
+  transform: translateY(3px) !important;
+}
+#moveDock .move-dock-type.buff-debuff-type {
+  color: #4bd49a !important;
+}
