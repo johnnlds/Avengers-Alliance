@@ -1,0 +1,34 @@
+:root { --bg:#101722; --border:#34465b; --text:#f1f5fa; --muted:#a0aec0; --gold:#ffc857; --blue:#4da3ff; }
+* { box-sizing:border-box; }
+body { margin:0; min-height:100vh; color:var(--text); background:radial-gradient(ellipse at top,#1c2b3e 0%,var(--bg) 65%); font-family:Arial,Helvetica,sans-serif; }
+button { font:inherit; } button:focus-visible { outline:3px solid var(--gold); outline-offset:3px; }
+.select-shell { width:min(1180px,100%); margin:0 auto; padding:30px 22px 18px; }
+.select-header { text-align:center; margin:8px 0 28px; }
+.eyebrow { margin:0 0 9px; color:var(--gold); font-size:11px; font-weight:800; letter-spacing:2.4px; }
+h1 { margin:0; font-size:clamp(30px,6vw,54px); letter-spacing:2px; } h1 span { color:#e04d4d; }
+.subtitle { margin:10px 0 0; color:var(--muted); }
+.selection-panel { padding:clamp(16px,3vw,28px); background:rgba(18,28,42,.94); border:1px solid var(--border); border-radius:14px; box-shadow:0 18px 55px #0005; }
+.selection-heading { display:flex; justify-content:space-between; align-items:center; gap:14px; } .selection-heading .eyebrow { margin-bottom:5px; }
+h2 { margin:0; font-size:clamp(22px,4vw,30px); }
+.selection-count { margin:0; padding:8px 12px; border:1px solid #a17b2e; border-radius:6px; color:var(--gold); font-weight:800; white-space:nowrap; }
+.instructions { margin:12px 0 20px; color:var(--muted); font-size:14px; }
+.character-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.character-card { min-width:0; padding:0; overflow:hidden; text-align:left; color:var(--text); background:#131d2a; border:2px solid #34465b; border-radius:10px; cursor:pointer; transition:border-color .16s,transform .16s,background .16s; }
+.character-card:hover { transform:translateY(-3px); background:#1a293a; } .character-card.selected { border-color:var(--gold); box-shadow:0 0 0 1px #ffc85755,0 8px 25px #0003; }
+.character-art { height:220px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; background:linear-gradient(180deg,#263a50,#111a27); }
+.character-art img { width:100%; height:100%; object-fit:contain; object-position:center bottom; }
+.character-art.portrait-missing:after { content:"S.H.I.E.L.D."; color:#647c97; font-size:26px; font-weight:900; align-self:center; }
+.character-content { padding:15px; } .character-content h3 { margin:0; font-size:19px; }
+.character-role { margin:5px 0 10px; color:var(--blue); font-size:12px; font-weight:700; }
+.character-description { min-height:56px; margin:0 0 13px; color:#c3ceda; font-size:13px; line-height:1.45; }
+.character-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; padding:10px 0; border-top:1px solid #34465b; border-bottom:1px solid #34465b; }
+.character-stats span { display:grid; gap:3px; text-align:center; } .character-stats small { color:var(--muted); font-size:9px; font-weight:800; } .character-stats b { font-size:14px; }
+.selection-badge { display:block; margin-top:13px; color:var(--muted); font-size:10px; font-weight:900; letter-spacing:1px; } .character-card.selected .selection-badge { color:var(--gold); }
+.selection-error { min-height:18px; margin:10px 0 0; color:#ff8585; font-size:13px; }
+.launch-row { display:flex; justify-content:space-between; gap:12px; margin-top:8px; }
+.primary-button,.secondary-button { display:inline-flex; justify-content:center; align-items:center; gap:10px; min-height:44px; padding:11px 17px; border:1px solid transparent; border-radius:6px; font-weight:800; text-decoration:none; cursor:pointer; }
+.primary-button { color:#171c24; background:linear-gradient(180deg,#ffdb7e,#e7a92f); } .primary-button:hover:not(:disabled) { filter:brightness(1.08); } .primary-button:disabled { opacity:.45; cursor:not-allowed; }
+.secondary-button { color:var(--text); background:#26374a; border-color:#526982; } .secondary-button:hover { background:#30465d; }
+footer { margin:20px 0 0; color:#64758a; font-size:10px; font-weight:700; letter-spacing:2px; text-align:center; }
+@media(max-width:760px) { .select-shell { padding:20px 12px 14px; } .character-grid { grid-template-columns:1fr; gap:12px; } .character-card { display:grid; grid-template-columns:minmax(105px,34%) minmax(0,1fr); } .character-art { height:100%; min-height:230px; } .character-content { padding:12px; } .character-content h3 { font-size:17px; } .character-description { min-height:0; font-size:12px; } .selection-heading { align-items:flex-start; flex-direction:column; } }
+@media(prefers-reduced-motion:reduce) { .character-card { transition:none; } }
