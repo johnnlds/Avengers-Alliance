@@ -2899,3 +2899,59 @@ body {
   .move-dock-name { font-size: 10px !important; }
   .move-dock-stats { font-size: 8px !important; letter-spacing: -.2px !important; }
 }
+
+
+/* Four equal-width ability buttons in a single horizontal row on mobile. */
+@media (max-width: 760px) {
+  .move-dock {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-auto-rows: 68px !important;
+    gap: 4px !important;
+    padding: 4px !important;
+  }
+  .move-dock-icon {
+    min-width: 0 !important;
+    height: 68px !important;
+    padding: 4px 2px !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 3px !important;
+    text-align: center !important;
+  }
+  .move-dock-glyph {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    font-size: 20px !important;
+  }
+  .move-dock-details {
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    align-items: center !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+  }
+  .move-dock-name {
+    width: 100% !important;
+    font-size: 8px !important;
+    line-height: 1.05 !important;
+    overflow-wrap: anywhere !important;
+    text-align: center !important;
+  }
+  .move-dock-stats {
+    width: 100% !important;
+    white-space: normal !important;
+    font-size: 7px !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
+    overflow-wrap: anywhere !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock { grid-auto-rows: 66px !important; gap: 3px !important; }
+  .move-dock-icon { height: 66px !important; }
+  .move-dock-name { font-size: 7px !important; }
+  .move-dock-stats { font-size: 6px !important; }
+}
