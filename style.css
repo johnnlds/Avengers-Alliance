@@ -4726,3 +4726,68 @@ body {
 @media (prefers-reduced-motion: reduce) {
   #enemyTeam.wave-enemies-enter .unit { animation-duration: 1ms; animation-delay: 0ms; }
 }
+
+
+/* Clickable active-effect indicators below each character card. */
+.unit-effect-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 25px;
+  margin-top: 5px;
+}
+.unit-effect-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 23px;
+  height: 23px;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: #0b1422;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.unit-effect-indicator.buff,
+.unit-effect-heading.buff { color: #55e184; }
+.unit-effect-indicator.debuff,
+.unit-effect-heading.debuff { color: #ff6868; }
+.unit-effect-indicator:hover,
+.unit-effect-indicator:focus-visible {
+  background: #26394d;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.unit-effect-details {
+  margin-top: 7px;
+  padding: 8px;
+  text-align: left;
+  background: #0a111c;
+  border: 1px solid #34445b;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.unit-effect-details.hidden { display: none; }
+.unit-effect-heading {
+  margin-bottom: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.unit-effect-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 0;
+  font-size: 11px;
+  line-height: 1.35;
+}
+.unit-effect-item + .unit-effect-item { border-top: 1px solid #26394d; }
+.unit-effect-item strong { color: #f1f5fb; }
+.unit-effect-item span { color: #c2ccda; }
