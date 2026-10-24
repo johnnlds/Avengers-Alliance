@@ -3151,3 +3151,23 @@ body {
     font-size: clamp(13px, 4.1vw, 17px) !important;
   }
 }
+
+
+/* Pull corner values inward so the numbers sit closer to the center of each tile. */
+@media (max-width: 760px) {
+  .move-dock-stats {
+    padding: 5px 8px 7px !important;
+    column-gap: 8px !important;
+    row-gap: 4px !important;
+  }
+  .move-stat-damage { padding-left: 4px !important; }
+  .move-stat-stamina { padding-right: 4px !important; }
+  .move-stat-accuracy { padding-left: 4px !important; }
+  .move-stat-crit { padding-right: 4px !important; }
+}
+@media (max-width: 380px) {
+  .move-dock-stats {
+    padding: 4px 5px 6px !important;
+    column-gap: 5px !important;
+  }
+}
