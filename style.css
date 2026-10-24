@@ -3431,3 +3431,27 @@ body {
   .move-dock-name { font-size: 7px !important; }
   .move-dock-stats > span { font-size: 9px !important; }
 }
+
+
+/* Fine-tune square move tiles: move stats closer to corners and enlarge names slightly. */
+@media (max-width: 760px) {
+  .move-dock-name {
+    font-size: clamp(8px, 2.7vw, 11px) !important;
+  }
+  .move-dock-stats {
+    padding: 3px 3px !important;
+    gap: 1px !important;
+  }
+  .move-dock-stats > span {
+    font-size: clamp(9px, 2.8vw, 13px) !important;
+  }
+  .move-stat-damage { justify-content: flex-start !important; align-items: flex-start !important; }
+  .move-stat-stamina { justify-content: flex-end !important; align-items: flex-start !important; }
+  .move-stat-accuracy { justify-content: flex-start !important; align-items: flex-end !important; }
+  .move-stat-crit { justify-content: flex-end !important; align-items: flex-end !important; }
+}
+@media (max-width: 380px) {
+  .move-dock-name { font-size: 8px !important; }
+  .move-dock-stats { padding: 2px !important; }
+  .move-dock-stats > span { font-size: 9px !important; }
+}
