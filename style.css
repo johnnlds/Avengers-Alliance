@@ -3813,3 +3813,35 @@ body {
     order: 1 !important;
   }
 }
+
+
+/* Definitive mobile move-card layout: all stat text starts at the left edge. */
+@media (max-width: 760px) {
+  .move-dock-icon .move-dock-details {
+    text-align: left !important;
+  }
+  .move-dock-icon .move-dock-stats {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    align-items: stretch !important;
+    padding: 0 4px !important;
+    box-sizing: border-box !important;
+  }
+  .move-dock-icon .move-dock-stats > span {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: baseline !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+  }
+  .move-dock-icon .move-dock-stats .move-stat-label,
+  .move-dock-icon .move-dock-stats .move-stat-value {
+    text-align: left !important;
+    margin: 0 !important;
+  }
+}
