@@ -5983,3 +5983,80 @@ body {
   }
   #teamRoster .roster-value { font-size: 7px !important; }
 }
+
+
+/* Condensed roster panel: keep heroes left and enemies right while reducing vertical space. */
+#teamRoster.team-roster {
+  gap: 5px !important;
+}
+#teamRoster .roster-group {
+  gap: 2px !important;
+}
+#teamRoster .roster-group h3 {
+  margin: 0 0 2px !important;
+  font-size: 9px !important;
+  line-height: 1.1 !important;
+  letter-spacing: .6px !important;
+}
+#teamRoster .roster-row,
+#teamRoster .roster-row:not(.roster-active) {
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr) !important;
+  gap: 3px !important;
+  padding: 2px 0 !important;
+}
+#teamRoster .roster-name {
+  font-size: 8px !important;
+  line-height: 1.05 !important;
+}
+#teamRoster .roster-vitals {
+  gap: 2px !important;
+}
+#teamRoster .roster-vital-line,
+#teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+  grid-template-columns: 16px minmax(0, 1fr) 27px !important;
+  column-gap: 2px !important;
+  min-height: 6px !important;
+}
+#teamRoster .roster-hp-label,
+#teamRoster .roster-sta-label {
+  font-size: 7px !important;
+}
+#teamRoster .roster-bar,
+#teamRoster .roster-row:not(.roster-active) .roster-bar,
+#teamRoster .roster-hp-track,
+#teamRoster .roster-sta-track,
+#teamRoster .roster-row:not(.roster-active) .roster-hp-track,
+#teamRoster .roster-row:not(.roster-active) .roster-sta-track {
+  height: 5px !important;
+  min-height: 5px !important;
+  max-height: 5px !important;
+}
+#teamRoster .roster-value {
+  font-size: 7px !important;
+}
+@media (max-width: 520px) {
+  #teamRoster.team-roster { gap: 5px !important; }
+  #teamRoster .roster-row,
+  #teamRoster .roster-row:not(.roster-active) {
+    gap: 2px !important;
+    padding: 2px 0 !important;
+  }
+  #teamRoster .roster-name { font-size: 8px !important; }
+  #teamRoster .roster-vital-line,
+  #teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+    grid-template-columns: 16px minmax(0, 1fr) 26px !important;
+    column-gap: 2px !important;
+  }
+  #teamRoster .roster-value { font-size: 6px !important; }
+}
+
+/* Move buttons are 30% taller than the previous 24px, without changing label styling. */
+#moveDock.move-dock {
+  grid-template-rows: 31px !important;
+  grid-auto-rows: 31px !important;
+}
+#moveDock .move-dock-icon {
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+}
