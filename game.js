@@ -479,9 +479,20 @@ function renderMoveDock() {
     const glyph = document.createElement("span");
     glyph.className = "move-dock-glyph";
     glyph.textContent = moveIconGlyph(move.id);
+    const details = document.createElement("span");
+    details.className = "move-dock-details";
+    const moveName = document.createElement("strong");
+    moveName.className = "move-dock-name";
+    moveName.textContent = move.name;
+    const moveStats = document.createElement("span");
+    moveStats.className = "move-dock-stats";
+    const damage = move.damage > 0 ? String(Number(move.damage.toFixed(2))) : "0";
+    moveStats.textContent = `Damage: ${damage}   Stamina: ${move.cost}   ACC/CRIT: ${move.accuracy}%/${move.crit}%`;
+    details.append(moveName, moveStats);
     const cost = document.createElement("small");
+    cost.className = "move-dock-cost";
     cost.textContent = String(move.cost);
-    button.append(glyph, cost);
+    button.append(glyph, details, cost);
     let lastTapAt = 0;
     button.addEventListener("click", () => {
       const now = Date.now();
