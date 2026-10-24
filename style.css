@@ -4643,3 +4643,39 @@ body {
     height: 6px !important;
   }
 }
+
+
+/* Brief, prominent wave transition announcement. */
+.wave-announcement {
+  position: fixed;
+  z-index: 9;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.82);
+  padding: 12px 28px;
+  color: #fff0a6;
+  font-size: clamp(34px, 8vw, 64px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: 0 3px 0 #5b3912, 0 0 24px #f2b63e99;
+  background: linear-gradient(180deg, #26394dF2, #0b1422F2);
+  border: 2px solid #e4b94e;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px #0009, inset 0 1px #ffffff30;
+  pointer-events: none;
+}
+.wave-announcement-show {
+  animation: wave-announcement-pop 1.2s ease both;
+}
+@keyframes wave-announcement-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.72); }
+  16% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+  28% { transform: translate(-50%, -50%) scale(1); }
+  82% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(.94); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wave-announcement-show { animation-duration: .01ms; }
+}
