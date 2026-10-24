@@ -6405,3 +6405,24 @@ body {
 #moveDock .move-dock-type {
   transform: translateY(6px) !important;
 }
+
+
+/* Move buttons show only the move name, with color indicating move type. */
+#moveDock .move-dock-icon.attack-move {
+  background: #ffdf57 !important;
+  border-color: #ffdf57 !important;
+  color: #17202a !important;
+}
+#moveDock .move-dock-icon.buff-debuff-move {
+  background: #4bd49a !important;
+  border-color: #4bd49a !important;
+  color: #10251d !important;
+}
+#moveDock .move-dock-icon.attack-move .move-dock-name,
+#moveDock .move-dock-icon.buff-debuff-move .move-dock-name {
+  color: inherit !important;
+}
+#moveDock .move-dock-icon.attack-move.unavailable,
+#moveDock .move-dock-icon.buff-debuff-move.unavailable {
+  opacity: .5 !important;
+}
