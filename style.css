@@ -6332,3 +6332,23 @@ body {
     column-gap: 1px !important;
   }
 }
+
+
+/* Make HP and stamina bars thicker and close the vertical gap so the red/blue bars meet. */
+#teamRoster .roster-vitals { gap: 0 !important; }
+#teamRoster .roster-vital-line,
+#teamRoster .roster-row.roster-active .roster-vital-line,
+#teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+  min-height: 8px !important;
+  line-height: 1 !important;
+}
+#teamRoster .roster-bar,
+#teamRoster .roster-hp-track,
+#teamRoster .roster-sta-track {
+  height: 8px !important;
+  min-height: 8px !important;
+  max-height: 8px !important;
+}
+#teamRoster .roster-hp-label,
+#teamRoster .roster-sta-label,
+#teamRoster .roster-value { line-height: 1 !important; }
