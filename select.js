@@ -65,7 +65,7 @@ function render() {
       const small = document.createElement("small");
       small.textContent = label;
       const b = document.createElement("b");
-      b.textContent = value;
+      b.textContent = Math.ceil(value);
       item.append(small,b);
       stats.appendChild(item);
     });
