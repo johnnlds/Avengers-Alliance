@@ -3348,3 +3348,86 @@ body {
     transform: none !important;
   }
 }
+
+
+/* Restore the intended four-across square move dock with centered names and corner stats. */
+@media (max-width: 760px) {
+  .move-dock {
+    box-sizing: border-box !important;
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-auto-rows: auto !important;
+    grid-template-rows: none !important;
+    gap: 4px !important;
+    padding: 4px !important;
+    margin: 0 auto !important;
+    align-items: stretch !important;
+  }
+  .move-dock-icon {
+    position: relative !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 3px !important;
+    overflow: hidden !important;
+  }
+  .move-dock-details {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .move-dock-name {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 8px) !important;
+    margin: 0 !important;
+    font-size: clamp(7px, 2.4vw, 10px) !important;
+    line-height: 1.08 !important;
+    text-align: center !important;
+    overflow-wrap: anywhere !important;
+    z-index: 2 !important;
+  }
+  .move-dock-stats {
+    position: absolute !important;
+    inset: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 5px 6px !important;
+    margin: 0 !important;
+    gap: 2px !important;
+    box-sizing: border-box !important;
+  }
+  .move-dock-stats > span {
+    display: flex !important;
+    min-width: 0 !important;
+    font-size: clamp(9px, 2.8vw, 13px) !important;
+    line-height: 1 !important;
+    font-weight: 850 !important;
+  }
+  .move-stat-damage { grid-column: 1 !important; grid-row: 1 !important; justify-content: flex-start !important; align-items: flex-start !important; }
+  .move-stat-stamina { grid-column: 2 !important; grid-row: 1 !important; justify-content: flex-end !important; align-items: flex-start !important; }
+  .move-stat-accuracy { grid-column: 1 !important; grid-row: 2 !important; justify-content: flex-start !important; align-items: flex-end !important; }
+  .move-stat-crit { grid-column: 2 !important; grid-row: 2 !important; justify-content: flex-end !important; align-items: flex-end !important; }
+}
+@media (max-width: 380px) {
+  .move-dock { gap: 3px !important; padding: 3px !important; }
+  .move-dock-stats { padding: 4px !important; }
+  .move-dock-name { font-size: 7px !important; }
+  .move-dock-stats > span { font-size: 9px !important; }
+}
