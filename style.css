@@ -4299,3 +4299,42 @@ body {
 .battlefield .unit .battle-unit-sta {
   z-index: 5 !important;
 }
+
+
+/* Tint move-button details to match each button's background theme; keep move names unchanged. */
+.move-dock-icon .move-dock-glyph,
+.move-dock-icon .move-dock-details,
+.move-dock-icon .move-dock-stats,
+.move-dock-icon .move-dock-cost,
+.move-dock-icon small,
+.move-dock-icon .move-stat-label,
+.move-dock-icon .move-stat-value {
+  color: #dceeff !important;
+}
+.move-dock-icon:nth-child(2) .move-dock-glyph,
+.move-dock-icon:nth-child(2) .move-dock-details,
+.move-dock-icon:nth-child(2) .move-dock-stats,
+.move-dock-icon:nth-child(2) .move-dock-cost,
+.move-dock-icon:nth-child(2) small,
+.move-dock-icon:nth-child(2) .move-stat-label,
+.move-dock-icon:nth-child(2) .move-stat-value {
+  color: #d9efff !important;
+}
+.move-dock-icon:nth-child(3) .move-dock-glyph,
+.move-dock-icon:nth-child(3) .move-dock-details,
+.move-dock-icon:nth-child(3) .move-dock-stats,
+.move-dock-icon:nth-child(3) .move-dock-cost,
+.move-dock-icon:nth-child(3) small,
+.move-dock-icon:nth-child(3) .move-stat-label,
+.move-dock-icon:nth-child(3) .move-stat-value {
+  color: #fff0cf !important;
+}
+.move-dock-icon:nth-child(4) .move-dock-glyph,
+.move-dock-icon:nth-child(4) .move-dock-details,
+.move-dock-icon:nth-child(4) .move-dock-stats,
+.move-dock-icon:nth-child(4) .move-dock-cost,
+.move-dock-icon:nth-child(4) small,
+.move-dock-icon:nth-child(4) .move-stat-label,
+.move-dock-icon:nth-child(4) .move-stat-value {
+  color: #eee5ff !important;
+}
