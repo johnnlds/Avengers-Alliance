@@ -5303,3 +5303,61 @@ body {
 .battlefield .unit.hero .battle-unit-sta {
   z-index: 25 !important;
 }
+
+/* Active buffs/debuffs summary above Battle Actions. */
+.buffs-debuffs-panel {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(16, 24, 36, .96);
+}
+.buffs-debuffs-panel > .section-heading {
+  margin-bottom: 8px;
+  color: var(--gold);
+}
+.buffs-debuffs-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+}
+.buffs-debuffs-character {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.09);
+}
+.buffs-debuffs-name {
+  display: block;
+  margin-bottom: 5px;
+  color: #fff;
+  font-size: 12px;
+}
+.buffs-debuffs-effect {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+  font-size: 10px;
+  line-height: 1.35;
+}
+.buffs-debuffs-effect + .buffs-debuffs-effect {
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.buffs-debuffs-effect > strong { font-size: 10px; }
+.buffs-debuffs-effect > span { color: var(--muted); }
+.buffs-debuffs-effect.buff > strong { color: #4bd49a; }
+.buffs-debuffs-effect.debuff > strong { color: #ff7777; }
+.buffs-debuffs-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+@media (max-width: 760px) {
+  .buffs-debuffs-panel { padding: 10px; }
+  .buffs-debuffs-character { flex-basis: 100%; }
+}
