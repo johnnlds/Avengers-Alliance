@@ -416,6 +416,14 @@ function renderTeam(containerId, units) {
     name.className = "unit-name";
     name.textContent = unit.name;
 
+    const hpBar = document.createElement("div");
+    hpBar.className = "battle-unit-hp";
+    hpBar.setAttribute("aria-label", `Health: ${Math.max(0, unit.hp)} of ${unit.maxHp}`);
+    const hpFill = document.createElement("span");
+    hpFill.className = "battle-unit-hp-fill";
+    hpFill.style.width = `${Math.max(0, Math.min(100, (unit.hp / unit.maxHp) * 100))}%`;
+    hpBar.appendChild(hpFill);
+
     const status = document.createElement("div");
     status.className = "unit-status";
 
@@ -427,7 +435,7 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    card.append(portrait, name, status);
+    if (unit.team === "hero" && isActive) card.append(name, hpBar, portrait, status);\n    else card.append(portrait, name, status);
 
     card.addEventListener("click", () => selectUnit(unit));
     card.addEventListener("keydown", event => {
