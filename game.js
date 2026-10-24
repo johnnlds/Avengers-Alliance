@@ -425,6 +425,21 @@ function renderTeam(containerId, units) {
     hpFill.style.width = `${Math.max(0, Math.min(100, (unit.hp / unit.maxHp) * 100))}%`;
     hpBar.appendChild(hpFill);
 
+    const selectedMove = unit.team === "enemy" && unit.alive && pendingMoveId
+      ? MOVE_DATA.find(move => move.id === pendingMoveId)
+      : null;
+    if (selectedMove && selectedMove.type === "attack" && selectedMove.damage > 0) {
+      const damagePreview = document.createElement("span");
+      damagePreview.className = "battle-unit-hp-preview";
+      const previewDamage = Math.min(unit.hp, selectedMove.damage);
+      const previewPercent = previewDamage / unit.maxHp * 100;
+      const currentPercent = Math.max(0, Math.min(100, unit.hp / unit.maxHp * 100));
+      damagePreview.style.left = `${Math.max(0, currentPercent - previewPercent)}%`;
+      damagePreview.style.width = `${Math.min(currentPercent, previewPercent)}%`;
+      damagePreview.setAttribute("aria-label", `Approximate damage preview: ${Math.round(previewDamage)}`);
+      hpBar.appendChild(damagePreview);
+    }
+
     const staBar = document.createElement("div");
     staBar.className = "battle-unit-sta";
     staBar.setAttribute("aria-label", `Stamina: ${Math.max(0, unit.sta)} of ${unit.maxSta}`);
