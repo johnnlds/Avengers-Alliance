@@ -598,6 +598,7 @@ function renderTeam(containerId, units) {
       unit.team,
       isSelected ? "selected" : "",
       isActive ? "active-turn" : "",
+      unit.team === "enemy" && unit.alive && !!pendingMoveId && getMove(pendingMoveId)?.type === "attack" && ["enemy", "all-enemies"].includes(getMove(pendingMoveId)?.target) ? "enemy-target-preview" : "",
       unit.alive && !!pendingMoveId && ((unit.team === "enemy" && getMove(pendingMoveId)?.target !== "ally" && getMove(pendingMoveId)?.target !== "all-allies") || (unit.team === "hero" && ["ally","all-allies"].includes(getMove(pendingMoveId)?.target))) ? "pending-target" : "",
       animatingActorId === unit.id ? "attacking" : "",
       animatingActorId === unit.id && animatingMoveId ? `attack-${getMove(animatingMoveId)?.attackType || "unarmed-melee"}` : "",
