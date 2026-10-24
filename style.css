@@ -5438,3 +5438,17 @@ body {
   .battlefield .unit.active-turn .battle-unit-hp { top: -19px !important; height: 6px !important; min-height: 6px !important; }
   .battlefield .unit.hero.active-turn .battle-unit-sta { top: -13px !important; height: 6px !important; min-height: 6px !important; }
 }
+
+
+/* Final rule: only the active fighter displays an HP bar. */
+.battlefield .unit .battle-unit-hp,
+.battlefield .unit:not(.active-turn) .battle-unit-hp {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+.battlefield .unit.active-turn .battle-unit-hp {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
