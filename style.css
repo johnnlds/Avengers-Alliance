@@ -6360,3 +6360,25 @@ body {
 @media (max-width: 520px) {
   #teamRoster .roster-name { font-size: 8px !important; }
 }
+
+
+/* Add a small yellow move-type label without changing the move button dimensions. */
+#moveDock .move-dock-details {
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-height: 0 !important;
+  line-height: 1 !important;
+}
+#moveDock .move-dock-name {
+  max-width: 100% !important;
+  line-height: 1 !important;
+}
+#moveDock .move-dock-type {
+  display: block !important;
+  color: #ffdf57 !important;
+  font-size: 7px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
