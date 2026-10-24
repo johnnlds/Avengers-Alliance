@@ -1897,14 +1897,12 @@ body {
 }
 .wave-counter {
   flex: 0 0 auto;
-  padding: 4px 7px;
-  border: 1px solid #80652c;
-  border-radius: 4px;
-  color: #ffe28a;
-  background: linear-gradient(180deg, #44371b, #211b12);
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: .45px;
+  margin-left: 2px;
+  padding: 2px 4px;
+  color: #9db9d4;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .2px;
   white-space: nowrap;
 }
 .turn-order-track {
@@ -2681,8 +2679,9 @@ body {
     letter-spacing: .45px;
   }
   .wave-counter {
-    padding: 3px 4px;
-    font-size: 8px;
+    margin-left: 1px;
+    padding: 1px 2px;
+    font-size: 7px;
     letter-spacing: 0;
   }
   .turn-order-track {
