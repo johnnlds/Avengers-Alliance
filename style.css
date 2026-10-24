@@ -3478,3 +3478,57 @@ body {
     padding: 0 !important;
   }
 }
+
+
+/* Place move stats individually in the four tile corners and separate the lower formation row. */
+.battlefield .unit:nth-child(2) {
+  transform: translateY(22px) !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit:nth-child(2) {
+    transform: translateY(22px) !important;
+  }
+  .move-dock-stats {
+    display: block !important;
+    padding: 0 !important;
+    inset: 0 !important;
+  }
+  .move-dock-stats > span {
+    position: absolute !important;
+    display: block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+  .move-dock-stats .move-stat-damage {
+    top: 2px !important;
+    left: 2px !important;
+    right: auto !important;
+    bottom: auto !important;
+    text-align: left !important;
+  }
+  .move-dock-stats .move-stat-stamina {
+    top: 2px !important;
+    right: 2px !important;
+    left: auto !important;
+    bottom: auto !important;
+    text-align: right !important;
+  }
+  .move-dock-stats .move-stat-accuracy {
+    bottom: 2px !important;
+    left: 2px !important;
+    top: auto !important;
+    right: auto !important;
+    text-align: left !important;
+  }
+  .move-dock-stats .move-stat-crit {
+    bottom: 2px !important;
+    right: 2px !important;
+    top: auto !important;
+    left: auto !important;
+    text-align: right !important;
+  }
+}
