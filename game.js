@@ -9,8 +9,8 @@ const $ = (id) => document.getElementById(id);
 const MOVE_DATA = [
   { id:"shield-training", name:"S.H.I.E.L.D Training", attackType:"unarmed-melee", description:"Two-hit melee strike using S.H.I.E.L.D. combat training.", cost:8, damage:27, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
   { id:"smith-wesson", name:"Smith & Wesson", attackType:"ranged-gun", description:"A precise ranged shot with Phil's sidearm.", cost:15, damage:30, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
-  { id:"destroyer-prototype", name:"Destroyer Prototype", attackType:"ranged-gun", description:"Fire the Destroyer Prototype at all enemies.", cost:22, damage:34.5, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"all-enemies", owner:"phil" },
-  { id:"pep-talk", name:"Pep Talk", attackType:"buff", description:"Inspire all allies, increasing their damage by 20%. Lasts until battle ends.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"buff", target:"all-allies", owner:"phil" },
+  { id:"destroyer-prototype", name:"Destroyer Prototype", attackType:"ranged-gun", description:"Fire the Destroyer Prototype at one enemy.", cost:22, damage:34.5, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
+  { id:"pep-talk", name:"Pep Talk", attackType:"buff", description:"Give all allies a 20% damage boost for their next attack.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"buff", target:"all-allies", owner:"phil" },
 
   { id:"double-punch", name:"Double Punch", attackType:"unarmed-melee", description:"Two powerful punches against one enemy.", cost:8, damage:16.2, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
   { id:"shoulder-slam", name:"Shoulder Slam", attackType:"ranged-gun", description:"A forceful ranged strike against one enemy.", cost:15, damage:18, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
@@ -848,10 +848,10 @@ function useMove(moveId, chosenTarget = null) {
   if ((actor.cooldowns[move.id] || 0) > 0) { log(`${move.name} is still on cooldown.`, "miss"); return; }
 
   const targetTeam = move.target === "ally" ? heroes : enemies;
-  const requiresTarget = ["enemy","ally"].includes(move.target);
+  const requiresTarget = ["enemy","ally","all-enemies"].includes(move.target);
   const target = !requiresTarget ? null : (chosenTarget && chosenTarget.alive && targetTeam.some(unit => unit.id === chosenTarget.id)
     ? chosenTarget : targetTeam.find(unit => unit.id === selectedTargetId && unit.alive));
-  if (["enemy","ally"].includes(move.target) && !target) {
+  if (["enemy","ally","all-enemies"].includes(move.target) && !target) {
     log(move.target === "ally" ? "Select a living ally first." : "Select a living enemy first.", "miss");
     return;
   }
@@ -867,7 +867,7 @@ function useMove(moveId, chosenTarget = null) {
   } else if (move.target === "all-allies") {
     for (const ally of heroes.filter(unit => unit.alive)) ally.damageBoost = Math.max(ally.damageBoost || 0, 0.2);
     actor.cooldowns[move.id] = move.cooldown;
-    log(`${actor.name} uses Pep Talk! All allies gain a 20% damage boost for the rest of the battle.`, "good");
+    log(`${actor.name} uses Pep Talk! All living allies gain a 20% damage boost for their next attack.`, "good");
   } else if (move.type === "protect") {
     target.protectedUntilAttack = true;
     actor.cooldowns[move.id] = move.cooldown;
@@ -885,7 +885,7 @@ function useMove(moveId, chosenTarget = null) {
 }
 
 function performAttackOnTargets(actor, targets, move) {
-  log(`${actor.name} uses ${move.name} against all enemies!`);
+  log(`${actor.name} uses ${move.name} against the enemy formation!`);
   for (const target of targets) {
     if (!target.alive || !actor.alive) continue;
     const hitChance = move.accuracy / 100;
@@ -904,6 +904,10 @@ function performAttackOnTargets(actor, targets, move) {
     showDamageNumber(target, damage.amount, damage.critical, false, 100);
     log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`, "damage");
     if (target.hp <= 0) { target.alive = false; target.hp = 0; log(`${target.name} has been defeated!`, "good"); }
+  }
+  if (actor.team === "hero" && actor.damageBoost > 0) {
+    actor.damageBoost = 0;
+    log(`${actor.name} uses up the Pep Talk boost.`, "good");
   }
 }
 function useWidowmaker(actor, target, move) {
@@ -938,6 +942,10 @@ function performAttack(actor, target, move) {
       else log("The stun attempt fails.");
     }
     if (target.hp <= 0) { target.alive = false; target.hp = 0; log(`${target.name} has been defeated!`, "good"); }
+  }
+  if (actor.team === "hero" && actor.damageBoost > 0) {
+    actor.damageBoost = 0;
+    log(`${actor.name} uses up the Pep Talk boost.`, "good");
   }
 }
 
@@ -1114,13 +1122,13 @@ $("selectMoveBtn").addEventListener("click", () => {
   const cooldown = actor.cooldowns[move.id] || 0;
   if (actor.sta < move.cost || cooldown > 0) return;
   closeMoveInfo();
-  if (["all-enemies","all-allies"].includes(move.target)) {
+  if (move.target === "all-allies") {
     useMove(move.id);
     return;
   }
   pendingMoveId = move.id;
   renderAll();
-  log(`${move.name} selected. ${move.target === "ally" ? "Now select an ally." : "Now select an enemy."}`, "good");
+  log(`${move.name} selected. ${move.target === "ally" ? "Now select an ally." : "Now select an enemy to initiate the attack."}`, "good");
 });
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !$("moveInfoOverlay").classList.contains("hidden")) closeMoveInfo();
