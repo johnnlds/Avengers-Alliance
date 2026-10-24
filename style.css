@@ -4052,3 +4052,42 @@ body {
   display: grid !important;
   align-content: center !important;
 }
+
+
+/* Enlarge battlefield character portraits and tighten formation spacing. */
+.battlefield .team-grid {
+  column-gap: 2px !important;
+  row-gap: 0 !important;
+  justify-items: center !important;
+}
+.battlefield .unit {
+  max-width: 205px !important;
+  margin-left: -3px !important;
+  margin-right: -3px !important;
+}
+.battlefield .unit .portrait {
+  height: clamp(132px, 16vw, 188px) !important;
+}
+.battlefield .unit .portrait img {
+  transform: scale(1.04) !important;
+  transform-origin: center bottom !important;
+}
+@media (max-width: 760px) {
+  .battlefield .team-grid {
+    column-gap: 0 !important;
+    row-gap: 0 !important;
+  }
+  .battlefield .unit {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: -4px !important;
+    margin-right: -4px !important;
+  }
+  .battlefield .unit .portrait {
+    height: clamp(96px, 24vw, 142px) !important;
+  }
+  .battlefield .unit .portrait img {
+    transform: scale(1.04) !important;
+    transform-origin: center bottom !important;
+  }
+}
