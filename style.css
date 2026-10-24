@@ -6459,3 +6459,13 @@ body {
   transform: translateY(2px) !important;
   overflow: visible !important;
 }
+
+
+/* Restore centered move-name alignment while preserving the vertical adjustment. */
+#moveDock .move-dock-name {
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  text-align: center !important;
+  transform: translateY(2px) !important;
+}
