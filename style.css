@@ -3994,3 +3994,38 @@ body {
     font-size: 6px !important;
   }
 }
+
+
+/* Team identity comes from each roster panel; health stays red for both teams. */
+#teamRoster {
+  background: #0b1420 !important;
+  border-color: rgba(120,160,205,.35) !important;
+}
+#teamRoster .roster-group {
+  border-radius: 7px !important;
+  padding: 5px !important;
+  box-sizing: border-box !important;
+}
+#teamRoster .roster-group:first-child {
+  background: linear-gradient(145deg, rgba(12,74,135,.62), rgba(8,35,69,.9)) !important;
+  border: 1px solid rgba(64,160,255,.48) !important;
+}
+#teamRoster .roster-group:last-child {
+  background: linear-gradient(145deg, rgba(130,20,35,.62), rgba(57,10,20,.92)) !important;
+  border: 1px solid rgba(255,74,88,.45) !important;
+}
+#teamRoster .roster-group + .roster-group {
+  border-left: 0 !important;
+  padding-left: 5px !important;
+}
+#teamRoster .roster-group:first-child .roster-hp-track .roster-bar-fill,
+#teamRoster .roster-group:last-child .roster-hp-track .roster-bar-fill {
+  background: linear-gradient(180deg, #ff7379 0%, #ef263b 55%, #a80e24 100%) !important;
+}
+#teamRoster .roster-group:first-child .roster-sta-track .roster-bar-fill {
+  background: linear-gradient(180deg, #62c5ff 0%, #0878e8 55%, #0750a8 100%) !important;
+}
+/* Opponent stamina is still tracked in game state; only its display is hidden. */
+#teamRoster .roster-group:last-child .roster-vital-line:nth-child(2) {
+  display: none !important;
+}
