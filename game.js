@@ -26,7 +26,7 @@ const MOVE_DATA = [
 
   { id:"stormbreaker", name:"Stormbreaker", attackType:"unarmed-melee", description:"Beta Ray Bill strikes one enemy with Stormbreaker.", cost:572.24, damage:1416.6, hits:1, accuracy:75, crit:2, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
   { id:"thunderstruck", name:"Thunderstruck", attackType:"ranged-gun", description:"Unleash a ranged thunder attack against one enemy.", cost:1072.95, damage:1574, hits:1, accuracy:87, crit:8, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
-  { id:"flying-kick-bill", name:"Flying Kick", attackType:"flying-melee", description:"A powerful flying kick that hits all enemies.", cost:1573.66, damage:519.42, hits:1, accuracy:100, crit:32, cooldown:0, type:"attack", target:"all-enemies", owner:"beta-ray-bill" },
+  { id:"flying-kick-bill", name:"I Say Thee Nay!", attackType:"flying-melee", description:"A powerful flying kick that hits all enemies.", cost:1573.66, damage:519.42, hits:1, accuracy:100, crit:32, cooldown:0, type:"attack", target:"all-enemies", owner:"beta-ray-bill" },
   { id:"lightning-strike", name:"Lightning Strike!", attackType:"ranged-gun", description:"Strike all enemies with lightning. Each enemy hit has a 100% chance to be stunned. Cooldown: 2 rounds.", cost:500.71, damage:157.4, hits:1, accuracy:60, crit:0, cooldown:2, type:"attack", target:"all-enemies", stunChance:100, owner:"beta-ray-bill" }
 ];
 
