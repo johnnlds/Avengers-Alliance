@@ -651,11 +651,8 @@ function startRound() {
 
   initiative = [...heroes, ...enemies]
     .filter(unit => unit.alive)
-    .map(unit => ({
-      id: unit.id,
-      score: unit.eva + Math.random() * 100
-    }))
-    .sort((a, b) => b.score - a.score)
+    .map((unit, index) => ({ id: unit.id, evasion: unit.eva, index }))
+    .sort((a, b) => b.evasion - a.evasion || a.index - b.index)
     .map(item => item.id);
 
   turnIndex = 0;
