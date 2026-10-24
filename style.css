@@ -5710,3 +5710,48 @@ body {
 #teamRoster .roster-row .roster-sta-line {
   display: grid !important;
 }
+
+
+/* Final move dock: one compact row of four text-sized buttons. */
+#moveDock.move-dock {
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 5px !important;
+  width: 100% !important;
+  padding: 3px 0 !important;
+  overflow-x: auto !important;
+}
+#moveDock .move-dock-icon {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 28px !important;
+  height: auto !important;
+  padding: 5px 8px !important;
+  border-radius: 4px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+}
+#moveDock .move-dock-details {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  justify-content: center !important;
+}
+#moveDock .move-dock-name {
+  display: block !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  text-align: center !important;
+}
