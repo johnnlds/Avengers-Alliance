@@ -4701,3 +4701,9 @@ body {
   width: min(100%, 230px) !important;
   max-width: 230px !important;
 }
+
+
+/* Keep wave announcements above character artwork and all battlefield UI. */
+.wave-announcement { z-index: 9998 !important; }
+/* The result screen must be the topmost layer when the battle ends. */
+#resultOverlay { z-index: 9999 !important; }
