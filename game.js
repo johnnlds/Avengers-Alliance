@@ -15,7 +15,7 @@ const MOVE_DATA = [
   { id:"double-punch", name:"Double Punch", attackType:"unarmed-melee", description:"Two powerful punches against one enemy.", cost:8, damage:16.2, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
   { id:"shoulder-slam", name:"Shoulder Slam", attackType:"ranged-gun", description:"A forceful ranged strike against one enemy.", cost:15, damage:18, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
   { id:"spin-throw", name:"Spin Throw", attackType:"spin-melee", description:"Spin through the enemy formation, striking every enemy.", cost:22, damage:12.6, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"all-enemies", owner:"bruiser" },
-  { id:"shield-protect", name:"S.H.I.E.L.D", attackType:"buff", description:"Protect one ally so they cannot lose HP until they attack again.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"protect", target:"ally", owner:"bruiser" },
+  { id:"shield-protect", name:"S.H.I.E.L.D", attackType:"buff", description:"Protect yourself and one ally from the next incoming attack.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"protect", target:"ally", owner:"bruiser" },
 
   { id:"combo", name:"Martial Arts Combo", attackType:"unarmed-melee", description:"Two melee hits against one enemy.", cost:8, damage:22.5, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
   { id:"bite", name:"Widow's Bite", attackType:"ranged-gun", description:"A ranged electric shot against one enemy.", cost:15, damage:25, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
