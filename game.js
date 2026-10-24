@@ -1129,7 +1129,7 @@ $("selectMoveBtn").addEventListener("click", () => {
   
   pendingMoveId = move.id;
   renderAll();
-  log(`${move.name} selected. ${move.target === "ally" ? "Now select an ally." : "Now select an enemy to initiate the attack."}`, "good");
+  log(`${move.name} selected. ${["ally","all-allies"].includes(move.target) ? "Now select an ally." : "Now select an enemy to initiate the attack."}`, "good");
 });
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !$("moveInfoOverlay").classList.contains("hidden")) closeMoveInfo();
