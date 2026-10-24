@@ -6443,3 +6443,9 @@ body {
 #moveDock .move-dock-icon.buff-debuff-move .move-dock-name {
   color: #fff !important;
 }
+
+
+/* Attack moves use a red outline; buff/debuff moves stay green. */
+#moveDock .move-dock-icon.attack-move {
+  border-color: #ef5350 !important;
+}
