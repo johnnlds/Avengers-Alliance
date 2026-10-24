@@ -3845,3 +3845,25 @@ body {
     margin: 0 !important;
   }
 }
+
+
+/* Slightly reduce battlefield character art and show name/health only for active heroes. */
+.battlefield .unit .portrait img {
+  transform: scale(0.92) !important;
+  transform-origin: center bottom !important;
+}
+.battlefield .unit.active-turn.hero .unit-name {
+  display: block !important;
+}
+.battlefield .unit:not(.active-turn).hero .battle-unit-hp,
+.battlefield .unit.enemy .battle-unit-hp {
+  display: none !important;
+}
+.battlefield .unit.active-turn.hero .battle-unit-hp {
+  display: block !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit .portrait img {
+    transform: scale(0.92) !important;
+  }
+}
