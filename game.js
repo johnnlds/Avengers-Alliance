@@ -646,6 +646,7 @@ function renderTeam(containerId, units) {
       const details = document.createElement("div");
       details.className = "unit-effect-details hidden";
       details.setAttribute("aria-live", "polite");
+      details.addEventListener("click", event => event.stopPropagation());
 
       const makeIndicator = (kind, symbol, label, effects) => {
         if (!effects.length) return;
@@ -693,6 +694,7 @@ function renderTeam(containerId, units) {
 
     card.addEventListener("click", () => selectUnit(unit));
     card.addEventListener("keydown", event => {
+      if (event.target.closest(".unit-effect-indicator")) return;
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         selectUnit(unit);
