@@ -4408,3 +4408,32 @@ body {
 .move-dock-icon .move-stat-value {
   color: #a0aec0 !important;
 }
+
+
+/* Reposition the active hero's nameplate and bars for the enlarged character art. */
+.battlefield .unit.active-turn.hero .unit-name {
+  top: -42px !important;
+}
+.battlefield .unit.active-turn.hero .battle-unit-hp {
+  top: -26px !important;
+}
+.battlefield .unit.active-turn.hero .battle-unit-sta {
+  top: -19px !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit.active-turn.hero .unit-name {
+    top: -32px !important;
+  }
+  .battlefield .unit.active-turn.hero .battle-unit-hp {
+    top: -19px !important;
+  }
+  .battlefield .unit.active-turn.hero .battle-unit-sta {
+    top: -13px !important;
+  }
+}
+
+/* Lower the top-positioned character slightly on both sides of the formation. */
+.battlefield .hero-side .unit:nth-child(1),
+.battlefield .enemy-side .unit:nth-child(1) {
+  translate: 0 8px !important;
+}
