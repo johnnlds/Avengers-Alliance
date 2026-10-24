@@ -849,7 +849,10 @@ function renderMoveDock() {
     const moveName = document.createElement("strong");
     moveName.className = "move-dock-name";
     moveName.textContent = move.name;
-    details.append(moveName);
+    const moveTypeLabel = document.createElement("span");
+    moveTypeLabel.className = "move-dock-type";
+    moveTypeLabel.textContent = move.type === "attack" ? "Attack" : "Buff/Debuff";
+    details.append(moveName, moveTypeLabel);
     button.append(details);
     let lastTapAt = 0;
     button.addEventListener("click", () => {
