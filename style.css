@@ -5276,3 +5276,30 @@ body {
     min-height: 6px !important;
   }
 }
+
+
+/* Fix regression: earlier, more-specific rules hid non-active and enemy HP bars. */
+.battlefield .unit:not(.active-turn).hero .battle-unit-hp,
+.battlefield .unit.enemy .battle-unit-hp {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.battlefield .unit .battle-unit-hp-fill {
+  display: block !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, #c9152b, #ff5368) !important;
+  border-radius: inherit !important;
+}
+.battlefield .unit .battle-unit-hp {
+  overflow: hidden !important;
+  background: rgba(30,0,0,.95) !important;
+  border: 1px solid rgba(255,255,255,.85) !important;
+}
+.battlefield .unit .unit-name,
+.battlefield .unit .battle-unit-hp,
+.battlefield .unit.hero .battle-unit-sta {
+  z-index: 25 !important;
+}
