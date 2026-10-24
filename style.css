@@ -2998,3 +2998,24 @@ body {
   .move-dock-name { font-size: 6.5px !important; }
   .move-dock-stats { font-size: 6px !important; }
 }
+
+
+/* User preference: left-align the mobile ability tile contents. */
+@media (max-width: 760px) {
+  .move-dock-icon {
+    align-items: flex-start !important;
+    text-align: left !important;
+    padding: 4px 5px !important;
+  }
+  .move-dock-glyph {
+    align-self: flex-start !important;
+  }
+  .move-dock-details {
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+  .move-dock-name,
+  .move-dock-stats {
+    text-align: left !important;
+  }
+}
