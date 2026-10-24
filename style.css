@@ -4506,3 +4506,40 @@ body {
   font-weight: 500 !important;
   line-height: 1.1 !important;
 }
+
+
+/* Normalize all move cards to the first card's neutral text color. */
+.move-dock-icon:nth-child(2) .move-dock-glyph,
+.move-dock-icon:nth-child(2) .move-dock-details,
+.move-dock-icon:nth-child(2) .move-dock-stats,
+.move-dock-icon:nth-child(2) .move-dock-stats *,
+.move-dock-icon:nth-child(2) .move-dock-cost,
+.move-dock-icon:nth-child(2) small,
+.move-dock-icon:nth-child(3) .move-dock-glyph,
+.move-dock-icon:nth-child(3) .move-dock-details,
+.move-dock-icon:nth-child(3) .move-dock-stats,
+.move-dock-icon:nth-child(3) .move-dock-stats *,
+.move-dock-icon:nth-child(3) .move-dock-cost,
+.move-dock-icon:nth-child(3) small,
+.move-dock-icon:nth-child(4) .move-dock-glyph,
+.move-dock-icon:nth-child(4) .move-dock-details,
+.move-dock-icon:nth-child(4) .move-dock-stats,
+.move-dock-icon:nth-child(4) .move-dock-stats *,
+.move-dock-icon:nth-child(4) .move-dock-cost,
+.move-dock-icon:nth-child(4) small {
+  color: #a0aec0 !important;
+}
+.move-dock-icon:nth-child(2) .move-dock-name,
+.move-dock-icon:nth-child(3) .move-dock-name,
+.move-dock-icon:nth-child(4) .move-dock-name {
+  color: #ffffff !important;
+}
+/* Keep move names anchored and lower all supporting text slightly. */
+.move-dock-icon .move-dock-stats {
+  transform: translateY(3px) !important;
+}
+.move-dock-icon .move-dock-glyph,
+.move-dock-icon .move-dock-cost,
+.move-dock-icon small {
+  transform: translateY(3px) !important;
+}
