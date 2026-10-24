@@ -4707,3 +4707,7 @@ body {
 .wave-announcement { z-index: 9998 !important; }
 /* The result screen must be the topmost layer when the battle ends. */
 #resultOverlay { z-index: 9999 !important; }
+
+/* Pin the battle result card at the top of the viewport. */
+#resultOverlay { align-items: flex-start !important; }
+#resultOverlay .result-card { margin-top: 16px !important; }
