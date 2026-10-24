@@ -6096,3 +6096,80 @@ body {
     text-overflow: ellipsis !important;
   }
 }
+
+
+/* Final vitals alignment: shift the numbers slightly left without shrinking them,
+   and let each bar reach closer to its number. Keep active and inactive rows identical. */
+#teamRoster .roster-row,
+#teamRoster .roster-row.roster-active,
+#teamRoster .roster-row:not(.roster-active) {
+  display: grid !important;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr) !important;
+  align-items: center !important;
+  gap: 3px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+#teamRoster .roster-row .roster-name {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+#teamRoster .roster-row .roster-vitals {
+  display: flex !important;
+  flex: 1 1 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  flex-direction: column !important;
+}
+#teamRoster .roster-row .roster-vital-line,
+#teamRoster .roster-row.roster-active .roster-vital-line,
+#teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+  display: grid !important;
+  grid-template-columns: 16px minmax(0, 1fr) 25px !important;
+  column-gap: 1px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  align-items: center !important;
+}
+#teamRoster .roster-row .roster-value {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding-right: 3px !important;
+  margin: 0 !important;
+  font-size: 7px !important;
+  line-height: 1 !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+}
+#teamRoster .roster-row .roster-bar,
+#teamRoster .roster-row .roster-hp-track,
+#teamRoster .roster-row .roster-sta-track {
+  display: block !important;
+  width: calc(100% + 2px) !important;
+  min-width: 0 !important;
+  height: 7px !important;
+  min-height: 7px !important;
+  max-height: 7px !important;
+  margin-right: -2px !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 520px) {
+  #teamRoster .roster-row,
+  #teamRoster .roster-row.roster-active,
+  #teamRoster .roster-row:not(.roster-active) {
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr) !important;
+  }
+  #teamRoster .roster-row .roster-vital-line,
+  #teamRoster .roster-row.roster-active .roster-vital-line,
+  #teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+    grid-template-columns: 16px minmax(0, 1fr) 25px !important;
+    column-gap: 1px !important;
+  }
+  #teamRoster .roster-row .roster-value { font-size: 7px !important; }
+}
