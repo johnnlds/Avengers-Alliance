@@ -3713,3 +3713,12 @@ body {
     text-align: right !important;
   }
 }
+
+
+/* Left-align the four stat rows beneath the centered move name. */
+@media (max-width: 760px) {
+  .move-dock-stats > span {
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+}
