@@ -1895,6 +1895,18 @@ body {
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
+.wave-counter {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border: 1px solid #80652c;
+  border-radius: 4px;
+  color: #ffe28a;
+  background: linear-gradient(180deg, #44371b, #211b12);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .45px;
+  white-space: nowrap;
+}
 .turn-order-track {
   display: flex;
   flex: 1;
@@ -2667,6 +2679,11 @@ body {
   .turn-order-label {
     font-size: 7px;
     letter-spacing: .45px;
+  }
+  .wave-counter {
+    padding: 3px 4px;
+    font-size: 8px;
+    letter-spacing: 0;
   }
   .turn-order-track {
     gap: 4px;
