@@ -5508,3 +5508,69 @@ body {
     min-height: 6px !important;
   }
 }
+
+
+/* Move buttons show only the move name in a wide rectangular layout. */
+#moveDock.move-dock {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-auto-rows: minmax(44px, auto) !important;
+  gap: 8px !important;
+  align-items: stretch !important;
+}
+#moveDock .move-dock-icon {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 44px !important;
+  max-height: none !important;
+  padding: 8px 10px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  border-radius: 6px !important;
+}
+#moveDock .move-dock-details {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+#moveDock .move-dock-name {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+#moveDock .move-dock-stats,
+#moveDock .move-dock-glyph,
+#moveDock .move-dock-cost,
+#moveDock .move-dock-icon small {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  #moveDock.move-dock {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-rows: minmax(42px, auto) !important;
+    gap: 6px !important;
+  }
+  #moveDock .move-dock-icon {
+    min-height: 42px !important;
+    padding: 7px 8px !important;
+  }
+  #moveDock .move-dock-name {
+    font-size: 11px !important;
+  }
+}
