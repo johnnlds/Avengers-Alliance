@@ -1007,6 +1007,12 @@ function useMove(moveId, chosenTarget = null) {
   window.setTimeout(nextTurn, 1550);
 }
 
+function doesAttackHit(attacker, target, move) {
+  // A 100-point Accuracy advantage over Evasion guarantees a hit.
+  if (attacker.acc >= target.eva + 100) return true;
+  return Math.random() <= move.accuracy / 100;
+}
+
 function performAttackOnTargets(actor, targets, move) {
   log(`${actor.name} uses ${move.name} against the enemy formation!`);
   for (const target of targets) {
@@ -1017,7 +1023,7 @@ function performAttackOnTargets(actor, targets, move) {
       log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
       continue;
     }
-    if (Math.random() > hitChance) {
+    if (!doesAttackHit(actor, target, move)) {
       log(`${move.name} misses ${target.name}!`, "miss");
       showDamageNumber(target, 0, false, true, 100);
       continue;
@@ -1057,7 +1063,7 @@ function performAttack(actor, target, move) {
       log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
       break;
     }
-    if (Math.random() > move.accuracy / 100) {
+    if (!doesAttackHit(actor, target, move)) {
       log(`${move.name} misses ${target.name}!`, "miss");
       showDamageNumber(target, 0, false, true, 80 + (hitNumber - 1) * 480);
       continue;
