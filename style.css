@@ -6060,3 +6060,39 @@ body {
   min-height: 31px !important;
   max-height: 31px !important;
 }
+
+
+/* Final roster-bar alignment: thicker tracks, tighter value alignment, and consistent starts. */
+#teamRoster .roster-vital-line,
+#teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+  grid-template-columns: 16px minmax(0, 1fr) 25px !important;
+  column-gap: 1px !important;
+}
+#teamRoster .roster-bar,
+#teamRoster .roster-row:not(.roster-active) .roster-bar,
+#teamRoster .roster-hp-track,
+#teamRoster .roster-sta-track,
+#teamRoster .roster-row:not(.roster-active) .roster-hp-track,
+#teamRoster .roster-row:not(.roster-active) .roster-sta-track {
+  height: 7px !important;
+  min-height: 7px !important;
+  max-height: 7px !important;
+}
+#teamRoster .roster-name {
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+@media (max-width: 520px) {
+  #teamRoster .roster-vital-line,
+  #teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+    grid-template-columns: 16px minmax(0, 1fr) 25px !important;
+    column-gap: 1px !important;
+  }
+  #teamRoster .roster-name {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
