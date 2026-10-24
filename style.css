@@ -3532,3 +3532,40 @@ body {
     text-align: right !important;
   }
 }
+
+
+/* Compact stat icons: icon hugs each tile corner, number sits beside it. */
+@media (max-width: 760px) {
+  .move-dock-stats > span {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 2px !important;
+    width: auto !important;
+    max-width: calc(50% - 2px) !important;
+    font-size: clamp(8px, 2.5vw, 12px) !important;
+  }
+  .move-dock-stats .move-stat-glyph {
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+    font-size: 0.9em !important;
+    line-height: 1 !important;
+  }
+  .move-dock-stats .move-stat-value {
+    display: inline-block !important;
+    line-height: 1 !important;
+  }
+  .move-dock-stats .move-stat-damage,
+  .move-dock-stats .move-stat-accuracy {
+    flex-direction: row !important;
+  }
+  .move-dock-stats .move-stat-stamina,
+  .move-dock-stats .move-stat-crit {
+    flex-direction: row-reverse !important;
+  }
+}
+@media (max-width: 380px) {
+  .move-dock-stats > span {
+    font-size: 8px !important;
+    gap: 1px !important;
+  }
+}
