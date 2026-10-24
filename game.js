@@ -22,7 +22,12 @@ const MOVE_DATA = [
   { id:"kick", name:"Flying Kick", attackType:"flying-melee", description:"Leap into one enemy with a powerful kick.", cost:22, damage:28.75, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
   { id:"widowmaker", name:"Widowmaker", attackType:"ranged-gun", description:"Reduce target Attack by 50% for one round. Your next attack has a 75% chance to stun.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"debuff", target:"enemy", owner:"blackwidow" },
 
-  { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true }
+  { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true },
+
+  { id:"stormbreaker", name:"Stormbreaker", attackType:"unarmed-melee", description:"Beta Ray Bill strikes one enemy with Stormbreaker.", cost:572.24, damage:1416.6, hits:1, accuracy:75, crit:2, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
+  { id:"thunderstruck", name:"Thunderstruck", attackType:"ranged-gun", description:"Unleash a ranged thunder attack against one enemy.", cost:1072.95, damage:1574, hits:1, accuracy:87, crit:8, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
+  { id:"flying-kick-bill", name:"Flying Kick", attackType:"flying-melee", description:"A powerful flying kick that hits all enemies.", cost:1573.66, damage:519.42, hits:1, accuracy:100, crit:32, cooldown:0, type:"attack", target:"all-enemies", owner:"beta-ray-bill" },
+  { id:"lightning-strike", name:"Lightning Strike!", attackType:"ranged-gun", description:"Strike all enemies with lightning. Each enemy hit has a 100% chance to be stunned. Cooldown: 2 rounds.", cost:500.71, damage:157.4, hits:1, accuracy:60, crit:0, cooldown:2, type:"attack", target:"all-enemies", stunChance:100, owner:"beta-ray-bill" }
 ];
 
 function getMove(moveId) {
@@ -76,6 +81,20 @@ const HERO_TEMPLATES = [
     def: 20,
     eva: 25,
     moveIds: ["combo","bite","kick","widowmaker"]
+  },
+  {
+    id: "beta-ray-bill",
+    name: "Beta Ray Bill",
+    description: "Korbinite champion wielding Stormbreaker",
+    image: "Bill",
+    team: "hero",
+    maxHp: 7868,
+    maxSta: 7153,
+    atk: 1574,
+    acc: 1288,
+    def: 1574,
+    eva: 1144,
+    moveIds: ["stormbreaker","thunderstruck","flying-kick-bill","lightning-strike"]
   }
 ];
 
@@ -581,7 +600,10 @@ function renderTeam(containerId, units) {
 }
 
 function moveIconGlyph(moveId) {
-  return moveId === "combo" ? "⚔" : moveId === "bite" ? "⚡" : moveId === "kick" ? "➤" : "◎";
+  if (moveId === "stormbreaker") return "🔨";
+  if (moveId === "thunderstruck" || moveId === "lightning-strike") return "⚡";
+  if (moveId === "flying-kick-bill" || moveId === "kick") return "➤";
+  return moveId === "combo" ? "⚔" : moveId === "bite" ? "⚡" : "◎";
 }
 
 function renderMoveDock() {
@@ -958,6 +980,7 @@ function useMove(moveId, chosenTarget = null) {
 
   if (move.target === "all-enemies") {
     performAttackOnTargets(actor, enemies.filter(unit => unit.alive), move);
+    if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
   } else if (move.target === "all-allies") {
     for (const ally of heroes.filter(unit => unit.alive)) ally.damageBoost = Math.max(ally.damageBoost || 0, 0.2);
     actor.cooldowns[move.id] = move.cooldown;
@@ -971,6 +994,7 @@ function useMove(moveId, chosenTarget = null) {
     useWidowmaker(actor, target, move);
   } else {
     performAttack(actor, target, move);
+    if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
   }
 
   renderAll();
@@ -998,7 +1022,14 @@ function performAttackOnTargets(actor, targets, move) {
     target.hp = Math.max(0, target.hp - damage.amount);
     showDamageNumber(target, damage.amount, damage.critical, false, 100);
     log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`, "damage");
-    if (target.hp <= 0) { target.alive = false; target.hp = 0; log(`${target.name} has been defeated!`, "good"); }
+    if (target.hp <= 0) {
+      target.alive = false;
+      target.hp = 0;
+      log(`${target.name} has been defeated!`, "good");
+    } else if (move.stunChance && Math.random() < move.stunChance / 100) {
+      target.stunned = true;
+      log(`${target.name} is stunned and will lose their next action!`, "good");
+    }
   }
   if (actor.team === "hero" && actor.damageBoost > 0) {
     actor.damageBoost = 0;
