@@ -5800,3 +5800,31 @@ body {
   overflow-wrap: anywhere !important;
   text-align: center !important;
 }
+
+
+/* Keep the four full-width move buttons short and rectangular. */
+#moveDock.move-dock {
+  grid-template-rows: 24px !important;
+  grid-auto-rows: 24px !important;
+  align-items: stretch !important;
+}
+#moveDock .move-dock-icon {
+  height: 24px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
+  padding: 2px 4px !important;
+  overflow: hidden !important;
+  border-radius: 4px !important;
+}
+#moveDock .move-dock-details,
+#moveDock .move-dock-name {
+  min-height: 0 !important;
+  line-height: 1 !important;
+}
+#moveDock .move-dock-name {
+  font-size: 9px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  overflow-wrap: normal !important;
+}
