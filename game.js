@@ -372,7 +372,7 @@ function renderTeam(containerId, units) {
       unit.team,
       isSelected ? "selected" : "",
       isActive ? "active-turn" : "",
-      unit.team === "enemy" && unit.alive && !!pendingMoveId ? "pending-target" : "",
+      unit.alive && !!pendingMoveId && ((unit.team === "enemy" && getMove(pendingMoveId)?.target !== "ally" && getMove(pendingMoveId)?.target !== "all-allies") || (unit.team === "hero" && ["ally","all-allies"].includes(getMove(pendingMoveId)?.target))) ? "pending-target" : "",
       animatingActorId === unit.id ? "attacking" : "",
       animatingActorId === unit.id && animatingMoveId ? `attack-${getMove(animatingMoveId)?.attackType || "unarmed-melee"}` : "",
       animatingActorId === unit.id && animatingMode === "sweep" ? "attack-sweep" : "",
@@ -407,8 +407,9 @@ function renderTeam(containerId, units) {
     hpFill.style.width = `${Math.max(0, Math.min(100, (unit.hp / unit.maxHp) * 100))}%`;
     hpBar.appendChild(hpFill);
 
-    const selectedMove = unit.team === "enemy" && unit.alive && pendingMoveId
-      ? MOVE_DATA.find(move => move.id === pendingMoveId)
+    const pendingMove = pendingMoveId ? getMove(pendingMoveId) : null;
+    const selectedMove = unit.team === "enemy" && unit.alive && pendingMove && ["enemy","all-enemies"].includes(pendingMove.target)
+      ? pendingMove
       : null;
     if (selectedMove && selectedMove.type === "attack" && selectedMove.damage > 0) {
       const damagePreview = document.createElement("span");
@@ -455,8 +456,10 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    if (unit.team === "hero" && isActive) card.append(name, hpBar, staBar, portrait, status);
-    else if (unit.team === "enemy") card.append(portrait, name, hpBar, status);
+    if (unit.team === "hero" && (isActive || (unit.alive && pendingMove && ["ally","all-allies"].includes(pendingMove.target)))) {
+      if (isActive) card.append(name, hpBar, staBar, portrait, status);
+      else card.append(portrait, name, hpBar, status);
+    } else if (unit.team === "enemy") card.append(portrait, name, hpBar, status);
     else card.append(portrait, name, status);
 
     card.addEventListener("click", () => selectUnit(unit));
@@ -629,7 +632,7 @@ function selectUnit(unit) {
   }
   const move = getMove(pendingMoveId);
   if (!move) return;
-  const validTarget = move.target === "ally" ? unit.team === "hero" : unit.team === "enemy";
+  const validTarget = ["ally","all-allies"].includes(move.target) ? unit.team === "hero" : unit.team === "enemy";
   if (!validTarget) {
     log(move.target === "ally" ? "Select a living ally for this move." : "Select a living enemy for this move.", "miss");
     return;
@@ -847,19 +850,19 @@ function useMove(moveId, chosenTarget = null) {
   if (actor.sta < move.cost) { log(`${actor.name} doesn't have enough stamina.`, "miss"); return; }
   if ((actor.cooldowns[move.id] || 0) > 0) { log(`${move.name} is still on cooldown.`, "miss"); return; }
 
-  const targetTeam = move.target === "ally" ? heroes : enemies;
-  const requiresTarget = ["enemy","ally","all-enemies"].includes(move.target);
+  const targetTeam = ["ally","all-allies"].includes(move.target) ? heroes : enemies;
+  const requiresTarget = ["enemy","ally","all-enemies","all-allies"].includes(move.target);
   const target = !requiresTarget ? null : (chosenTarget && chosenTarget.alive && targetTeam.some(unit => unit.id === chosenTarget.id)
     ? chosenTarget : targetTeam.find(unit => unit.id === selectedTargetId && unit.alive));
-  if (["enemy","ally","all-enemies"].includes(move.target) && !target) {
-    log(move.target === "ally" ? "Select a living ally first." : "Select a living enemy first.", "miss");
+  if (["enemy","ally","all-enemies","all-allies"].includes(move.target) && !target) {
+    log(["ally","all-allies"].includes(move.target) ? "Select a living ally first." : "Select a living enemy first.", "miss");
     return;
   }
 
   actor.sta -= move.cost;
   pendingMoveId = null;
   if (target) selectedTargetId = target.id;
-  const animationTarget = target || (move.target === "all-allies" ? actor : enemies.find(unit => unit.alive));
+  const animationTarget = target || enemies.find(unit => unit.alive);
   if (animationTarget) triggerCombatAnimation(actor, animationTarget, move);
 
   if (move.target === "all-enemies") {
@@ -867,11 +870,12 @@ function useMove(moveId, chosenTarget = null) {
   } else if (move.target === "all-allies") {
     for (const ally of heroes.filter(unit => unit.alive)) ally.damageBoost = Math.max(ally.damageBoost || 0, 0.2);
     actor.cooldowns[move.id] = move.cooldown;
-    log(`${actor.name} uses Pep Talk! All living allies gain a 20% damage boost for their next attack.`, "good");
+    log(`${actor.name} uses Pep Talk! All living allies, including ${actor.name}, gain a 20% damage boost for their next attack.`, "good");
   } else if (move.type === "protect") {
-    target.protectedUntilAttack = true;
+    const protectedAllies = [...new Set([target, actor].filter(unit => unit.alive))];
+    for (const ally of protectedAllies) ally.protectedUntilAttack = true;
     actor.cooldowns[move.id] = move.cooldown;
-    log(`${actor.name} uses S.H.I.E.L.D! ${target.name} cannot lose HP until they attack.`, "good");
+    log(`${actor.name} uses S.H.I.E.L.D! ${protectedAllies.map(ally => ally.name).join(" and ")} ${protectedAllies.length === 1 ? "is" : "are"} protected from the next attack.`, "good");
   } else if (move.type === "debuff") {
     useWidowmaker(actor, target, move);
   } else {
@@ -889,14 +893,14 @@ function performAttackOnTargets(actor, targets, move) {
   for (const target of targets) {
     if (!target.alive || !actor.alive) continue;
     const hitChance = move.accuracy / 100;
+    if (target.protectedUntilAttack) {
+      target.protectedUntilAttack = false;
+      log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
+      continue;
+    }
     if (Math.random() > hitChance) {
       log(`${move.name} misses ${target.name}!`, "miss");
       showDamageNumber(target, 0, false, true, 100);
-      continue;
-    }
-    if (target.protectedUntilAttack) {
-      target.protectedUntilAttack = false;
-      log(`${target.name} is protected by S.H.I.E.L.D and takes no damage!`, "good");
       continue;
     }
     const damage = calculateDamage(actor, target, move);
@@ -922,15 +926,15 @@ function performAttack(actor, target, move) {
   log(`${actor.name} uses ${move.name} on ${target.name}.`);
   for (let hitNumber = 1; hitNumber <= move.hits; hitNumber++) {
     if (!target.alive || !actor.alive) break;
+    if (target.protectedUntilAttack) {
+      target.protectedUntilAttack = false;
+      log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
+      break;
+    }
     if (Math.random() > move.accuracy / 100) {
       log(`${move.name} misses ${target.name}!`, "miss");
       showDamageNumber(target, 0, false, true, 80 + (hitNumber - 1) * 480);
       continue;
-    }
-    if (target.protectedUntilAttack) {
-      target.protectedUntilAttack = false;
-      log(`${target.name} is protected by S.H.I.E.L.D and takes no damage!`, "good");
-      break;
     }
     const damage = calculateDamage(actor, target, move);
     target.hp = Math.max(0, target.hp - damage.amount);
@@ -1122,10 +1126,7 @@ $("selectMoveBtn").addEventListener("click", () => {
   const cooldown = actor.cooldowns[move.id] || 0;
   if (actor.sta < move.cost || cooldown > 0) return;
   closeMoveInfo();
-  if (move.target === "all-allies") {
-    useMove(move.id);
-    return;
-  }
+  
   pendingMoveId = move.id;
   renderAll();
   log(`${move.name} selected. ${move.target === "ally" ? "Now select an ally." : "Now select an enemy to initiate the attack."}`, "good");
