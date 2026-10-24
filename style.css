@@ -5828,3 +5828,125 @@ body {
   text-overflow: ellipsis !important;
   overflow-wrap: normal !important;
 }
+
+
+/* Definitive roster layout: every hero has HP + stamina, every enemy has HP,
+   and each numeric value stays aligned beside its corresponding bar. */
+#teamRoster.team-roster {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 12px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+#teamRoster .roster-group {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  gap: 5px !important;
+}
+#teamRoster .roster-group h3 {
+  display: block !important;
+  margin: 0 0 4px !important;
+}
+#teamRoster .roster-row,
+#teamRoster .roster-row:not(.roster-active) {
+  display: grid !important;
+  grid-template-columns: minmax(64px, 0.8fr) minmax(0, 1.2fr) !important;
+  align-items: center !important;
+  gap: 7px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 6px 0 !important;
+  box-sizing: border-box !important;
+}
+#teamRoster .roster-name {
+  display: block !important;
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+#teamRoster .roster-vitals {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: initial !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  gap: 4px !important;
+}
+#teamRoster .roster-vital-line,
+#teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+  display: grid !important;
+  grid-template-columns: 22px minmax(0, 1fr) 36px !important;
+  align-items: center !important;
+  column-gap: 4px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 10px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+#teamRoster .roster-hp-label,
+#teamRoster .roster-sta-label {
+  display: block !important;
+  width: auto !important;
+  min-width: 0 !important;
+  font-size: 8px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+#teamRoster .roster-bar,
+#teamRoster .roster-row:not(.roster-active) .roster-bar,
+#teamRoster .roster-hp-track,
+#teamRoster .roster-sta-track,
+#teamRoster .roster-row:not(.roster-active) .roster-hp-track,
+#teamRoster .roster-row:not(.roster-active) .roster-sta-track {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 7px !important;
+  min-height: 7px !important;
+  max-height: 7px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  box-sizing: border-box !important;
+}
+#teamRoster .roster-bar-fill {
+  display: block !important;
+  height: 100% !important;
+  max-width: 100% !important;
+}
+#teamRoster .roster-value {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  font-size: 8px !important;
+  line-height: 1 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+#teamRoster .roster-group:last-child .roster-vital-line:nth-child(2) {
+  display: none !important;
+}
+@media (max-width: 520px) {
+  #teamRoster.team-roster {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+  #teamRoster .roster-row,
+  #teamRoster .roster-row:not(.roster-active) {
+    grid-template-columns: minmax(78px, 0.75fr) minmax(0, 1.25fr) !important;
+  }
+  #teamRoster .roster-vital-line,
+  #teamRoster .roster-row:not(.roster-active) .roster-vital-line {
+    grid-template-columns: 24px minmax(0, 1fr) 40px !important;
+  }
+}
