@@ -6352,3 +6352,11 @@ body {
 #teamRoster .roster-hp-label,
 #teamRoster .roster-sta-label,
 #teamRoster .roster-value { line-height: 1 !important; }
+
+
+/* Requested final tweaks only: lower the HP bar slightly and enlarge character names. */
+#teamRoster .roster-hp-track { transform: translateY(2px) !important; }
+#teamRoster .roster-name { font-size: 9px !important; }
+@media (max-width: 520px) {
+  #teamRoster .roster-name { font-size: 8px !important; }
+}
