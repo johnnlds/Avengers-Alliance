@@ -30,6 +30,10 @@ const MOVE_DATA = [
   { id:"lightning-strike", name:"Lightning Strike!", attackType:"ranged-gun", description:"Strike all enemies with lightning. Each enemy hit has a 100% chance to be stunned. Cooldown: 2 rounds.", cost:5.0071, damage:1.574, hits:1, accuracy:60, crit:0, cooldown:2, type:"attack", target:"all-enemies", stunChance:100, owner:"beta-ray-bill" }
 ];
 
+function formatCombatNumber(value) {
+  return Number(value.toFixed(2)).toString();
+}
+
 function getMove(moveId) {
   return MOVE_DATA.find(move => move.id === moveId);
 }
@@ -628,10 +632,10 @@ function renderMoveDock() {
     moveName.textContent = move.name;
     const moveStats = document.createElement("span");
     moveStats.className = "move-dock-stats";
-    const damage = move.damage > 0 ? String(Math.round(move.damage)) : "0";
+    const damage = move.damage > 0 ? formatCombatNumber(move.damage) : "0";
     const statValues = [
       ["move-stat-damage", "Damage", damage],
-      ["move-stat-stamina", "Stamina:", String(Math.round(move.cost))],
+      ["move-stat-stamina", "Stamina:", formatCombatNumber(move.cost)],
       ["move-stat-accuracy", "Accuracy:", `${Math.round(move.accuracy)}%`],
       ["move-stat-crit", "Crit:", `${Math.round(move.crit)}%`]
     ];
@@ -685,8 +689,8 @@ function openMoveInfo(moveId) {
   const stats = $("moveInfoStats");
   stats.innerHTML = "";
   const values = [
-    ["BASE DAMAGE", move.damage > 0 ? (move.hits > 1 ? `${Math.round(move.damage / move.hits)} × ${move.hits} hits` : String(Math.round(move.damage))) : "—"],
-    ["STAMINA", String(move.cost)],
+    ["BASE DAMAGE", move.damage > 0 ? (move.hits > 1 ? `${formatCombatNumber(move.damage / move.hits)} × ${move.hits} hits` : formatCombatNumber(move.damage)) : "—"],
+    ["STAMINA", formatCombatNumber(move.cost)],
     ["ACCURACY", `${move.accuracy}%`],
     ["CRITICAL", `${move.crit}%`]
   ];
