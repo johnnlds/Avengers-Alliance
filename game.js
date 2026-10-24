@@ -222,7 +222,8 @@ function beginNextWave() {
     hero.sta = Math.min(hero.maxSta, hero.sta + staRestored);
   }
 
-  enemies = createWaveEnemies();
+  // Clear the defeated wave from the battlefield during the announcement.
+  enemies = [];
   log(`Wave cleared! Your team recovers 30% of maximum HP and stamina. Wave ${wave} of ${TOTAL_WAVES} begins.`, "good");
   renderAll();
 
@@ -241,7 +242,21 @@ function beginNextWave() {
       announcement.classList.remove("wave-announcement-show");
     }
     waveAnnouncementTimer = null;
-    if (!battleOver && wave > 1) startRound();
+    if (battleOver) return;
+
+    // Bring the next wave in from beyond the right edge after the title.
+    enemies = createWaveEnemies();
+    renderAll();
+    const enemyTeam = $("enemyTeam");
+    if (enemyTeam) {
+      enemyTeam.classList.remove("wave-enemies-enter");
+      void enemyTeam.offsetWidth;
+      enemyTeam.classList.add("wave-enemies-enter");
+      window.setTimeout(() => enemyTeam.classList.remove("wave-enemies-enter"), 700);
+    }
+    window.setTimeout(() => {
+      if (!battleOver && wave > 1) startRound();
+    }, 650);
   }, 1200);
 }
 
