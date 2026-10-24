@@ -4377,3 +4377,34 @@ body {
   background-size: cover !important;
   background-repeat: no-repeat !important;
 }
+
+
+/* Final size and move-detail contrast refinement. Enlarge art while keeping opposing
+   portraits close enough to nearly meet without covering one another. */
+.battlefield .unit .portrait {
+  height: clamp(145px, 18vw, 205px) !important;
+}
+.battlefield .unit .portrait img {
+  transform: scale(1.12) !important;
+  transform-origin: center bottom !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit .portrait {
+    height: clamp(108px, 28vw, 160px) !important;
+  }
+  .battlefield .unit .portrait img {
+    transform: scale(1.12) !important;
+    transform-origin: center bottom !important;
+  }
+}
+
+/* Keep move details subdued at all times; move names retain their existing styling. */
+.move-dock-icon .move-dock-glyph,
+.move-dock-icon .move-dock-details,
+.move-dock-icon .move-dock-stats,
+.move-dock-icon .move-dock-cost,
+.move-dock-icon small,
+.move-dock-icon .move-stat-label,
+.move-dock-icon .move-stat-value {
+  color: #a0aec0 !important;
+}
