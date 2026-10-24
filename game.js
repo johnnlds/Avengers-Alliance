@@ -288,7 +288,7 @@ function renderRoster() {
     const heading = document.createElement("h3");
     heading.textContent = teamName;
     group.appendChild(heading);
-    for (const unit of units) {
+    for (const unit of [units[0], units[2], units[1]]) {
       const row = document.createElement("div");
       row.className = "roster-row" + (!unit.alive ? " defeated" : "") + (currentActor?.id === unit.id ? " roster-active" : "");
       const name = document.createElement("span");
