@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101722">
+  <title>Marvel Alliance - Battle Prototype</title>
+  <link rel="stylesheet" href="../style.css?v=20261024-86">
+  <script src="../game.js?v=20261024-47" defer></script>
+</head>
+<body>
+  <section id="turnOrder" class="turn-order" aria-label="Turn order"></section>
+  <main class="game">
+    <section class="battlefield">
+      <div class="battle-side hero-side"><div id="heroTeam" class="team-grid"></div></div>
+      <div class="battle-side enemy-side"><div id="enemyTeam" class="team-grid"></div></div>
+    </section>
+    <div id="moveDock" class="move-dock" aria-label="Available attacks"></div>
+    <section id="teamRoster" class="team-roster" aria-label="Team health and stamina"></section>
+    <section class="combat-panel">
+      <h3 class="section-heading">BATTLE ACTIONS</h3>
+      <div class="action-row">
+        <button id="endTurnBtn" class="secondary-button">Skip Turn</button>
+        <button id="restartBtn" class="secondary-button">Restart Battle</button>
+        <a class="secondary-button" href="../">Change Team</a>
+      </div>
+    </section>
+    <section class="log-panel">
+      <div class="log-heading"><h2>BATTLE LOG</h2><button id="clearLogBtn" class="text-button">Clear</button></div>
+      <div id="battleLog" class="battle-log" aria-live="polite"></div>
+    </section>
+  </main>
+  <div id="moveInfoOverlay" class="move-info-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="moveInfoTitle">
+    <div class="move-info-card">
+      <button id="closeMoveInfoBtn" class="move-info-close" type="button" aria-label="Close move information">×</button>
+      <div id="moveInfoIcon" class="move-info-icon" aria-hidden="true"></div>
+      <p class="eyebrow">ABILITY DETAILS</p><h2 id="moveInfoTitle">Move</h2>
+      <p id="moveInfoDescription"></p><div id="moveInfoStats" class="move-info-stats"></div>
+      <button id="selectMoveBtn" class="primary-button move-select-button" type="button">Select Move</button>
+    </div>
+  </div>
+  <div id="waveAnnouncement" class="wave-announcement hidden" aria-live="polite" aria-atomic="true"></div>
+  <div id="resultOverlay" class="overlay hidden">
+    <div class="result-card"><p class="eyebrow">BATTLE COMPLETE</p><h2 id="resultTitle">VICTORY</h2><p id="resultMessage"></p><button id="playAgainBtn" class="primary-button">Play Again</button></div>
+  </div>
+</body>
+</html>
