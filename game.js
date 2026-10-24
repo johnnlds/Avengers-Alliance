@@ -487,7 +487,7 @@ function renderMoveDock() {
     const moveStats = document.createElement("span");
     moveStats.className = "move-dock-stats";
     const damage = move.damage > 0 ? String(Number(move.damage.toFixed(2))) : "0";
-    moveStats.textContent = `Damage: ${damage}   Stamina: ${move.cost}   ACC/CRIT: ${move.accuracy}%/${move.crit}%`;
+    moveStats.textContent = `Damage: ${damage}\nStamina: ${move.cost}\nACC/CRIT: ${move.accuracy}%/${move.crit}%`;
     details.append(moveName, moveStats);
     const cost = document.createElement("small");
     cost.className = "move-dock-cost";
