@@ -4133,3 +4133,39 @@ body {
     margin-bottom: 2px !important;
   }
 }
+
+
+/* Keep the active hero's name and resource bars overlaid above the portrait,
+   so showing the turn display does not push the character down. */
+.battlefield .unit.active-turn.hero {
+  position: relative !important;
+}
+.battlefield .unit.active-turn.hero .unit-name,
+.battlefield .unit.active-turn.hero .battle-unit-hp,
+.battlefield .unit.active-turn.hero .battle-unit-sta {
+  position: absolute !important;
+  left: 9% !important;
+  right: 9% !important;
+  width: 82% !important;
+  margin: 0 !important;
+}
+.battlefield .unit.active-turn.hero .unit-name {
+  top: 0 !important;
+}
+.battlefield .unit.active-turn.hero .battle-unit-hp {
+  top: 15px !important;
+}
+.battlefield .unit.active-turn.hero .battle-unit-sta {
+  top: 22px !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit.active-turn.hero .unit-name {
+    top: 0 !important;
+  }
+  .battlefield .unit.active-turn.hero .battle-unit-hp {
+    top: 12px !important;
+  }
+  .battlefield .unit.active-turn.hero .battle-unit-sta {
+    top: 18px !important;
+  }
+}
