@@ -373,12 +373,6 @@ function renderTurnOrder() {
   label.textContent = "TURN ORDER";
   root.appendChild(label);
 
-  const waveCounter = document.createElement("span");
-  waveCounter.className = "wave-counter";
-  waveCounter.textContent = `WAVE ${wave}/${TOTAL_WAVES}`;
-  waveCounter.setAttribute("aria-label", `Wave ${wave} of ${TOTAL_WAVES}`);
-  root.appendChild(waveCounter);
-
   const track = document.createElement("div");
   track.className = "turn-order-track";
   const orderedIds = initiative.length ? initiative : [...heroes, ...enemies].map(unit => unit.id);
@@ -403,6 +397,12 @@ function renderTurnOrder() {
     track.appendChild(chip);
   });
   root.appendChild(track);
+
+  const waveCounter = document.createElement("span");
+  waveCounter.className = "wave-counter";
+  waveCounter.textContent = `Wave ${wave}`;
+  waveCounter.setAttribute("aria-label", `Wave ${wave} of ${TOTAL_WAVES}`);
+  root.appendChild(waveCounter);
 }
 
 function renderTeam(containerId, units) {
