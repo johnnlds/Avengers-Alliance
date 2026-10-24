@@ -793,8 +793,7 @@ function triggerCombatAnimation(actor, target, move) {
 }
 
 function showDamageNumber(target, amount, critical = false, missed = false, delay = 80) {
-  // On mobile, centralize combat feedback above the VS marker so it is never
-  // hidden by the narrow battlefield columns. Desktop keeps feedback by target.
+  // Anchor each damage number to the unit that was hit, on both desktop and mobile.
   window.setTimeout(() => {
     const number = document.createElement("span");
     number.className = "damage-number damage-overlay" + (critical ? " critical" : "") + (missed ? " miss-number" : "");
@@ -802,21 +801,13 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     number.setAttribute("aria-hidden", "true");
 
     let x = window.innerWidth / 2;
-    let y = window.innerHeight * 0.3;
-    if (window.matchMedia("(max-width: 760px)").matches) {
-      const vs = document.querySelector(".battle-divider span");
-      if (vs) {
-        const rect = vs.getBoundingClientRect();
-        x = rect.left + rect.width / 2;
-        y = Math.max(8, rect.top - 34);
-      }
-    } else {
-      const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
-      if (card) {
-        const rect = card.getBoundingClientRect();
-        x = rect.left + rect.width / 2;
-        y = Math.max(16, rect.top + rect.height * 0.32);
-      }
+    let y = Math.max(16, window.innerHeight * 0.3);
+    const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      x = rect.left + rect.width / 2;
+      // Keep the number near the character's head, just above the portrait's upper area.
+      y = Math.max(8, rect.top + Math.min(34, rect.height * 0.16));
     }
 
     number.style.setProperty("left", x + "px", "important");
