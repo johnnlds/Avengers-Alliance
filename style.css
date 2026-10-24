@@ -4444,3 +4444,19 @@ body {
 .battlefield .enemy-side .unit:nth-child(1) {
   translate: 0 20px !important;
 }
+
+
+/* Force every move-card detail/stat label to muted gray while preserving move-name colors. */
+.move-dock-icon .move-dock-glyph,
+.move-dock-icon .move-dock-details,
+.move-dock-icon .move-dock-stats,
+.move-dock-icon .move-dock-stats *,
+.move-dock-icon .move-dock-cost,
+.move-dock-icon small,
+.move-dock-icon .move-stat-label,
+.move-dock-icon .move-stat-value {
+  color: #a0aec0 !important;
+}
+.move-dock-icon .move-dock-name {
+  color: inherit;
+}
