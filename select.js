@@ -1,12 +1,12 @@
 "use strict";
 const HEROES = [
-  { id: "phil", name: "Phil Coulson", role: "S.H.I.E.L.D. Field Leader", image: "Phil", hp: 80, stamina: 80, attack: 30, defense: 15, evasion: 15, description: "A versatile leader with ranged attacks and an all-team damage boost." },
-  { id: "bruiser", name: "S.H.I.E.L.D. Bruiser", role: "Heavy Frontline Fighter", image: "Bruiser", hp: 120, stamina: 80, attack: 18, defense: 35, evasion: 20, description: "A durable frontline fighter with area damage and protective abilities." },
-  { id: "blackwidow", name: "Black Widow", role: "Elite Covert Operative", image: "Black Widow", hp: 100, stamina: 100, attack: 25, defense: 20, evasion: 25, description: "A fast, evasive attacker with strong single-target moves and debuffs." },
-  { id: "beta-ray-bill", name: "Beta Ray Bill", role: "Korbinite Champion", image: "Bill", hp: 7868, stamina: 7153, attack: 1574, defense: 1574, evasion: 1144, description: "A mighty warrior wielding Stormbreaker, with devastating attacks and stunning lightning." }
+  { id: "phil", name: "Phil Coulson", role: "S.H.I.E.L.D. Field Leader", image: "Phil", hp: 80, stamina: 80, attack: 30, accuracy: 30, defense: 15, evasion: 15, description: "A versatile leader with ranged attacks and an all-team damage boost." },
+  { id: "bruiser", name: "S.H.I.E.L.D. Bruiser", role: "Heavy Frontline Fighter", image: "Bruiser", hp: 120, stamina: 80, attack: 18, accuracy: 20, defense: 35, evasion: 20, description: "A durable frontline fighter with area damage and protective abilities." },
+  { id: "blackwidow", name: "Black Widow", role: "Elite Covert Operative", image: "Black Widow", hp: 100, stamina: 100, attack: 25, accuracy: 20, defense: 20, evasion: 25, description: "A fast, evasive attacker with strong single-target moves and debuffs." },
+  { id: "beta-ray-bill", name: "Beta Ray Bill", role: "Korbinite Champion", image: "Bill", hp: 78.68, stamina: 71.53, attack: 15.74, accuracy: 12.88, defense: 15.74, evasion: 11.44, description: "A mighty warrior wielding Stormbreaker, with devastating attacks and stunning lightning." }
 ];
 const STORAGE_KEY = "avengersAllianceSelectedHeroes";
-const selected = new Set(HEROES.map(hero => hero.id));
+const selected = new Set(HEROES.slice(0, 3).map(hero => hero.id));
 const grid = document.getElementById("characterGrid");
 const count = document.getElementById("selectionCount");
 const error = document.getElementById("selectionError");
@@ -16,7 +16,8 @@ try {
   if (Array.isArray(saved)) {
     selected.clear();
     saved.filter(id => HEROES.some(hero => hero.id === id)).forEach(id => selected.add(id));
-    if (selected.size === 0) HEROES.forEach(hero => selected.add(hero.id));
+    if (selected.size === 0) HEROES.slice(0, 3).forEach(hero => selected.add(hero.id));
+    while (selected.size > 3) selected.delete([...selected].at(-1));
   }
 } catch (_) {}
 function loadPortrait(img, name) {
@@ -59,7 +60,7 @@ function render() {
     description.textContent = hero.description;
     const stats = document.createElement("div");
     stats.className = "character-stats";
-    [["HP",hero.hp],["STA",hero.stamina],["ATK",hero.attack],["DEF",hero.defense],["EVA",hero.evasion]].forEach(([label,value]) => {
+    [["HP",hero.hp],["STA",hero.stamina],["ATK",hero.attack],["ACC",hero.accuracy],["DEF",hero.defense],["EVA",hero.evasion]].forEach(([label,value]) => {
       const item = document.createElement("span");
       const small = document.createElement("small");
       small.textContent = label;
@@ -90,7 +91,7 @@ function render() {
   startButton.disabled = selected.size === 0;
 }
 document.getElementById("selectAllBtn").addEventListener("click", () => {
-  HEROES.forEach(hero => selected.add(hero.id));
+  HEROES.slice(0, 3).forEach(hero => selected.add(hero.id));
   error.textContent = "";
   render();
 });
