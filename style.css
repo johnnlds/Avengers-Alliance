@@ -4551,3 +4551,25 @@ body {
 .move-dock-icon:nth-child(4) {
   border-color: #617b95 !important;
 }
+
+
+/* Distinct motion for area attacks: charge toward the formation and sweep across it. */
+.unit.attacking.attack-sweep {
+  animation: aoe-sweeping-strike 1.05s cubic-bezier(.2,.8,.2,1) both !important;
+  z-index: 12 !important;
+}
+@keyframes aoe-sweeping-strike {
+  0% { transform: translate(0, 0) scale(1); }
+  32% { transform: translate(var(--attack-x, 45px), var(--attack-y, 0px)) scale(1.12) rotate(-10deg); filter: brightness(1.25); }
+  52% { transform: translate(var(--attack-x, 45px), var(--attack-y, 0px)) scale(1.16) rotate(15deg); filter: brightness(1.75) saturate(1.35); }
+  72% { transform: translate(var(--attack-x, 45px), var(--attack-y, 0px)) scale(1.1) rotate(-12deg); }
+  100% { transform: translate(0, 0) scale(1); filter: none; }
+}
+.unit.attacking.attack-buff {
+  animation: support-burst .8s ease-out both !important;
+}
+@keyframes support-burst {
+  0% { filter: brightness(1); transform: scale(1); }
+  35% { filter: brightness(1.9) drop-shadow(0 0 14px #73c7ff); transform: scale(1.1); }
+  100% { filter: brightness(1); transform: scale(1); }
+}
