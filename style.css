@@ -4851,3 +4851,124 @@ body {
 .effects-info-item + .effects-info-item { border-top: 1px solid #34445b; }
 .effects-info-item strong { display: block; color: #f1f5fb; font-size: 14px; }
 .effects-info-item p { margin: 4px 0 0; color: #c2ccda; font-size: 12px; line-height: 1.45; }
+
+
+/* Final, high-specificity overrides for the small status markers below each unit. */
+.battlefield .unit > .unit-effect-indicators {
+  order: 99 !important;
+  position: relative !important;
+  z-index: 20 !important;
+  display: flex !important;
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 15px !important;
+  margin: 3px 0 0 !important;
+  padding: 0 !important;
+  gap: 5px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator,
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.buff,
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.debuff {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: static !important;
+  display: inline-flex !important;
+  flex: 0 0 15px !important;
+  align-self: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 15px !important;
+  min-width: 15px !important;
+  max-width: 15px !important;
+  height: 15px !important;
+  min-height: 15px !important;
+  max-height: 15px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  line-height: 15px !important;
+  text-align: center !important;
+  text-shadow: 0 1px 2px #000 !important;
+}
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.buff { color: #35df70 !important; }
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.debuff { color: #ff5151 !important; }
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator:hover,
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator:focus-visible {
+  background: transparent !important;
+  outline: 1px solid currentColor !important;
+  outline-offset: 1px !important;
+}
+
+/* Compact effect popup: visually consistent with move details, but smaller. */
+#effectsInfoOverlay {
+  z-index: 1001 !important;
+  padding: 12px !important;
+}
+#effectsInfoOverlay .effects-info-card {
+  width: min(290px, calc(100vw - 32px)) !important;
+  max-width: 290px !important;
+  max-height: min(72vh, 480px) !important;
+  overflow-y: auto !important;
+  padding: 16px 14px 13px !important;
+  border-radius: 8px !important;
+}
+#effectsInfoOverlay .effects-info-icon {
+  display: none !important;
+}
+#effectsInfoOverlay .move-info-close {
+  top: 5px !important;
+  right: 5px !important;
+  width: 25px !important;
+  height: 25px !important;
+  font-size: 20px !important;
+}
+#effectsInfoOverlay .eyebrow {
+  margin: 0 30px 5px 0 !important;
+  font-size: 9px !important;
+  letter-spacing: .08em !important;
+}
+#effectsInfoOverlay #effectsInfoTitle {
+  margin: 0 24px 7px 0 !important;
+  font-size: 17px !important;
+  line-height: 1.2 !important;
+}
+#effectsInfoOverlay #effectsInfoDescription {
+  margin: 0 0 8px !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+}
+#effectsInfoOverlay .effects-info-list {
+  gap: 2px !important;
+  margin-top: 7px !important;
+}
+#effectsInfoOverlay .effects-info-heading {
+  margin: 7px 0 2px !important;
+  padding-bottom: 3px !important;
+  font-size: 9px !important;
+}
+#effectsInfoOverlay .effects-info-item {
+  padding: 5px 0 !important;
+}
+#effectsInfoOverlay .effects-info-item strong {
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+}
+#effectsInfoOverlay .effects-info-item p {
+  margin: 2px 0 0 !important;
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+}
