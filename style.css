@@ -4711,3 +4711,18 @@ body {
 /* Pin the battle result card at the top of the viewport. */
 #resultOverlay { align-items: flex-start !important; }
 #resultOverlay .result-card { margin-top: 16px !important; }
+
+
+/* Next wave enters only after the Wave N announcement finishes. */
+#enemyTeam.wave-enemies-enter .unit {
+  animation: enemy-wave-slide-in 650ms cubic-bezier(.18,.72,.22,1) both;
+}
+#enemyTeam.wave-enemies-enter .unit:nth-child(2) { animation-delay: 70ms; }
+#enemyTeam.wave-enemies-enter .unit:nth-child(3) { animation-delay: 140ms; }
+@keyframes enemy-wave-slide-in {
+  from { opacity: 0; transform: translateX(calc(100vw + 120px)); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #enemyTeam.wave-enemies-enter .unit { animation-duration: 1ms; animation-delay: 0ms; }
+}
