@@ -1071,7 +1071,7 @@ function performAttack(actor, target, move) {
     const damage = calculateDamage(actor, target, move);
     target.hp = Math.max(0, target.hp - damage.amount);
     showDamageNumber(target, damage.amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
-    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${damage.amount} damage.`, "damage");
+    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
     if (actor.stunPrimed) {
       actor.stunPrimed = false;
       if (Math.random() < 0.75 && target.alive) { target.stunned = true; log(`${target.name} is stunned and will lose their next action!`, "good"); }
