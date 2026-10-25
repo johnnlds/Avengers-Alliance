@@ -6495,3 +6495,15 @@ body {
   text-align: center !important;
   transform: translate(-50%, calc(-50% - 2px)) !important;
 }
+
+
+/* Flip enemy character artwork so the opposing team faces the heroes. */
+.battlefield .enemy-side .unit.enemy .portrait img {
+  transform: scaleX(-1) scale(1.12) !important;
+  transform-origin: center bottom !important;
+}
+@media (max-width: 760px) {
+  .battlefield .enemy-side .unit.enemy .portrait img {
+    transform: scaleX(-1) scale(1.12) !important;
+  }
+}
