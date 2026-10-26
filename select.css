@@ -83,3 +83,60 @@ footer { margin:20px 0 0; color:#64758a; font-size:10px; font-weight:700; letter
     line-height: 1.15;
   }
 }
+
+
+/* Character portrait framing and unlocked/locked sections. */
+.character-section { margin-top: 18px; }
+.character-section-title {
+  margin: 0 0 10px;
+  color: #dce8f5;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.character-card {
+  overflow: visible;
+  gap: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.character-card:hover { background: transparent; }
+.character-card.selected { background: transparent; box-shadow: none; }
+.character-art {
+  aspect-ratio: 1 / 1;
+  border: 2px solid #34465b;
+  border-radius: 6px;
+  background: radial-gradient(circle, #34445b, #1a2635 72%);
+}
+.character-card.selected .character-art {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px #ffc85755, 0 0 12px #ffc85733;
+}
+.character-art img {
+  object-fit: cover;
+  object-position: center 24%;
+  transform: scale(1.3);
+  transform-origin: center 28%;
+}
+.character-content {
+  padding: 7px 2px 2px;
+}
+.character-content h3 {
+  font-size: 14px;
+  line-height: 1.2;
+}
+.locked-section .character-grid {
+  min-height: 4px;
+}
+@media (max-width: 760px) {
+  .character-section { margin-top: 14px; }
+  .character-section-title { margin-bottom: 7px; font-size: 11px; }
+  .character-art { border-width: 1px; border-radius: 4px; }
+  .character-art img { transform: scale(1.3); }
+  .character-content { padding: 5px 1px 2px; }
+  .character-content h3 { font-size: clamp(8px, 2.6vw, 11px); }
+}
