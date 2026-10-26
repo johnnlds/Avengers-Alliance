@@ -52,27 +52,7 @@ function render() {
     content.className = "character-content";
     const name = document.createElement("h3");
     name.textContent = hero.name;
-    const role = document.createElement("p");
-    role.className = "character-role";
-    role.textContent = hero.role;
-    const description = document.createElement("p");
-    description.className = "character-description";
-    description.textContent = hero.description;
-    const stats = document.createElement("div");
-    stats.className = "character-stats";
-    [["HP",hero.hp],["STA",hero.stamina],["ATK",hero.attack],["ACC",hero.accuracy],["DEF",hero.defense],["EVA",hero.evasion]].forEach(([label,value]) => {
-      const item = document.createElement("span");
-      const small = document.createElement("small");
-      small.textContent = label;
-      const b = document.createElement("b");
-      b.textContent = Math.ceil(value);
-      item.append(small,b);
-      stats.appendChild(item);
-    });
-    const badge = document.createElement("span");
-    badge.className = "selection-badge";
-    badge.textContent = isSelected ? "SELECTED ✓" : "ADD TO TEAM +";
-    content.append(name, role, description, stats, badge);
+    content.appendChild(name);
     card.append(art, content);
     card.addEventListener("click", () => {
       error.textContent = "";
