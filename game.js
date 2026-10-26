@@ -1447,7 +1447,13 @@ $("endTurnBtn").addEventListener("click", () => {
   }
 
   pendingMoveId = null;
-  log(`${currentActor.name} skips their turn.`);
+  const skippedActor = currentActor;
+  const staminaRestored = skippedActor.maxSta * 0.5;
+  const staminaBefore = skippedActor.sta;
+  skippedActor.sta = Math.min(skippedActor.maxSta, skippedActor.sta + staminaRestored);
+  const actualRestored = skippedActor.sta - staminaBefore;
+  log(`${skippedActor.name} skips their turn and restores ${Math.ceil(actualRestored)} stamina.`, "good");
+  renderAll();
   turnIndex++;
   nextTurn();
 });
@@ -1483,7 +1489,14 @@ $("selectMoveBtn").addEventListener("click", () => {
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !$("moveInfoOverlay").classList.contains("hidden")) closeMoveInfo();
 });
-$("playAgainBtn").addEventListener("click", resetBattle);
+$("playAgainBtn").addEventListener("click", () => {
+  const lostBattle = !heroes.some(hero => hero.alive);
+  if (lostBattle) {
+    window.location.href = "../";
+    return;
+  }
+  resetBattle();
+});
 
 $("clearLogBtn").addEventListener("click", () => {
   $("battleLog").innerHTML = "";
