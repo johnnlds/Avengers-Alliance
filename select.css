@@ -32,3 +32,54 @@ h2 { margin:0; font-size:clamp(22px,4vw,30px); }
 footer { margin:20px 0 0; color:#64758a; font-size:10px; font-weight:700; letter-spacing:2px; text-align:center; }
 @media(max-width:760px) { .select-shell { padding:20px 12px 14px; } .character-grid { grid-template-columns:1fr; gap:12px; } .character-card { display:grid; grid-template-columns:minmax(105px,34%) minmax(0,1fr); } .character-art { height:100%; min-height:230px; } .character-content { padding:12px; } .character-content h3 { font-size:17px; } .character-description { min-height:0; font-size:12px; } .selection-heading { align-items:flex-start; flex-direction:column; } }
 @media(prefers-reduced-motion:reduce) { .character-card { transition:none; } }
+
+
+/* Compact portrait-only character selection cards. */
+.character-grid {
+  align-items: start;
+}
+.character-card {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.character-art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  flex: 0 0 auto;
+}
+.character-content {
+  width: 100%;
+  padding: 9px 6px;
+}
+.character-content h3 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .select-shell {
+    padding: 12px 6px 12px;
+  }
+  .selection-panel {
+    padding: 10px 6px;
+  }
+  .character-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 5px;
+  }
+  .character-card {
+    border-width: 1px;
+    border-radius: 5px;
+  }
+  .character-content {
+    padding: 5px 2px;
+  }
+  .character-content h3 {
+    font-size: clamp(8px, 2.6vw, 11px);
+    line-height: 1.15;
+  }
+}
