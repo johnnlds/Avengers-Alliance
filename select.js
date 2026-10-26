@@ -7,7 +7,7 @@ const HEROES = [
 ];
 const STORAGE_KEY = "avengersAllianceSelectedHeroes";
 const selected = new Set(HEROES.slice(0, 3).map(hero => hero.id));
-const grid = document.getElementById("characterGrid");
+const grid = document.getElementById("unlockedCharacterGrid");
 const count = document.getElementById("selectionCount");
 const error = document.getElementById("selectionError");
 const startButton = document.getElementById("startBattleBtn");
