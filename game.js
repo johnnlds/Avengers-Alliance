@@ -1290,13 +1290,13 @@ function calculateDamage(attacker, target, move) {
 
   if (attacker.atk > target.def) {
     varianceMin = -0.02;
-    varianceMax = 0.10;
+    varianceMax = 0.15;
   } else if (attacker.atk < target.def) {
-    varianceMin = -0.10;
+    varianceMin = -0.15;
     varianceMax = 0.02;
   } else {
-    varianceMin = -0.10;
-    varianceMax = 0.10;
+    varianceMin = -0.15;
+    varianceMax = 0.15;
   }
 
   const variance =
