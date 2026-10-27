@@ -1207,8 +1207,8 @@ function useMove(moveId, chosenTarget = null) {
 }
 
 function doesAttackHit(attacker, target, move) {
-  // A 100-point Accuracy advantage over Evasion guarantees a hit.
-  if (attacker.acc >= target.eva + 100) return true;
+  // A 100-point Accuracy advantage over Defense guarantees a hit.
+  if (attacker.acc >= target.def + 100) return true;
   return Math.random() <= move.accuracy / 100;
 }
 
@@ -1285,40 +1285,27 @@ function performAttack(actor, target, move) {
 }
 
 function calculateDamage(attacker, target, move) {
-  let varianceMin;
-  let varianceMax;
-
-  if (attacker.atk > target.def) {
-    varianceMin = -0.02;
-    varianceMax = 0.15;
-  } else if (attacker.atk < target.def) {
-    varianceMin = -0.15;
-    varianceMax = 0.02;
-  } else {
-    varianceMin = -0.15;
-    varianceMax = 0.15;
-  }
-
-  const variance =
-    varianceMin + Math.random() * (varianceMax - varianceMin);
+  const attackVsDefense = attacker.atk > target.def ? "higher"
+    : attacker.atk < target.def ? "lower" : "equal";
+  const accuracyVsDefense = attacker.acc > target.def ? "higher"
+    : attacker.acc < target.def ? "lower" : "equal";
+  const ranges = {
+    higher: { higher: [0.02, 0.20], equal: [-0.02, 0.15], lower: [-0.02, 0.10] },
+    equal: { higher: [-0.05, 0.15], equal: [-0.15, 0.15], lower: [-0.15, 0.10] },
+    lower: { higher: [-0.10, 0.10], equal: [-0.15, 0.02], lower: [-0.20, -0.02] }
+  };
+  const [varianceMin, varianceMax] = ranges[attackVsDefense][accuracyVsDefense];
+  const variance = varianceMin + Math.random() * (varianceMax - varianceMin);
 
   let amount = move.damage / move.hits;
   amount *= 1 + variance;
-  if (attacker.team === "enemy") {
-    amount *= 1 + (wave - 1) * 0.01;
-  }
+  if (attacker.team === "enemy") amount *= 1 + (wave - 1) * 0.01;
   amount *= 1 + (attacker.damageBoost || 0);
 
   const critical = Math.random() < move.crit / 100;
+  if (critical) amount *= 1.15 + Math.random() * 0.10;
 
-  if (critical) {
-    amount *= 1.15 + Math.random() * 0.10;
-  }
-
-  return {
-    amount: Math.max(1, Math.round(amount * 10) / 10),
-    critical
-  };
+  return { amount: Math.max(1, Math.round(amount * 10) / 10), critical };
 }
 
 /* =========================================
