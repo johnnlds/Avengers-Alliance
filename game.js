@@ -1302,7 +1302,14 @@ function calculateDamage(attacker, target, move) {
   if (attacker.team === "enemy") amount *= 1 + (wave - 1) * 0.01;
   amount *= 1 + (attacker.damageBoost || 0);
 
-  const critical = Math.random() < move.crit / 100;
+  const accuracyAdvantage = attacker.acc - target.def;
+  let critBonus = 0;
+  if (accuracyAdvantage > 0 && accuracyAdvantage <= 10) critBonus = 2;
+  else if (accuracyAdvantage > 10 && accuracyAdvantage <= 25) critBonus = 5;
+  else if (accuracyAdvantage > 25 && accuracyAdvantage < 50) critBonus = 7;
+  else if (accuracyAdvantage >= 50) critBonus = 10;
+  const criticalChance = Math.min(100, move.crit + critBonus);
+  const critical = Math.random() < criticalChance / 100;
   if (critical) amount *= 1.15 + Math.random() * 0.10;
 
   return { amount: Math.max(1, Math.round(amount * 10) / 10), critical };
