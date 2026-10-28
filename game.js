@@ -806,6 +806,55 @@ function renderTurnOrder() {
   root.appendChild(waveCounter);
 }
 
+function getUnitActiveEffects(unit) {
+  const effects = [];
+  if (unit.damageBoost > 0) effects.push({
+    type: "buff", name: "Pep Talk",
+    description: `Damage increased by ${Math.ceil(unit.damageBoost * 100)}% for their next attack.`
+  });
+  if (unit.protectedUntilAttack) effects.push({
+    type: "buff", name: "S.H.I.E.L.D",
+    description: "Blocks the next incoming attack completely, then protection wears off."
+  });
+  if (unit.stunPrimed) effects.push({
+    type: "buff", name: "Stun ready",
+    description: "Their next attack has a 75% chance to stun the target and make them lose their next action."
+  });
+  if (unit.attackDebuffTurns > 0) effects.push({
+    type: "debuff", name: "Attack reduced",
+    description: "Attack is reduced by 50% until this character takes their next action."
+  });
+  if (unit.stunned) effects.push({
+    type: "debuff", name: "Stunned",
+    description: "This character loses their next action."
+  });
+  for (const [key, label, type, description] of [
+    ["strengthened", "Strengthened", "buff", "Attack increased by 25%."],
+    ["superCrit", "Super Crit", "buff", "Next attack deals double damage; a dodge consumes it."],
+    ["lucky", "Lucky", "buff", "Next successful attack is guaranteed to critically hit."],
+    ["stealth", "Stealth", "buff", "40% chance to dodge incoming attacks."],
+    ["armor", "Armor", "buff", "Defense increased by 25%."],
+    ["squirrelly", "Squirrelly", "buff", "Next attack gains an extra hit for 50% of total attack damage."],
+    ["attention", "Attention", "buff", "Redirects single-target attacks away from allies to this character."],
+    ["weakened", "Weakened", "debuff", "Next attack deals 50% less damage."],
+    ["bleed", "Bleed", "debuff", "Takes 4% of max HP damage at end of turn."],
+    ["confused", "Confused", "debuff", "40% chance offensive abilities target a living teammate."],
+    ["burn", "Burn", "debuff", "Takes 4% of max HP damage at end of turn."],
+    ["slow", "Slow", "debuff", "Evasion reduced by 20%."],
+    ["fear", "Fear", "debuff", "Attacks are 20% less likely to hit."],
+    ["monkeyJoe", "Monkey Joe", "debuff", "Takes 5% of max HP damage at end of turn."]
+  ]) {
+    const value = unit.effects?.[key];
+    if (value === true || (typeof value === "number" && value > 0)) {
+      effects.push({
+        type, name: label,
+        description: typeof value === "number" ? `${description} (${value} turn(s) left.)` : description
+      });
+    }
+  }
+  return effects;
+}
+
 function renderTeam(containerId, units) {
   const container = $(containerId);
   container.dataset.count = String(units.length);
@@ -925,29 +974,10 @@ function renderTeam(containerId, units) {
       card.append(portrait, status);
     }
 
-    // Active effects are shown only on the unit that actually has them.
-    const buffs = [];
-    const debuffs = [];
-    if (unit.damageBoost > 0) buffs.push({
-      name: "Pep Talk",
-      description: `Damage increased by ${Math.ceil(unit.damageBoost * 100)}% for the next attack.`
-    });
-    if (unit.protectedUntilAttack) buffs.push({
-      name: "S.H.I.E.L.D",
-      description: "Blocks the next incoming attack completely, then the protection wears off."
-    });
-    if (unit.stunPrimed) buffs.push({
-      name: "Stun ready",
-      description: "The next attack has a 75% chance to stun its target, making them lose their next action."
-    });
-    if (unit.attackDebuffTurns > 0) debuffs.push({
-      name: "Attack reduced",
-      description: "Attack is reduced by 50% until this character takes their next action."
-    });
-    if (unit.stunned) debuffs.push({
-      name: "Stunned",
-      description: "This character loses their next action."
-    });
+    // Show an icon for each effect category currently affecting this character.
+    const activeEffects = getUnitActiveEffects(unit);
+    const buffs = activeEffects.filter(effect => effect.type === "buff");
+    const debuffs = activeEffects.filter(effect => effect.type === "debuff");
 
     if (buffs.length || debuffs.length) {
       const indicators = document.createElement("div");
@@ -956,26 +986,22 @@ function renderTeam(containerId, units) {
         event.stopPropagation();
         openEffectsInfo(unit.name, buffs, debuffs);
       };
-      if (buffs.length) {
-        const plus = document.createElement("button");
-        plus.type = "button";
-        plus.className = "unit-effect-indicator buff";
-        plus.textContent = "+";
-        plus.setAttribute("aria-label", `Show active effects on ${unit.name}`);
-        plus.title = "Show buffs and debuffs";
-        plus.addEventListener("click", openEffects);
-        indicators.appendChild(plus);
-      }
-      if (debuffs.length) {
-        const minus = document.createElement("button");
-        minus.type = "button";
-        minus.className = "unit-effect-indicator debuff";
-        minus.textContent = "−";
-        minus.setAttribute("aria-label", `Show active effects on ${unit.name}`);
-        minus.title = "Show buffs and debuffs";
-        minus.addEventListener("click", openEffects);
-        indicators.appendChild(minus);
-      }
+      const addIndicator = (kind, imagePath, label) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `unit-effect-indicator ${kind}`;
+        button.setAttribute("aria-label", `Show ${label.toLowerCase()} on ${unit.name}`);
+        button.title = `Show ${label.toLowerCase()} on ${unit.name}`;
+        const image = document.createElement("img");
+        image.src = imagePath;
+        image.alt = "";
+        image.setAttribute("aria-hidden", "true");
+        button.appendChild(image);
+        button.addEventListener("click", openEffects);
+        indicators.appendChild(button);
+      };
+      if (buffs.length) addIndicator("buff", "../assets/Buff.png", "Buffs");
+      if (debuffs.length) addIndicator("debuff", "../assets/Debuff.png", "Debuffs");
       card.appendChild(indicators);
     }
 
