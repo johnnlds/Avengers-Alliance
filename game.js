@@ -434,6 +434,7 @@ function resetBattle() {
   animatingTargetId = null;
   animatingMoveId = null;
   animatingMode = null;
+  destroyerPrototypePrimed = false;
   battleOver = false;
   waitingForEnemy = false;
 
@@ -1400,10 +1401,22 @@ function showDestroyerPrototypeImage() {
 }
 
 function triggerCombatAnimation(actor, target, move) {
-  animatingActorId = actor.id;
-  animatingTargetId = target.id;
-  animatingMoveId = move ? move.id : null;
-  animatingMode = move?.target === "all-enemies" ? "sweep" : move?.target === "all-allies" ? "buff" : null;
+  const isBuffAnimation = move && (move.type === "buff" || move.type === "protect");
+  if (isBuffAnimation) {
+    // Support effects should glow on the recipient, not travel toward an enemy.
+    const recipient = move.target === "self" || move.target === "all-allies"
+      ? actor
+      : (target || actor);
+    animatingActorId = recipient.id;
+    animatingTargetId = null;
+    animatingMoveId = null;
+    animatingMode = "buff";
+  } else {
+    animatingActorId = actor.id;
+    animatingTargetId = target?.id || null;
+    animatingMoveId = move ? move.id : null;
+    animatingMode = move?.target === "all-enemies" ? "sweep" : null;
+  }
   const token = ++animationToken;
 
   window.setTimeout(() => {
@@ -1464,17 +1477,21 @@ function useMove(moveId, chosenTarget = null) {
   }
 
   // Give Destroyer Prototype a one-second visual wind-up before its attack resolves.
-  if (actor.id === "phil" && move.id === "destroyer-prototype" && !destroyerPrototypePrimed) {
-    destroyerPrototypePrimed = true;
-    waitingForEnemy = true;
-    showDestroyerPrototypeImage();
-    renderAll();
-    window.setTimeout(() => {
-      destroyerPrototypePrimed = false;
-      waitingForEnemy = false;
-      useMove(moveId, target);
-    }, 1000);
-    return;
+  // Keep the primed flag set until the recursive call reaches this point, so it
+  // proceeds to the attack instead of restarting the wind-up forever.
+  if (actor.id === "phil" && move.id === "destroyer-prototype") {
+    if (!destroyerPrototypePrimed) {
+      destroyerPrototypePrimed = true;
+      waitingForEnemy = true;
+      showDestroyerPrototypeImage();
+      renderAll();
+      window.setTimeout(() => {
+        waitingForEnemy = false;
+        useMove(moveId, target);
+      }, 1000);
+      return;
+    }
+    destroyerPrototypePrimed = false;
   }
 
   actor.sta -= moveCost;
