@@ -167,3 +167,12 @@ footer { margin:20px 0 0; color:#64758a; font-size:10px; font-weight:700; letter
 .character-art img.portrait-punisher {
   transform: translateY(-5%) scale(1.3) !important;
 }
+
+/* Individually framed portraits based on the face locations in the source artwork. */
+.character-art img.portrait-phil { transform: translateY(14%) scale(1.3) !important; }
+.character-art img.portrait-bruiser { transform: translateY(12%) scale(1.3) !important; }
+.character-art img.portrait-blackwidow { transform: translateY(15%) scale(1.3) !important; }
+.character-art img.portrait-beta-ray-bill { transform: translateY(12%) scale(1.3) !important; }
+.character-art img.portrait-elektra { transform: translate(14%, 12%) scale(1.3) !important; }
+.character-art img.portrait-daredevil { transform: translateY(10%) scale(2) !important; }
+.character-art img.portrait-captainamerica { transform: translateY(13%) scale(1.3) !important; }
