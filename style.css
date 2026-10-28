@@ -6992,3 +6992,50 @@ body {
     min-height: 5px !important;
   }
 }
+
+
+/* Status squares sit below the HP bar without adding height to the nameplate. */
+.battlefield .unit > .unit-nameplate {
+  position: absolute !important;
+  overflow: visible !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicators {
+  position: absolute !important;
+  left: 0 !important;
+  right: auto !important;
+  top: calc(100% + 2px) !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: auto !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 3px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+/* Highlight the active name and HP bar themselves, not a box around the status squares. */
+.battlefield .unit.active-turn > .unit-nameplate {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.battlefield .unit.active-turn > .unit-nameplate .unit-name {
+  border: 1px solid #ffd740 !important;
+  box-shadow: 0 0 0 1px #ffd740, 0 0 8px rgba(255,215,64,.55) !important;
+}
+.battlefield .unit.active-turn > .unit-nameplate .battle-unit-hp {
+  border: 1px solid #ffd740 !important;
+  box-shadow: 0 0 0 1px #ffd740 !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit > .unit-nameplate .unit-effect-indicators {
+    top: calc(100% + 2px) !important;
+  }
+}
