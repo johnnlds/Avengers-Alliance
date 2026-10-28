@@ -6728,3 +6728,88 @@ body {
   outline: 2px solid #fff !important;
   outline-offset: 2px !important;
 }
+
+
+
+/* Keep the existing nameplate and HP bar geometry unchanged; only add compact status squares. */
+.battlefield .unit > .unit-nameplate {
+  display: contents !important;
+}
+.battlefield .unit > .unit-nameplate .unit-name,
+.battlefield .unit > .unit-nameplate .battle-unit-hp {
+  position: absolute !important;
+  left: 9% !important;
+  right: 9% !important;
+  width: 82% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  transform: none !important;
+  z-index: 25 !important;
+}
+.battlefield .unit > .unit-nameplate .unit-name {
+  top: -42px !important;
+  height: 16px !important;
+  min-height: 0 !important;
+  padding: 1px 4px !important;
+  line-height: 14px !important;
+  font-size: clamp(8px, 2.2vw, 11px) !important;
+}
+.battlefield .unit > .unit-nameplate .battle-unit-hp {
+  top: -26px !important;
+  height: 7px !important;
+  min-height: 7px !important;
+  overflow: hidden !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicators {
+  display: flex !important;
+  position: absolute !important;
+  top: -17px !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 3px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicator {
+  display: block !important;
+  flex: 0 0 8px !important;
+  width: 8px !important;
+  min-width: 8px !important;
+  max-width: 8px !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  max-height: 8px !important;
+  border: 1px solid rgba(255,255,255,.8) !important;
+  border-radius: 2px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.65) !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicator.buff { background: #159447 !important; }
+.battlefield .unit > .unit-nameplate .unit-effect-indicator.debuff { background: #c62828 !important; }
+@media (max-width: 760px) {
+  .battlefield .unit > .unit-nameplate .unit-name {
+    top: -32px !important;
+    height: 13px !important;
+    padding: 0 2px !important;
+    line-height: 11px !important;
+    font-size: clamp(7px, 2vw, 9px) !important;
+  }
+  .battlefield .unit > .unit-nameplate .battle-unit-hp {
+    top: -19px !important;
+    height: 6px !important;
+    min-height: 6px !important;
+  }
+  .battlefield .unit > .unit-nameplate .unit-effect-indicators {
+    top: -11px !important;
+  }
+}
