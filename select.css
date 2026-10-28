@@ -167,3 +167,32 @@ footer { margin:20px 0 0; color:#64758a; font-size:10px; font-weight:700; letter
 .character-art img.portrait-punisher {
   transform: translateY(-5%) scale(1.3) !important;
 }
+
+
+/* Face-first framing: use a consistent head-and-shoulders crop, with small per-portrait corrections. */
+.character-art img {
+  object-fit: cover !important;
+  object-position: 50% 16% !important;
+  transform: scale(1.22) !important;
+  transform-origin: 50% 12% !important;
+}
+.character-art img.portrait-elektra {
+  object-position: 56% 14% !important;
+  transform: scale(1.22) !important;
+}
+.character-art img.portrait-hawkeye {
+  object-position: 50% 10% !important;
+  transform: scale(1.22) !important;
+}
+.character-art img.portrait-punisher {
+  object-position: 50% 12% !important;
+  transform: scale(1.22) !important;
+}
+@media (max-width: 760px) {
+  .character-art img,
+  .character-art img.portrait-elektra,
+  .character-art img.portrait-hawkeye,
+  .character-art img.portrait-punisher {
+    transform: scale(1.18) !important;
+  }
+}
