@@ -3479,11 +3479,11 @@ body {
 
 /* Latest positioning tweak: lower the second-row characters and pin move stats tighter to tile corners. */
 .battlefield .unit:nth-child(2) {
-  transform: translateY(-14px) !important;
+  translate: 0 -14px !important;
 }
 @media (max-width: 760px) {
   .battlefield .unit:nth-child(2) {
-    transform: translateY(-10px) !important;
+    translate: 0 -10px !important;
   }
   .move-dock-stats {
     padding: 0 !important;
@@ -3502,11 +3502,11 @@ body {
 
 /* Place move stats individually in the four tile corners and separate the lower formation row. */
 .battlefield .unit:nth-child(2) {
-  transform: translateY(22px) !important;
+  translate: 0 22px !important;
 }
 @media (max-width: 760px) {
   .battlefield .unit:nth-child(2) {
-    transform: translateY(22px) !important;
+    translate: 0 22px !important;
   }
   .move-dock-stats {
     display: block !important;
@@ -6383,10 +6383,10 @@ body {
 
 /* Pull the front/middle fighter on each side inward toward their two teammates. */
 .hero-side .team-grid > .unit:nth-child(3) {
-  transform: translateX(-14px) !important;
+  translate: -14px 0 !important;
 }
 .enemy-side .team-grid > .unit:nth-child(3) {
-  transform: translateX(14px) !important;
+  translate: 14px 0 !important;
 }
 
 
@@ -6561,18 +6561,8 @@ body {
 .turn-chip img.portrait-daredevil { transform: translateY(8%) scale(2.5) !important; transform-origin: 50% 0 !important; }
 .turn-chip img.portrait-captainamerica { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
 
-/* Keep formation offsets on the independent translate property so melee
-   animations can use transform for their temporary lunge in every slot. */
+/* Formation offsets use the independent translate property so transform animations can move every unit. */
 .battlefield .hero-side .unit:nth-child(2),
-.battlefield .enemy-side .unit:nth-child(2) {
-  transform: none !important;
-  translate: 0 22px !important;
-}
-.battlefield .hero-side .team-grid > .unit:nth-child(3) {
-  transform: none !important;
-  translate: -14px 0 !important;
-}
-.battlefield .enemy-side .team-grid > .unit:nth-child(3) {
-  transform: none !important;
-  translate: 14px 0 !important;
-}
+.battlefield .enemy-side .unit:nth-child(2) { translate: 0 22px !important; }
+.battlefield .hero-side .team-grid > .unit:nth-child(3) { translate: -14px 0 !important; }
+.battlefield .enemy-side .team-grid > .unit:nth-child(3) { translate: 14px 0 !important; }
