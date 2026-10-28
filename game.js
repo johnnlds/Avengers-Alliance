@@ -1356,7 +1356,50 @@ function applyCombatAnimationPath() {
   actorCard.style.setProperty("--target-y", `${dy}px`);
 }
 
+function showDestroyerPrototypeImage() {
+  const battlefield = document.querySelector(".battlefield");
+  if (!battlefield) return;
+  const previous = battlefield.querySelector(".destroyer-prototype-image");
+  if (previous) previous.remove();
+
+  const wasPositioned = getComputedStyle(battlefield).position !== "static";
+  if (!wasPositioned) battlefield.style.position = "relative";
+
+  const image = document.createElement("img");
+  image.className = "destroyer-prototype-image";
+  image.src = "../assets/Phil%20Gun.png";
+  image.alt = "Phil Coulson fires the Destroyer Prototype";
+  image.setAttribute("aria-hidden", "true");
+  Object.assign(image.style, {
+    position: "absolute",
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%) scale(0.75)",
+    width: "min(58%, 420px)",
+    maxHeight: "75%",
+    objectFit: "contain",
+    zIndex: "30",
+    pointerEvents: "none",
+    opacity: "0",
+    filter: "drop-shadow(0 0 16px rgba(255, 180, 55, 0.8))",
+    transition: "opacity 120ms ease, transform 180ms ease"
+  });
+  battlefield.appendChild(image);
+  requestAnimationFrame(() => {
+    image.style.opacity = "1";
+    image.style.transform = "translate(-50%, -50%) scale(1)";
+  });
+  window.setTimeout(() => {
+    image.style.opacity = "0";
+    image.style.transform = "translate(-50%, -50%) scale(1.08)";
+    window.setTimeout(() => image.remove(), 180);
+  }, 950);
+}
+
 function triggerCombatAnimation(actor, target, move) {
+  if (actor.id === "phil" && move?.id === "destroyer-prototype") {
+    showDestroyerPrototypeImage();
+  }
   animatingActorId = actor.id;
   animatingTargetId = target.id;
   animatingMoveId = move ? move.id : null;
