@@ -6840,3 +6840,25 @@ body {
   box-sizing: border-box !important;
   max-width: calc(100vw - 24px) !important;
 }
+
+
+/* Ensure inspected non-active characters render their HP bar as well as the active unit. */
+.battlefield .unit:not(.active-turn) > .unit-nameplate .battle-unit-hp,
+.battlefield .unit:not(.active-turn) > .unit-nameplate .battle-unit-hp-fill,
+.battlefield .unit.active-turn > .unit-nameplate .battle-unit-hp,
+.battlefield .unit.active-turn > .unit-nameplate .battle-unit-hp-fill {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.battlefield .unit > .unit-nameplate .battle-unit-hp {
+  position: absolute !important;
+  overflow: hidden !important;
+  background: #303b49 !important;
+  border: 1px solid rgba(255,255,255,.75) !important;
+  border-radius: 3px !important;
+}
+.battlefield .unit > .unit-nameplate .battle-unit-hp-fill {
+  height: 100% !important;
+  min-height: 0 !important;
+}
