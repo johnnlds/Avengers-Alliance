@@ -6564,3 +6564,13 @@ body {
 .turn-chip img.portrait-punisher {
   top: -6px !important;
 }
+
+/* Face-centered framing for portraits whose source artwork was visually inspected. */
+.turn-chip { overflow: hidden; }
+.turn-chip img.portrait-phil { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
+.turn-chip img.portrait-bruiser { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
+.turn-chip img.portrait-blackwidow { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
+.turn-chip img.portrait-beta-ray-bill { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
+.turn-chip img.portrait-elektra { transform: translate(12%, 8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
+.turn-chip img.portrait-daredevil { transform: translateY(8%) scale(2.5) !important; transform-origin: 50% 0 !important; }
+.turn-chip img.portrait-captainamerica { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
