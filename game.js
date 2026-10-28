@@ -1331,33 +1331,20 @@ function applyCombatAnimationPath() {
   const dx = (targetRect.left + targetRect.width / 2) - (actorRect.left + actorRect.width / 2);
   const dy = (targetRect.top + targetRect.height / 2) - (actorRect.top + actorRect.height / 2);
   const distance = Math.hypot(dx, dy) || 1;
-  // Only melee moves physically dash toward their target. Any animation type
-  // containing "ranged" stays in place and uses its ranged attack animation.
+  // Every melee-style attack (unarmed, spin, or flying) lunges toward
+  // the actual target card, including attacks that also damage multiple enemies.
+  // Ranged attacks stay in place and use their ranged animation.
   const move = getMove(animatingMoveId);
   const attackType = String(move?.attackType || "");
-  const isRanged = attackType.includes("ranged");
-  const isMelee = !isRanged && attackType.includes("melee");
-  const travel = isMelee ? Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70))) : 0;
+  const isMelee = attackType.includes("melee");
+  const travel = isMelee
+    ? Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70)))
+    : 0;
   const x = dx / distance * travel;
   const y = dy / distance * travel;
 
-  if (isMelee && (move?.target === "all-enemies" || attackType === "spin-melee")) {
-    const enemyCards = [...document.querySelectorAll(actorCard.classList.contains("hero") ? ".unit.enemy:not(.defeated)" : ".unit.hero:not(.defeated)")];
-    if (enemyCards.length) {
-      const rects = enemyCards.map(card => card.getBoundingClientRect());
-      const centerX = rects.reduce((sum, rect) => sum + rect.left + rect.width / 2, 0) / rects.length;
-      const centerY = rects.reduce((sum, rect) => sum + rect.top + rect.height / 2, 0) / rects.length;
-      const cdx = centerX - (actorRect.left + actorRect.width / 2);
-      const cdy = centerY - (actorRect.top + actorRect.height / 2);
-      const cd = Math.hypot(cdx, cdy) || 1;
-      const ct = Math.min(cd * 0.62, Math.max(48, cd - 35));
-      actorCard.style.setProperty("--attack-x", `${cdx / cd * ct}px`);
-      actorCard.style.setProperty("--attack-y", `${cdy / cd * ct}px`);
-    }
-  } else {
-    actorCard.style.setProperty("--attack-x", `${x}px`);
-    actorCard.style.setProperty("--attack-y", `${y}px`);
-  }
+  actorCard.style.setProperty("--attack-x", `${x}px`);
+  actorCard.style.setProperty("--attack-y", `${y}px`);
   actorCard.style.setProperty("--target-x", `${dx}px`);
   actorCard.style.setProperty("--target-y", `${dy}px`);
 }
@@ -1419,7 +1406,7 @@ function triggerCombatAnimation(actor, target, move) {
     animatingActorId = actor.id;
     animatingTargetId = target?.id || null;
     animatingMoveId = move ? move.id : null;
-    animatingMode = move?.target === "all-enemies" ? "sweep" : null;
+    animatingMode = move?.target === "all-enemies" && !String(move?.attackType || "").includes("melee") ? "sweep" : null;
   }
   const token = ++animationToken;
 
