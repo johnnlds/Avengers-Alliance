@@ -6556,11 +6556,11 @@ body {
 
 /* Individual turn-order portrait framing corrections. */
 .turn-chip img.portrait-elektra {
-  left: calc(50% + 5px);
+  left: calc(50% + 14px) !important;
 }
 .turn-chip img.portrait-hawkeye {
-  top: -5px;
+  top: -12px !important;
 }
 .turn-chip img.portrait-punisher {
-  top: -2px;
+  top: -6px !important;
 }
