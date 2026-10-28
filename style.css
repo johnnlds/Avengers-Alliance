@@ -934,10 +934,6 @@ button:focus-visible {
   42% { transform: translate(0, 0) scale(.99); filter: brightness(1.8) saturate(1.25); }
   60% { transform: translate(0, 0) scale(1); filter: brightness(1.2); }
 }
-.unit.attacking.hero.attack-flying-melee,
-.unit.attacking.enemy.attack-flying-melee {
-  animation: flying-kick 1.28s cubic-bezier(.2,.75,.2,1) both !important;
-}
 
 
 /* Compact HUD: active hero health and stamina sit side by side above abilities. */
@@ -6574,70 +6570,3 @@ body {
 .turn-chip img.portrait-elektra { transform: translate(12%, 8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
 .turn-chip img.portrait-daredevil { transform: translateY(8%) scale(2.5) !important; transform-origin: 50% 0 !important; }
 .turn-chip img.portrait-captainamerica { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
-
-
-/* Ensure melee attacks visibly advance toward their selected target.
-   This final rule overrides older type-specific animations that only flashed
-   or rotated the attacker without using the computed target vector. */
-.unit.attacking.hero[class*="attack-"][class*="melee"],
-.unit.attacking.enemy[class*="attack-"][class*="melee"] {
-  animation: melee-advance-to-target 1.28s cubic-bezier(.18,.78,.22,1) both !important;
-  will-change: transform, filter;
-  z-index: 30 !important;
-}
-@keyframes melee-advance-to-target {
-  0% {
-    transform: translate(0, 0) scale(1);
-    filter: brightness(1);
-  }
-  24% {
-    transform: translate(calc(var(--attack-x, 0px) * .72), calc(var(--attack-y, 0px) * .72)) scale(1.08);
-    filter: brightness(1.2);
-  }
-  42%, 54% {
-    transform: translate(var(--attack-x, 0px), var(--attack-y, 0px)) scale(1.16);
-    filter: brightness(1.75) saturate(1.25);
-  }
-  68% {
-    transform: translate(calc(var(--attack-x, 0px) * .88), calc(var(--attack-y, 0px) * .88)) scale(1.08);
-    filter: brightness(1.3);
-  }
-  100% {
-    transform: translate(0, 0) scale(1);
-    filter: brightness(1);
-  }
-}
-
-
-/* Use the independent CSS translate property for melee travel so older
-   transform-based portrait/attack effects cannot cancel the movement. */
-.unit.attacking.hero[class*="attack-"][class*="melee"],
-.unit.attacking.enemy[class*="attack-"][class*="melee"] {
-  animation: melee-travel-translate 1.28s cubic-bezier(.18,.78,.22,1) both !important;
-  translate: 0 0;
-}
-@keyframes melee-travel-translate {
-  0% { translate: 0 0; filter: brightness(1); }
-  24% {
-    translate: calc(var(--attack-x, 0px) * .72) calc(var(--attack-y, 0px) * .72);
-    filter: brightness(1.25);
-  }
-  42%, 54% {
-    translate: var(--attack-x, 0px) var(--attack-y, 0px);
-    filter: brightness(1.75) saturate(1.25);
-  }
-  68% {
-    translate: calc(var(--attack-x, 0px) * .88) calc(var(--attack-y, 0px) * .88);
-    filter: brightness(1.3);
-  }
-  100% { translate: 0 0; filter: brightness(1); }
-}
-
-
-/* Single source of truth for melee movement: game.js supplies the shared
-   Web Animations choreography for every melee attack type. Disable legacy
-   CSS keyframes here so character/type-specific rules cannot stack on top. */
-.unit.attacking.hero[class*="attack-"][class*="melee"],
-.unit.attacking.enemy[class*="attack-"][class*="melee"] {
-  animation: none !important;
-}
