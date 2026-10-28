@@ -1490,8 +1490,11 @@ function calculateDamage(attacker, target, move) {
   const guaranteedCrit = !!attacker.effects?.lucky;
   const superCrit = !!attacker.effects?.superCrit;
   const critical = guaranteedCrit || Math.random() < criticalChance / 100;
-  if (superCrit) amount *= 2;
-  else if (critical) amount *= 1.15 + Math.random() * 0.10;
+  if (superCrit) {
+    amount *= 2;
+    // Lucky lets a Super Crit retain the normal critical multiplier as well.
+    if (guaranteedCrit) amount *= 1.15 + Math.random() * 0.10;
+  } else if (critical) amount *= 1.15 + Math.random() * 0.10;
 
   return { amount: Math.max(1, Math.round(amount * 10) / 10), critical };
 }
