@@ -1337,9 +1337,11 @@ function applyCombatAnimationPath() {
   const move = getMove(animatingMoveId);
   const attackType = String(move?.attackType || "");
   const isMelee = attackType.includes("melee");
-  const travel = isMelee
-    ? Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70)))
-    : 0;
+  // Use the same travel distance for every melee attacker whenever the
+  // target is far enough away. Only shorten it when needed to avoid crossing
+  // into the target card, so the roster shares one consistent movement pace.
+  const availableTravel = Math.max(0, distance - Math.min(targetRect.width * 0.42, 70));
+  const travel = isMelee ? Math.min(120, availableTravel) : 0;
   const x = dx / distance * travel;
   const y = dy / distance * travel;
 
@@ -1353,21 +1355,19 @@ function applyCombatAnimationPath() {
   // some unarmed-melee characters (including Daredevil, Phil, and Bruiser).
   // Web Animations has priority over stylesheet animations on the same property.
   if (isMelee) {
-    // Keep lunge speed consistent across the roster: longer travel gets
-    // proportionally more time, rather than covering a larger distance in
-    // the same fixed duration. Clamp the duration to keep attacks snappy.
-    const duration = Math.max(900, Math.min(1800, (travel / 150) * 1280));
-    // Cancel any previous effect on this card before starting the new lunge,
-    // so repeated hits/renders cannot restart or stack the motion.
+    // The stylesheet animates the independent CSS `translate` property.
+    // Animate that same property here so the two animations cannot stack and
+    // make particular characters appear to move farther/faster than others.
+    // Keep the duration identical to the battle's 1.28-second attack window.
     actorCard.getAnimations().forEach(animation => animation.cancel());
     actorCard.animate([
-      { transform: "translate(0px, 0px) scale(1)", filter: "brightness(1)" },
-      { transform: `translate(${x * 0.72}px, ${y * 0.72}px) scale(1.08)`, filter: "brightness(1.25)", offset: 0.24 },
-      { transform: `translate(${x}px, ${y}px) scale(1.16)`, filter: "brightness(1.75) saturate(1.25)", offset: 0.42 },
-      { transform: `translate(${x}px, ${y}px) scale(1.16)`, filter: "brightness(1.75) saturate(1.25)", offset: 0.54 },
-      { transform: `translate(${x * 0.88}px, ${y * 0.88}px) scale(1.08)`, filter: "brightness(1.3)", offset: 0.68 },
-      { transform: "translate(0px, 0px) scale(1)", filter: "brightness(1)" }
-    ], { duration, easing: "linear", fill: "both" });
+      { translate: "0px 0px", transform: "scale(1)", filter: "brightness(1)" },
+      { translate: `${x * 0.72}px ${y * 0.72}px`, transform: "scale(1.08)", filter: "brightness(1.25)", offset: 0.24 },
+      { translate: `${x}px ${y}px`, transform: "scale(1.16)", filter: "brightness(1.75) saturate(1.25)", offset: 0.42 },
+      { translate: `${x}px ${y}px`, transform: "scale(1.16)", filter: "brightness(1.75) saturate(1.25)", offset: 0.54 },
+      { translate: `${x * 0.88}px ${y * 0.88}px`, transform: "scale(1.08)", filter: "brightness(1.3)", offset: 0.68 },
+      { translate: "0px 0px", transform: "scale(1)", filter: "brightness(1)" }
+    ], { duration: 1280, easing: "linear", fill: "both" });
   }
 }
 
