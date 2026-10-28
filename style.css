@@ -6560,3 +6560,19 @@ body {
 .turn-chip img.portrait-elektra { transform: translate(12%, 8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
 .turn-chip img.portrait-daredevil { transform: translateY(8%) scale(2.5) !important; transform-origin: 50% 0 !important; }
 .turn-chip img.portrait-captainamerica { transform: translateY(8%) scale(2.1) !important; transform-origin: 50% 0 !important; }
+
+/* Keep formation offsets on the independent translate property so melee
+   animations can use transform for their temporary lunge in every slot. */
+.battlefield .hero-side .unit:nth-child(2),
+.battlefield .enemy-side .unit:nth-child(2) {
+  transform: none !important;
+  translate: 0 22px !important;
+}
+.battlefield .hero-side .team-grid > .unit:nth-child(3) {
+  transform: none !important;
+  translate: -14px 0 !important;
+}
+.battlefield .enemy-side .team-grid > .unit:nth-child(3) {
+  transform: none !important;
+  translate: 14px 0 !important;
+}
