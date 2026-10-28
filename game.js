@@ -1175,6 +1175,20 @@ function selectUnit(unit) {
   }
   const move = getMove(pendingMoveId);
   if (!move) return;
+
+  // Self-targeting buffs are activated by tapping the acting character,
+  // rather than selecting an enemy or another ally.
+  if (move.target === "self") {
+    if (unit.id !== currentActor.id) {
+      log("Tap the acting character to use this self-targeting move.", "miss");
+      return;
+    }
+    const moveId = pendingMoveId;
+    pendingMoveId = null;
+    useMove(moveId, currentActor);
+    return;
+  }
+
   const validTarget = ["ally","all-allies"].includes(move.target) ? unit.team === "hero" : unit.team === "enemy";
   if (!validTarget) {
     log(move.target === "ally" ? "Select a living ally for this move." : "Select a living enemy for this move.", "miss");
