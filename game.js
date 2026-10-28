@@ -1341,7 +1341,8 @@ function applyCombatAnimationPath() {
   // target is far enough away. Only shorten it when needed to avoid crossing
   // into the target card, so the roster shares one consistent movement pace.
   const availableTravel = Math.max(0, distance - Math.min(targetRect.width * 0.42, 70));
-  const travel = isMelee ? Math.min(120, availableTravel) : 0;
+  // Slightly shorten the lunge so the approach feels less abrupt on mobile.
+  const travel = isMelee ? Math.min(95, availableTravel) : 0;
   const x = dx / distance * travel;
   const y = dy / distance * travel;
 
