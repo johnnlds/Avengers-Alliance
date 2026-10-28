@@ -1105,30 +1105,27 @@ function openEffectsInfo(unitName, buffs, debuffs, unitId) {
   };
   addGroup("Buffs", "buff", buffs);
   addGroup("Debuffs", "debuff", debuffs);
-  const unitCard = document.querySelector(`.battlefield .unit[data-unit-id="${CSS.escape(String(unitId))}"]`);
   overlay.classList.remove("hidden");
   requestAnimationFrame(() => {
-    const unitRect = unitCard?.getBoundingClientRect();
+    const battlefield = document.querySelector(".battlefield");
+    const fieldRect = battlefield?.getBoundingClientRect();
     const viewportPad = 12;
-    const cardWidth = Math.min(360, window.innerWidth - viewportPad * 2);
+    const availableWidth = fieldRect ? Math.max(220, fieldRect.width - 24) : window.innerWidth - 24;
+    const cardWidth = Math.min(300, availableWidth, window.innerWidth - viewportPad * 2);
+    const availableHeight = fieldRect ? Math.max(180, fieldRect.height - 24) : window.innerHeight - viewportPad * 2;
     card.style.position = "fixed";
     card.style.width = `${cardWidth}px`;
-    card.style.maxHeight = `${window.innerHeight - viewportPad * 2}px`;
+    card.style.maxWidth = `calc(100vw - ${viewportPad * 2}px)`;
+    card.style.maxHeight = `${Math.min(availableHeight, window.innerHeight - viewportPad * 2, window.innerHeight * 0.72)}px`;
     card.style.overflowY = "auto";
-    if (unitRect) {
-      const cardHeight = Math.min(card.scrollHeight, window.innerHeight - viewportPad * 2);
-      let left = unitRect.right + 10;
-      if (left + cardWidth > window.innerWidth - viewportPad) left = unitRect.left - cardWidth - 10;
-      if (left < viewportPad) left = Math.max(viewportPad, Math.min(unitRect.left, window.innerWidth - cardWidth - viewportPad));
-      let top = unitRect.top + unitRect.height / 2 - cardHeight / 2;
-      top = Math.max(viewportPad, Math.min(top, window.innerHeight - cardHeight - viewportPad));
-      card.style.left = `${left}px`;
-      card.style.top = `${top}px`;
-      card.style.margin = "0";
-    } else {
-      card.style.left = `${viewportPad}px`;
-      card.style.top = `${viewportPad}px`;
-    }
+    card.style.margin = "0";
+    const cardHeight = Math.min(card.scrollHeight, Math.min(availableHeight, window.innerHeight - viewportPad * 2, window.innerHeight * 0.72));
+    const centerX = fieldRect ? fieldRect.left + fieldRect.width / 2 : window.innerWidth / 2;
+    const centerY = fieldRect ? fieldRect.top + fieldRect.height / 2 : window.innerHeight / 2;
+    const left = Math.max(viewportPad, Math.min(centerX - cardWidth / 2, window.innerWidth - cardWidth - viewportPad));
+    const top = Math.max(viewportPad, Math.min(centerY - cardHeight / 2, window.innerHeight - cardHeight - viewportPad));
+    card.style.left = `${left}px`;
+    card.style.top = `${top}px`;
   });
 }
 
