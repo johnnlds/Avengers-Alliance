@@ -1353,14 +1353,21 @@ function applyCombatAnimationPath() {
   // some unarmed-melee characters (including Daredevil, Phil, and Bruiser).
   // Web Animations has priority over stylesheet animations on the same property.
   if (isMelee) {
+    // Keep lunge speed consistent across the roster: longer travel gets
+    // proportionally more time, rather than covering a larger distance in
+    // the same fixed duration. Clamp the duration to keep attacks snappy.
+    const duration = Math.max(900, Math.min(1800, (travel / 150) * 1280));
+    // Cancel any previous effect on this card before starting the new lunge,
+    // so repeated hits/renders cannot restart or stack the motion.
+    actorCard.getAnimations().forEach(animation => animation.cancel());
     actorCard.animate([
       { transform: "translate(0px, 0px) scale(1)", filter: "brightness(1)" },
-      { transform: `translate(${x * 0.72}px, ${y * 0.72}px) scale(1.08)`, filter: "brightness(1.25)" , offset: 0.24 },
+      { transform: `translate(${x * 0.72}px, ${y * 0.72}px) scale(1.08)`, filter: "brightness(1.25)", offset: 0.24 },
       { transform: `translate(${x}px, ${y}px) scale(1.16)`, filter: "brightness(1.75) saturate(1.25)", offset: 0.42 },
       { transform: `translate(${x}px, ${y}px) scale(1.16)`, filter: "brightness(1.75) saturate(1.25)", offset: 0.54 },
       { transform: `translate(${x * 0.88}px, ${y * 0.88}px) scale(1.08)`, filter: "brightness(1.3)", offset: 0.68 },
       { transform: "translate(0px, 0px) scale(1)", filter: "brightness(1)" }
-    ], { duration: 1280, easing: "cubic-bezier(.18,.78,.22,1)", fill: "both" });
+    ], { duration, easing: "linear", fill: "both" });
   }
 }
 
