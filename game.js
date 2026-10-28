@@ -282,7 +282,7 @@ function createUnit(template) {
     protectedUntilAttack: false,
     effects: {
       strengthened: 0, superCrit: false, lucky: false, stealth: 0, armor: 0,
-      squirrelly: 2, attention: 0,
+      squirrelly: 0, attention: 0,
       weakened: false, bleed: 0, confused: 0, burn: 0, slow: 0, fear: 0,
       monkeyJoe: 0
     },
@@ -294,7 +294,7 @@ function createUnit(template) {
 
 function createWaveEnemies() {
   const multiplier = 1 + (wave - 1) * 0.01;
-  return ENEMY_TEMPLATES.map(template => {
+  const waveTemplates = ENEMY_TEMPLATES.map(template => {
     const scaled = {
       ...template,
       maxHp: Math.round(template.maxHp * multiplier),
@@ -306,6 +306,12 @@ function createWaveEnemies() {
     };
     return createUnit(scaled);
   });
+  const eliminations = heroes.reduce((count, hero) => count + (hero.pendingWaveEliminations || 0), 0);
+  for (let i = 0; i < eliminations && waveTemplates.length; i++) {
+    waveTemplates.splice(Math.floor(Math.random() * waveTemplates.length), 1);
+  }
+  heroes.forEach(hero => { hero.pendingWaveEliminations = 0; });
+  return waveTemplates;
 }
 
 function beginNextWave() {
@@ -1405,7 +1411,7 @@ function useMove(moveId, chosenTarget = null) {
   if (move.target === "all-enemies") {
     performAttackOnTargets(actor, enemies.filter(unit => unit.alive), move);
     if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
-  } else if (move.target === "all-allies") {
+   } else if (move.target === "all-allies" && !move.buffs) {
     for (const ally of heroes.filter(unit => unit.alive)) ally.damageBoost = Math.max(ally.damageBoost || 0, 0.2);
     actor.cooldowns[move.id] = move.cooldown;
     log(`${actor.name} uses Pep Talk! All living allies, including ${actor.name}, gain a 20% damage boost for their next attack.`, "good");
@@ -1445,6 +1451,12 @@ function useMove(moveId, chosenTarget = null) {
   expireTurnEffects(actor);
   renderAll();
   if (checkBattleEnd()) return;
+  if (actor.freeActions > 0) {
+    actor.freeActions--;
+    log(`${actor.name} takes a free action!`, "good");
+    window.setTimeout(nextTurn, 700);
+    return;
+  }
   turnIndex++;
   window.setTimeout(nextTurn, 1550);
 }
@@ -1470,15 +1482,10 @@ function performAttackOnTargets(actor, targets, move) {
   for (const target of targets) {
     if (!target.alive || !actor.alive) continue;
     const hitChance = move.accuracy / 100;
-    if (target.protectedUntilAttack) {
-      target.protectedUntilAttack = false;
-      log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
-      continue;
-    }
     const actualTarget = getConfusedTarget(actor, target, move);
-    if (target.protectedUntilAttack && actualTarget === target) {
-      target.protectedUntilAttack = false;
-      log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
+    if (actualTarget.protectedUntilAttack) {
+      actualTarget.protectedUntilAttack = false;
+      log(`${actualTarget.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
       continue;
     }
     if (!doesAttackHit(actor, actualTarget, move)) {
@@ -1488,19 +1495,25 @@ function performAttackOnTargets(actor, targets, move) {
       continue;
     }
     const damage = calculateDamage(actor, actualTarget, move);
+    if (move.eliminateNextWave) actor.pendingWaveEliminations = (actor.pendingWaveEliminations || 0) + 1;
     if (actor.effects?.superCrit) actor.effects.superCrit = false;
     if (actor.effects?.lucky) actor.effects.lucky = false;
     if (actor.effects?.weakened) actor.effects.weakened = false;
     actualTarget.hp = Math.max(0, actualTarget.hp - damage.amount);
     showDamageNumber(actualTarget, damage.amount, damage.critical, false, 100);
     log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
-    if (target.hp <= 0) {
-      target.alive = false;
-      target.hp = 0;
-      log(`${target.name} has been defeated!`, "good");
+    if (move.applyDebuff && Math.random() < (move.debuffChance || 100) / 100) {
+      if (move.applyDebuff === "stun") actualTarget.stunned = true;
+      else applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
+    }
+    if (move.removeBuffs) removeAllBuffs(actualTarget);
+    if (actualTarget.hp <= 0) {
+      actualTarget.alive = false;
+      actualTarget.hp = 0;
+      log(`${actualTarget.name} has been defeated!`, "good");
     } else if (move.stunChance && Math.random() < move.stunChance / 100) {
-      target.stunned = true;
-      log(`${target.name} is stunned and will lose their next action!`, "good");
+      actualTarget.stunned = true;
+      log(`${actualTarget.name} is stunned and will lose their next action!`, "good");
     }
   }
   if (actor.team === "hero" && actor.damageBoost > 0) {
