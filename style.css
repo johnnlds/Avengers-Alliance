@@ -6647,3 +6647,84 @@ body {
   opacity: .95 !important;
   pointer-events: none !important;
 }
+
+
+/* Text-and-color status indicators on the tapped character's nameplate. */
+.battlefield .unit > .unit-nameplate {
+  position: absolute !important;
+  z-index: 2147483647 !important;
+  left: 50% !important;
+  top: -31px !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: clamp(66px, 18vw, 112px) !important;
+  max-width: 140% !important;
+  gap: 2px !important;
+  padding: 3px !important;
+  border: 1px solid rgba(255,255,255,.55) !important;
+  border-radius: 4px !important;
+  background: rgba(10,16,25,.94) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.7) !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+.battlefield .unit > .unit-nameplate .unit-name,
+.battlefield .unit > .unit-nameplate .battle-unit-hp {
+  position: relative !important;
+  inset: auto !important;
+  transform: none !important;
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+.battlefield .unit > .unit-nameplate .unit-name {
+  height: auto !important;
+  min-height: 12px !important;
+  padding: 1px 2px !important;
+  line-height: 1.1 !important;
+  text-align: center !important;
+  font-size: clamp(8px, 2vw, 11px) !important;
+  white-space: nowrap !important;
+}
+.battlefield .unit > .unit-nameplate .battle-unit-hp {
+  height: 6px !important;
+  min-height: 6px !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicators {
+  position: relative !important;
+  inset: auto !important;
+  transform: none !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 3px !important;
+  width: 100% !important;
+  height: 7px !important;
+  min-height: 7px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicator {
+  display: block !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
+  height: 7px !important;
+  min-height: 7px !important;
+  max-height: 7px !important;
+  border: 0 !important;
+  border-radius: 2px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicator.buff { background: #159447 !important; }
+.battlefield .unit > .unit-nameplate .unit-effect-indicator.debuff { background: #c62828 !important; }
+.battlefield .unit > .unit-nameplate .unit-effect-indicator img { display: none !important; }
+.battlefield .unit > .unit-nameplate:focus-visible {
+  outline: 2px solid #fff !important;
+  outline-offset: 2px !important;
+}
