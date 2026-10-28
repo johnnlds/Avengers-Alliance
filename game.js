@@ -1347,6 +1347,21 @@ function applyCombatAnimationPath() {
   actorCard.style.setProperty("--attack-y", `${y}px`);
   actorCard.style.setProperty("--target-x", `${dx}px`);
   actorCard.style.setProperty("--target-y", `${dy}px`);
+
+  // Drive the lunge directly on the rendered attacker card. This avoids relying
+  // on per-move CSS animation selectors, which were not consistently moving
+  // some unarmed-melee characters (including Daredevil, Phil, and Bruiser).
+  // Web Animations has priority over stylesheet animations on the same property.
+  if (isMelee) {
+    actorCard.animate([
+      { transform: "translate(0px, 0px) scale(1)", filter: "brightness(1)" },
+      { transform: `translate(${x * 0.72}px, ${y * 0.72}px) scale(1.08)`, filter: "brightness(1.25)" , offset: 0.24 },
+      { transform: `translate(${x}px, ${y}px) scale(1.16)`, filter: "brightness(1.75) saturate(1.25)", offset: 0.42 },
+      { transform: `translate(${x}px, ${y}px) scale(1.16)`, filter: "brightness(1.75) saturate(1.25)", offset: 0.54 },
+      { transform: `translate(${x * 0.88}px, ${y * 0.88}px) scale(1.08)`, filter: "brightness(1.3)", offset: 0.68 },
+      { transform: "translate(0px, 0px) scale(1)", filter: "brightness(1)" }
+    ], { duration: 1280, easing: "cubic-bezier(.18,.78,.22,1)", fill: "both" });
+  }
 }
 
 function showDestroyerPrototypeImage() {
