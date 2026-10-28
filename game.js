@@ -1130,7 +1130,7 @@ function nextTurn() {
     if (unit.attackDebuffTurns > 0) {
       unit.attackDebuffTurns--;
       if (unit.attackDebuffTurns === 0) {
-        unit.atk = unit.baseAtk;
+        syncEffectStats(unit);
       }
     }
 
@@ -1356,15 +1356,25 @@ function performAttackOnTargets(actor, targets, move) {
       log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
       continue;
     }
-    if (!doesAttackHit(actor, target, move)) {
-      log(`${move.name} misses ${target.name}!`, "miss");
-      showDamageNumber(target, 0, false, true, 100);
+    const actualTarget = getConfusedTarget(actor, target, move);
+    if (target.protectedUntilAttack && actualTarget === target) {
+      target.protectedUntilAttack = false;
+      log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
       continue;
     }
-    const damage = calculateDamage(actor, target, move);
-    target.hp = Math.max(0, target.hp - damage.amount);
-    showDamageNumber(target, damage.amount, damage.critical, false, 100);
-    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
+    if (!doesAttackHit(actor, actualTarget, move)) {
+      log(`${move.name} misses ${actualTarget.name}!`, "miss");
+      if (actor.effects?.superCrit) actor.effects.superCrit = false;
+      showDamageNumber(actualTarget, 0, false, true, 100);
+      continue;
+    }
+    const damage = calculateDamage(actor, actualTarget, move);
+    if (actor.effects?.superCrit) actor.effects.superCrit = false;
+    if (actor.effects?.lucky) actor.effects.lucky = false;
+    if (actor.effects?.weakened) actor.effects.weakened = false;
+    actualTarget.hp = Math.max(0, actualTarget.hp - damage.amount);
+    showDamageNumber(actualTarget, damage.amount, damage.critical, false, 100);
+    log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
     if (target.hp <= 0) {
       target.alive = false;
       target.hp = 0;
@@ -1381,7 +1391,8 @@ function performAttackOnTargets(actor, targets, move) {
 }
 function useWidowmaker(actor, target, move) {
   target.attackDebuffTurns = 1;
-  target.atk = target.baseAtk * 0.5;
+  syncEffectStats(target);
+  target.atk = target.baseAtk * 0.5 * (target.effects?.strengthened > 0 ? 1.25 : 1);
   actor.stunPrimed = true;
   actor.cooldowns[move.id] = move.cooldown;
   log(`${actor.name} uses Widowmaker! ${target.name}'s Attack is reduced by 50% until their next action.`, "good");
@@ -1389,42 +1400,67 @@ function useWidowmaker(actor, target, move) {
 }
 function performAttack(actor, target, move) {
   log(`${actor.name} uses ${move.name} on ${target.name}.`);
+  const confusedTarget = getConfusedTarget(actor, target, move);
+  const actualTarget = redirectSingleTarget(actor, confusedTarget, move);
+  let totalDamage = 0;
+  let hitAny = false;
   for (let hitNumber = 1; hitNumber <= move.hits; hitNumber++) {
-    if (!target.alive || !actor.alive) break;
-    if (target.protectedUntilAttack) {
-      target.protectedUntilAttack = false;
-      log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
+    if (!actualTarget.alive || !actor.alive) break;
+    if (actualTarget.protectedUntilAttack) {
+      actualTarget.protectedUntilAttack = false;
+      log(`${actualTarget.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
       break;
     }
-    const actualTarget = redirectSingleTarget(actor, getConfusedTarget(actor, target, move), move);
     if (!doesAttackHit(actor, actualTarget, move)) {
       log(`${move.name} misses ${actualTarget.name}!`, "miss");
+      // Super Crit is consumed by a dodge; Lucky remains until an attack lands.
       if (actor.effects?.superCrit) actor.effects.superCrit = false;
-      if (actor.effects?.lucky) actor.effects.lucky = false;
       showDamageNumber(actualTarget, 0, false, true, 80 + (hitNumber - 1) * 480);
       continue;
     }
+    hitAny = true;
     const damage = calculateDamage(actor, actualTarget, move);
     if (actor.effects?.superCrit) actor.effects.superCrit = false;
     if (actor.effects?.lucky) actor.effects.lucky = false;
     if (actor.effects?.weakened) actor.effects.weakened = false;
-    if (actor.effects?.squirrelly > 0) damage.amount *= 1.5;
-    actualTarget.hp = Math.max(0, actualTarget.hp - damage.amount);
-    showDamageNumber(actualTarget, damage.amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
-    log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
+    const amount = damage.amount;
+    actualTarget.hp = Math.max(0, actualTarget.hp - amount);
+    totalDamage += amount;
+    showDamageNumber(actualTarget, amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
+    log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(amount)} damage.`, "damage");
     if (actor.stunPrimed) {
       actor.stunPrimed = false;
-      if (Math.random() < 0.75 && target.alive) { target.stunned = true; log(`${target.name} is stunned and will lose their next action!`, "good"); }
-      else log("The stun attempt fails.");
+      if (Math.random() < 0.75 && actualTarget.alive) {
+        actualTarget.stunned = true;
+        log(`${actualTarget.name} is stunned and will lose their next action!`, "good");
+      } else log("The stun attempt fails.");
     }
-    if (actualTarget.hp <= 0) { actualTarget.alive = false; actualTarget.hp = 0; log(`${actualTarget.name} has been defeated!`, "good"); }
+    if (actualTarget.hp <= 0) {
+      actualTarget.alive = false;
+      actualTarget.hp = 0;
+      log(`${actualTarget.name} has been defeated!`, "good");
+    }
   }
-  if (actor.team === "hero" && actor.damageBoost > 0) {
+  // Squirrelly adds one separate bonus hit worth 50% of the attack's total damage.
+  if (hitAny && actor.effects?.squirrelly > 0 && actualTarget.alive) {
+    const bonus = totalDamage * 0.5;
+    actualTarget.hp = Math.max(0, actualTarget.hp - bonus);
+    showDamageNumber(actualTarget, bonus, false, false, 80 + move.hits * 480);
+    log(`Squirrelly adds a bonus hit! ${actualTarget.name} takes ${Math.ceil(bonus)} additional damage.`, "damage");
+    actor.effects.squirrelly = 0;
+    if (actualTarget.hp <= 0) {
+      actualTarget.alive = false;
+      actualTarget.hp = 0;
+      log(`${actualTarget.name} has been defeated!`, "good");
+    }
+  }
+  // Weakened is consumed by the next offensive ability, even if it misses.
+  if (actor.effects?.weakened) actor.effects.weakened = false;
+  if (actor.team === "hero" && actor.damageBoost > 0 && hitAny) {
     actor.damageBoost = 0;
     log(`${actor.name} uses up the Pep Talk boost.`, "good");
   }
 }
-
 function calculateDamage(attacker, target, move) {
   const attackVsDefense = attacker.atk > target.def ? "higher"
     : attacker.atk < target.def ? "lower" : "equal";
