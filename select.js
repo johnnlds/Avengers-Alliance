@@ -55,6 +55,7 @@ function render() {
     art.className = "character-art";
     const img = document.createElement("img");
     img.alt = hero.name;
+    img.classList.add("portrait-" + hero.id);
     loadPortrait(img, hero.image);
     art.appendChild(img);
     const content = document.createElement("div");
