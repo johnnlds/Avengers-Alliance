@@ -7,20 +7,56 @@
 const $ = (id) => document.getElementById(id);
 
 const MOVE_DATA = [
-  { id:"shield-training", name:"S.H.I.E.L.D Training", attackType:"unarmed-melee", description:"Two-hit melee strike using S.H.I.E.L.D. combat training.", cost:8, damage:27, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
-  { id:"smith-wesson", name:"Smith & Wesson", attackType:"ranged-gun", description:"A precise ranged shot with Phil's sidearm.", cost:15, damage:30, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
-  { id:"destroyer-prototype", name:"Destroyer Prototype", attackType:"ranged-gun", description:"Fire the Destroyer Prototype at one enemy.", cost:22, damage:34.5, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"enemy", owner:"phil" },
-  { id:"pep-talk", name:"Pep Talk", attackType:"buff", description:"Give all allies a 20% damage boost for their next attack.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"buff", target:"all-allies", owner:"phil" },
+  {id:"shield-training",name:"S.H.I.E.L.D Training",attackType:"unarmed-melee",description:"Two-hit S.H.I.E.L.D. combat strike.",cost:8,damage:25.5,hits:2,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"phil"},
+  {id:"smith-wesson",name:"Smith & Wesson",attackType:"ranged-gun",description:"A precise shot with Phil's sidearm.",cost:15,damage:30,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"phil"},
+  {id:"destroyer-prototype",name:"Destroyer Prototype",attackType:"ranged-gun",description:"Fire the Destroyer Prototype at one enemy.",cost:22,damage:34.5,hits:1,accuracy:75,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"phil"},
+  {id:"pep-talk",name:"Pep Talk",attackType:"buff",description:"Strengthen all allies.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"buff",target:"all-allies",owner:"phil",buffs:["strengthened"],duration:3},
+  {id:"double-punch",name:"Double Punch",attackType:"unarmed-melee",description:"Two punches against one enemy.",cost:8,damage:15.3,hits:2,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"bruiser"},
+  {id:"shoulder-slam",name:"Shoulder Slam",attackType:"unarmed-melee",description:"A heavy shoulder slam.",cost:15,damage:18,hits:2,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"bruiser"},
+  {id:"spin-throw",name:"Spin Throw",attackType:"spin-melee",description:"Spin through all enemies.",cost:22,damage:20.7,hits:2,accuracy:75,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"bruiser"},
+  {id:"shield-protect",name:"S.H.I.E.L.D",attackType:"buff",description:"Shield one ally or yourself from the next attack.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"protect",target:"ally",owner:"bruiser"},
+  {id:"combo",name:"Martial Arts Combo",attackType:"unarmed-melee",description:"A two-hit martial arts combo.",cost:8,damage:19.55,hits:2,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"blackwidow"},
+  {id:"bite",name:"Widow's Bite",attackType:"ranged-gun",description:"A two-hit electric attack.",cost:15,damage:23,hits:2,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackwidow"},
+  {id:"kick",name:"Flying Kick",attackType:"flying-melee",description:"A powerful two-hit flying kick.",cost:22,damage:26.45,hits:2,accuracy:75,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackwidow"},
+  {id:"widowmaker",name:"Widowmaker",attackType:"ranged-gun",description:"85% chance to weaken the target and 75% chance to stun with your next attack.",cost:10,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"debuff",target:"enemy",owner:"blackwidow",stunChance:75,applyDebuff:"weakened",debuffChance:85},
+  {id:"cat-scratch",name:"Cat Scratch",attackType:"unarmed-melee",description:"Two quick slashes with a 50% chance to inflict Bleed.",cost:10,damage:14,hits:2,accuracy:95,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackcat",applyDebuff:"bleed",debuffChance:50},
+  {id:"unlucky-strike",name:"Unlucky Strike",attackType:"unarmed-melee",description:"A strike that leaves the target debuffed.",cost:15,damage:20,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackcat"},
+  {id:"theft",name:"Theft",attackType:"unarmed-melee",description:"Steal the target's buffs.",cost:15,damage:20,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackcat",removeBuffs:true},
+  {id:"stroke-of-luck",name:"Stroke of Luck",attackType:"buff",description:"Gain Lucky and an immediate free action.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"buff",target:"self",owner:"blackcat",buffs:["lucky"],freeAction:true},
+  {id:"sai-slash",name:"Sai Slash",attackType:"unarmed-melee",description:"A light sai slash with a 50% chance to inflict Bleed.",cost:10,damage:18.9,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"elektra",applyDebuff:"bleed",debuffChance:50},
+  {id:"blood-bath",name:"Blood Bath",attackType:"spin-melee",description:"Attack all enemies with an 80% chance to inflict Bleed.",cost:18,damage:8.1,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"elektra",applyDebuff:"bleed",debuffChance:80},
+  {id:"assassin-strike",name:"Assassin Strike",attackType:"unarmed-melee",description:"A heavy strike with a 40% chance to be a Super Crit.",cost:22,damage:31.05,hits:1,accuracy:75,crit:0,cooldown:1,type:"attack",target:"enemy",owner:"elektra",superCritChance:40},
+  {id:"smoke-bomb",name:"Smoke Bomb",attackType:"ranged-gun",description:"Gain Stealth for two rounds.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"buff",target:"self",owner:"elektra",buffs:["stealth"],duration:2},
+  {id:"sure-strike",name:"Sure Strike",attackType:"ranged-bow",description:"A precise bow shot.",cost:8,damage:25.5,hits:1,accuracy:100,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye"},
+  {id:"putty-arrow",name:"Putty Arrow",attackType:"ranged-arrow",description:"An arrow that Slows the target.",cost:15,damage:30,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye",applyDebuff:"slow",debuffChance:100},
+  {id:"electric-arrow",name:"Electric Arrow",attackType:"ranged-arrow",description:"Three electric hits that Shock the target.",cost:22,damage:34.5,hits:3,accuracy:75,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye",applyDebuff:"stun",debuffChance:100},
+  {id:"boomerang-arrow",name:"Boomerang Arrow",attackType:"ranged-arrow",description:"Two hits against all enemies, with a 40% chance to Weaken.",cost:25,damage:15,hits:2,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"hawkeye",applyDebuff:"weakened",debuffChance:40},
+  {id:"pym-punch",name:"Pym Punch",attackType:"unarmed-melee",description:"A powerful punch.",cost:8,damage:28.05,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"antman"},
+  {id:"little-uppercut",name:"Little Uppercut",attackType:"unarmed-melee",description:"A precise uppercut.",cost:15,damage:33,hits:1,accuracy:87,crit:20,cooldown:0,type:"attack",target:"enemy",owner:"antman"},
+  {id:"swarm",name:"Swarm",attackType:"ranged-arrow",description:"Send a swarm against all enemies.",cost:25,damage:16.5,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"antman"},
+  {id:"shrink",name:"Shrink",attackType:"buff",description:"Gain Stealth and Strengthened.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"buff",target:"self",owner:"antman",buffs:["stealth","strengthened"],duration:3},
+  {id:"bare-knuckles",name:"Bare Knuckles",attackType:"unarmed-melee",description:"A three-hit brawl with a 50% chance to inflict Fear.",cost:8,damage:26.35,hits:3,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"daredevil",applyDebuff:"fear",debuffChance:50},
+  {id:"billy-club",name:"Billy Club",attackType:"unarmed-melee",description:"Two hits with the Billy Club.",cost:15,damage:31,hits:2,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"daredevil"},
+  {id:"hallway-fight",name:"Hallway Fight",attackType:"unarmed-melee",description:"Fight every enemy with two hits.",cost:25,damage:15.5,hits:2,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"daredevil"},
+  {id:"radar-sense",name:"Radar Sense",attackType:"buff",description:"Increase all stats by 10% for three turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:2,type:"buff",target:"self",owner:"daredevil",allStatsBoost:0.1,duration:3},
+  {id:"ash-tray",name:"Ash Tray",attackType:"unarmed-melee",description:"A light attack with a 60% chance to Burn.",cost:10,damage:30.1,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"howard",applyDebuff:"burn",debuffChance:60},
+  {id:"quack-fu",name:"Quack Fu",attackType:"unarmed-melee",description:"Three-hit Quack Fu combo.",cost:15,damage:43,hits:3,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"howard"},
+  {id:"big-freaking-gun",name:"Big Freaking Gun",attackType:"ranged-gun",description:"Fire Howard's massive gun.",cost:22,damage:49.45,hits:1,accuracy:75,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"howard"},
+  {id:"iron-duck",name:"Iron Duck",attackType:"buff",description:"Gain Strengthened and Armor for two turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:4,type:"buff",target:"self",owner:"howard",buffs:["strengthened","armor"],duration:2},
+  {id:"assault-rifle",name:"Assault Rifle",attackType:"ranged-gun",description:"Three rifle hits.",cost:8,damage:36.55,hits:3,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"punisher"},
+  {id:"frag-grenade",name:"Frag Grenade",attackType:"ranged-arrow",description:"A grenade that causes nearby enemies to Bleed.",cost:17,damage:38.7,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"punisher",applyDebuff:"bleed",debuffChance:100},
+  {id:"battle-van",name:"Battle Van",attackType:"spin-melee",description:"Attack all enemies with a 50% chance to inflict Fear.",cost:25,damage:21.5,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"punisher",applyDebuff:"fear",debuffChance:50},
+  {id:"sniper-rifle",name:"Sniper Rifle",attackType:"ranged-gun",description:"A deadly shot that eliminates its target from the next wave if it hits.",cost:0,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"attack",target:"enemy",owner:"punisher",eliminateNextWave:true},
+  {id:"squirrel-strike",name:"Squirrel Strike",attackType:"unarmed-melee",description:"A precise strike.",cost:8,damage:34.85,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"squirrelgirl"},
+  {id:"tippy-toe",name:"Tippy Toe",attackType:"buff",description:"Gain Squirrelly for two turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:1,type:"buff",target:"self",owner:"squirrelgirl",buffs:["squirrelly"],duration:2},
+  {id:"furry-fury",name:"Furry Fury",attackType:"unarmed-melee",description:"Attack all enemies.",cost:25,damage:20.5,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"squirrelgirl"},
+  {id:"get-em-monkey-joe",name:"Get 'Em, Monkey Joe",attackType:"buff",description:"Inflict Monkey Joe on one enemy.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:1,type:"apply-debuff",target:"enemy",owner:"squirrelgirl",applyDebuff:"monkeyJoe",debuffChance:100},
+  {id:"mericas-fist",name:"'Merica's Fist",attackType:"unarmed-melee",description:"A powerful punch.",cost:8,damage:56.1,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"captainamerica"},
+  {id:"shield-bash",name:"Shield Bash",attackType:"unarmed-melee",description:"A shield bash with a 40% chance to stun.",cost:15,damage:66,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"captainamerica",stunChance:40},
+  {id:"not-a-frisbee",name:"Not a Frisbee",attackType:"ranged-arrow",description:"Throw the shield at all enemies.",cost:25,damage:33,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"captainamerica"},
+  {id:"vibranium-protection",name:"Vibranium Protection",attackType:"buff",description:"Gain Shielded and Attention for two turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:2,type:"buff",target:"self",owner:"captainamerica",buffs:["shielded","attention"],duration:2},
 
-  { id:"double-punch", name:"Double Punch", attackType:"unarmed-melee", description:"Two powerful punches against one enemy.", cost:8, damage:16.2, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
-  { id:"shoulder-slam", name:"Shoulder Slam", attackType:"ranged-gun", description:"A forceful ranged strike against one enemy.", cost:15, damage:18, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"bruiser" },
-  { id:"spin-throw", name:"Spin Throw", attackType:"spin-melee", description:"Spin through the enemy formation, striking every enemy.", cost:22, damage:12.6, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"all-enemies", owner:"bruiser" },
-  { id:"shield-protect", name:"S.H.I.E.L.D", attackType:"buff", description:"Protect one ally from the next incoming attack.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"protect", target:"ally", owner:"bruiser" },
 
-  { id:"combo", name:"Martial Arts Combo", attackType:"unarmed-melee", description:"Two melee hits against one enemy.", cost:8, damage:22.5, hits:2, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
-  { id:"bite", name:"Widow's Bite", attackType:"ranged-gun", description:"A ranged electric shot against one enemy.", cost:15, damage:25, hits:1, accuracy:88, crit:11, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
-  { id:"kick", name:"Flying Kick", attackType:"flying-melee", description:"Leap into one enemy with a powerful kick.", cost:22, damage:28.75, hits:1, accuracy:77, crit:10, cooldown:0, type:"attack", target:"enemy", owner:"blackwidow" },
-  { id:"widowmaker", name:"Widowmaker", attackType:"ranged-gun", description:"Reduce target Attack by 50% for one round. Your next attack has a 75% chance to stun.", cost:7, damage:0, hits:0, accuracy:100, crit:0, cooldown:2, type:"debuff", target:"enemy", owner:"blackwidow" },
 
   { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true },
 
@@ -37,6 +73,11 @@ function formatCombatNumber(value) {
 function getMove(moveId) {
   return MOVE_DATA.find(move => move.id === moveId);
 }
+function getMoveCost(unit, move) {
+  return move && unit && ["phil","bruiser","blackwidow","blackcat","elektra","hawkeye","antman","daredevil","howard","punisher","squirrelgirl","captainamerica"].includes(unit.id)
+    ? Math.ceil(unit.maxSta * move.cost / 100)
+    : (move?.cost || 0);
+}
 function getMovesForUnit(unit) {
   if (!unit) return [];
   if (unit.team === "enemy") return MOVE_DATA.filter(move => move.enemyUsable);
@@ -50,12 +91,12 @@ const HERO_TEMPLATES = [
     description: "S.H.I.E.L.D. field leader",
     image: "Phil",
     team: "hero",
-    maxHp: 80,
-    maxSta: 80,
+    maxHp: 90,
+    maxSta: 110,
     atk: 30,
-    acc: 30,
-    def: 15,
-    eva: 15,
+    acc: 35,
+    def: 19,
+    eva: 72,
     moveIds: ["shield-training","smith-wesson","destroyer-prototype","pep-talk"]
   },
   {
@@ -65,11 +106,11 @@ const HERO_TEMPLATES = [
     image: "Bruiser",
     team: "hero",
     maxHp: 120,
-    maxSta: 80,
+    maxSta: 90,
     atk: 18,
-    acc: 20,
-    def: 35,
-    eva: 20,
+    acc: 22,
+    def: 39,
+    eva: 66,
     moveIds: ["double-punch","shoulder-slam","spin-throw","shield-protect"]
   },
   {
@@ -79,11 +120,11 @@ const HERO_TEMPLATES = [
     image: "Black Widow",
     team: "hero",
     maxHp: 100,
-    maxSta: 100,
-    atk: 25,
+    maxSta: 110,
+    atk: 23,
     acc: 20,
-    def: 20,
-    eva: 25,
+    def: 24,
+    eva: 82,
     moveIds: ["combo","bite","kick","widowmaker"]
   },
   {
@@ -99,6 +140,61 @@ const HERO_TEMPLATES = [
     def: 1574,
     eva: 1144,
     moveIds: ["stormbreaker","thunderstruck","flying-kick-bill","lightning-strike"]
+  }
+,
+  {
+    id: "blackcat", name: "Black Cat", description: "Master thief",
+    image: "Black Cat", team: "hero", maxHp: 100, maxSta: 100,
+    atk: 20, acc: 20, def: 21, eva: 91,
+    moveIds: ["cat-scratch","unlucky-strike","theft","stroke-of-luck"]
+  },
+  {
+    id: "elektra", name: "Elektra", description: "Assassin",
+    image: "Elektra", team: "hero", maxHp: 110, maxSta: 100,
+    atk: 27, acc: 23, def: 26, eva: 80,
+    moveIds: ["sai-slash","blood-bath","assassin-strike","smoke-bomb"]
+  },
+  {
+    id: "hawkeye", name: "Hawkeye", description: "Expert archer",
+    image: "Hawkeye", team: "hero", maxHp: 90, maxSta: 110,
+    atk: 30, acc: 35, def: 19, eva: 72,
+    moveIds: ["sure-strike","putty-arrow","electric-arrow","boomerang-arrow"]
+  },
+  {
+    id: "antman", name: "Ant-Man", description: "Pym particle hero",
+    image: "Ant-Man", team: "hero", maxHp: 148, maxSta: 148,
+    atk: 33, acc: 34, def: 37, eva: 82,
+    moveIds: ["pym-punch","little-uppercut","swarm","shrink"]
+  },
+  {
+    id: "daredevil", name: "Daredevil", description: "The Man Without Fear",
+    image: "Daredevil", team: "hero", maxHp: 158, maxSta: 158,
+    atk: 31, acc: 36, def: 42, eva: 87,
+    moveIds: ["bare-knuckles","billy-club","hallway-fight","radar-sense"]
+  },
+  {
+    id: "howard", name: "Howard the Duck", description: "Duck detective",
+    image: "Howard the Duck", team: "hero", maxHp: 133, maxSta: 138,
+    atk: 43, acc: 39, def: 32, eva: 77,
+    moveIds: ["ash-tray","quack-fu","big-freaking-gun","iron-duck"]
+  },
+  {
+    id: "punisher", name: "Punisher", description: "Vigilante",
+    image: "Punisher", team: "hero", maxHp: 158, maxSta: 148,
+    atk: 43, acc: 39, def: 37, eva: 85,
+    moveIds: ["assault-rifle","frag-grenade","battle-van","sniper-rifle"]
+  },
+  {
+    id: "squirrelgirl", name: "Squirrel Girl", description: "Unbeatable squirrel girl",
+    image: "Squirrel Girl", team: "hero", maxHp: 153, maxSta: 158,
+    atk: 41, acc: 42, def: 41, eva: 88,
+    moveIds: ["squirrel-strike","tippy-toe","furry-fury","get-em-monkey-joe"]
+  },
+  {
+    id: "captainamerica", name: "Captain America", description: "Super-soldier and shield wielder",
+    image: "Captain America", team: "hero", maxHp: 354, maxSta: 302,
+    atk: 66, acc: 66, def: 97, eva: 125,
+    moveIds: ["mericas-fist","shield-bash","not-a-frisbee","vibranium-protection"]
   }
 ];
 
@@ -176,6 +272,7 @@ function createUnit(template) {
     hp: template.maxHp,
     sta: template.maxSta,
     baseAtk: template.atk,
+    baseAcc: template.acc,
     alive: true,
     cooldowns: {},
     attackDebuffTurns: 0,
@@ -434,9 +531,10 @@ function healUnit(unit, fraction) {
 function syncEffectStats(unit) {
   if (!unit || !unit.effects) return;
   unit.atk = unit.baseAtk * (unit.attackDebuffTurns > 0 ? 0.5 : 1) *
-    (unit.effects.strengthened > 0 ? 1.25 : 1);
-  unit.def = unit.baseDef * (unit.effects.armor > 0 ? 1.25 : 1);
-  unit.eva = unit.baseEva * (unit.effects.slow > 0 ? 0.8 : 1);
+    (unit.effects.allStatsBoost ? 1 + unit.effects.allStatsBoost : 1) * (unit.effects.strengthened > 0 ? 1.25 : 1);
+  unit.def = unit.baseDef * (unit.effects.allStatsBoost ? 1 + unit.effects.allStatsBoost : 1) * (unit.effects.armor > 0 ? 1.25 : 1);
+  unit.eva = unit.baseEva * (unit.effects.allStatsBoost ? 1 + unit.effects.allStatsBoost : 1) * (unit.effects.slow > 0 ? 0.8 : 1);
+  unit.acc = unit.baseAcc * (unit.effects.allStatsBoost ? 1 + unit.effects.allStatsBoost : 1);
 }
 
 function removeAllBuffs(unit) {
@@ -957,7 +1055,7 @@ function renderMoveDock() {
     const actor = currentActor;
     const hero = actor && actor.team === "hero" ? actor : null;
     const cooldown = hero ? (hero.cooldowns[move.id] || 0) : 0;
-    const affordable = !!hero && hero.sta >= move.cost;
+    const affordable = !!hero && hero.sta >= getMoveCost(hero, move);
     const unavailable = !hero || !hero.alive || battleOver || waitingForEnemy || !affordable || cooldown > 0;
     const button = document.createElement("button");
     button.type = "button";
@@ -1009,7 +1107,7 @@ function openMoveInfo(moveId) {
   stats.innerHTML = "";
   const values = [
     ["BASE DAMAGE", move.damage > 0 ? (move.hits > 1 ? `${formatCombatNumber(move.damage / move.hits)} × ${move.hits} hits` : formatCombatNumber(move.damage)) : "—"],
-    ["STAMINA", formatCombatNumber(move.cost)],
+    ["STAMINA", formatCombatNumber(getMoveCost(hero, move))],
     ["ACCURACY", `${move.accuracy}%`],
     ["CRITICAL", `${move.crit}%`]
   ];
@@ -1285,7 +1383,8 @@ function useMove(moveId, chosenTarget = null) {
   const actor = currentActor;
   const move = getMove(moveId);
   if (!move) return;
-  if (actor.sta < move.cost) { log(`${actor.name} doesn't have enough stamina.`, "miss"); return; }
+  const moveCost = getMoveCost(actor, move);
+  if (actor.sta < moveCost) { log(`${actor.name} doesn't have enough stamina.`, "miss"); return; }
   if ((actor.cooldowns[move.id] || 0) > 0) { log(`${move.name} is still on cooldown.`, "miss"); return; }
 
   const targetTeam = ["ally","all-allies"].includes(move.target) ? heroes : enemies;
@@ -1297,7 +1396,7 @@ function useMove(moveId, chosenTarget = null) {
     return;
   }
 
-  actor.sta -= move.cost;
+  actor.sta -= moveCost;
   pendingMoveId = null;
   if (target) selectedTargetId = target.id;
   const animationTarget = target || enemies.find(unit => unit.alive);
@@ -1317,6 +1416,26 @@ function useMove(moveId, chosenTarget = null) {
     log(`${actor.name} uses S.H.I.E.L.D! ${protectedAllies.map(ally => ally.name).join(" and ")} is protected from the next attack.`, "good");
   } else if (move.type === "debuff") {
     useWidowmaker(actor, target, move);
+  } else if (move.type === "buff") {
+    const recipients = move.target === "all-allies" ? heroes.filter(unit => unit.alive) : [move.target === "self" ? actor : target].filter(Boolean);
+    for (const recipient of recipients) {
+      for (const buff of move.buffs || []) applyEffect(recipient, buff, move.duration || 1);
+      if (move.allStatsBoost) {
+        recipient.effects.allStatsBoost = Math.max(recipient.effects.allStatsBoost || 0, move.allStatsBoost);
+        recipient.effects.allStatsTurns = move.duration || 3;
+        recipient.atk = recipient.baseAtk * (1 + recipient.effects.allStatsBoost) * (recipient.effects.strengthened > 0 ? 1.25 : 1);
+        recipient.def = recipient.baseDef * (1 + recipient.effects.allStatsBoost) * (recipient.effects.armor > 0 ? 1.25 : 1);
+        recipient.eva = recipient.baseEva * (1 + recipient.effects.allStatsBoost) * (recipient.effects.slow > 0 ? 0.8 : 1);
+        recipient.acc = recipient.baseAcc * (1 + recipient.effects.allStatsBoost);
+      }
+    }
+    if (move.freeAction) actor.freeActions = (actor.freeActions || 0) + 1;
+    if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
+    log(`${actor.name} uses ${move.name}!`, "good");
+  } else if (move.type === "apply-debuff") {
+    if (target && move.applyDebuff) applyEffect(target, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
+    if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
+    log(`${actor.name} uses ${move.name} on ${target?.name || "the target"}!`, "good");
   } else {
     performAttack(actor, target, move);
     if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
@@ -1402,6 +1521,7 @@ function performAttack(actor, target, move) {
   log(`${actor.name} uses ${move.name} on ${target.name}.`);
   const confusedTarget = getConfusedTarget(actor, target, move);
   const actualTarget = redirectSingleTarget(actor, confusedTarget, move);
+  if (move.superCritChance && Math.random() < move.superCritChance / 100) actor.effects.superCrit = true;
   let totalDamage = 0;
   let hitAny = false;
   for (let hitNumber = 1; hitNumber <= move.hits; hitNumber++) {
@@ -1435,12 +1555,17 @@ function performAttack(actor, target, move) {
         log(`${actualTarget.name} is stunned and will lose their next action!`, "good");
       } else log("The stun attempt fails.");
     }
+    if (move.applyDebuff && Math.random() < (move.debuffChance || 100) / 100) {
+      if (move.applyDebuff === "stun") actualTarget.stunned = true;
+      else applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
+    }
     if (actualTarget.hp <= 0) {
       actualTarget.alive = false;
       actualTarget.hp = 0;
       log(`${actualTarget.name} has been defeated!`, "good");
     }
   }
+  if (move.removeBuffs && actualTarget.alive && hitAny) removeAllBuffs(actualTarget);
   // Squirrelly adds one separate bonus hit worth 50% of the attack's total damage.
   if (hitAny && actor.effects?.squirrelly > 0 && actualTarget.alive) {
     const bonus = totalDamage * 0.5;
