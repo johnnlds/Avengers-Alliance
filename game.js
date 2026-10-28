@@ -1330,14 +1330,17 @@ function applyCombatAnimationPath() {
   const dx = (targetRect.left + targetRect.width / 2) - (actorRect.left + actorRect.width / 2);
   const dy = (targetRect.top + targetRect.height / 2) - (actorRect.top + actorRect.height / 2);
   const distance = Math.hypot(dx, dy) || 1;
-  // Move toward the target but stop short so the portraits never cover one another completely.
+  // Only melee moves physically dash toward their target. Any animation type
+  // containing "ranged" stays in place and uses its ranged attack animation.
   const move = getMove(animatingMoveId);
-  const isMelee = !move || !["ranged-gun","buff"].includes(move.attackType);
+  const attackType = String(move?.attackType || "");
+  const isRanged = attackType.includes("ranged");
+  const isMelee = !isRanged && attackType.includes("melee");
   const travel = isMelee ? Math.min(distance * 0.72, Math.max(40, distance - Math.min(targetRect.width * 0.42, 70))) : 0;
   const x = dx / distance * travel;
   const y = dy / distance * travel;
 
-  if (move?.target === "all-enemies" || move?.attackType === "spin-melee") {
+  if (isMelee && (move?.target === "all-enemies" || attackType === "spin-melee")) {
     const enemyCards = [...document.querySelectorAll(actorCard.classList.contains("hero") ? ".unit.enemy:not(.defeated)" : ".unit.hero:not(.defeated)")];
     if (enemyCards.length) {
       const rects = enemyCards.map(card => card.getBoundingClientRect());
