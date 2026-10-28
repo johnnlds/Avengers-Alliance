@@ -6813,3 +6813,30 @@ body {
     top: -11px !important;
   }
 }
+
+
+/* Align status squares with the left edge of the name and HP bar. */
+.battlefield .unit > .unit-nameplate .unit-effect-indicators {
+  left: 9% !important;
+  right: auto !important;
+  transform: none !important;
+  justify-content: flex-start !important;
+}
+
+/* Show effect details as a compact callout next to the character, not a centered modal. */
+#effectsInfoOverlay {
+  display: block !important;
+  padding: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  pointer-events: none !important;
+}
+#effectsInfoOverlay.hidden {
+  display: none !important;
+}
+#effectsInfoOverlay .effects-info-card {
+  pointer-events: auto !important;
+  z-index: 1001 !important;
+  box-sizing: border-box !important;
+  max-width: calc(100vw - 24px) !important;
+}
