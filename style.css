@@ -6629,3 +6629,21 @@ body {
   outline: 2px solid #fff !important;
   outline-offset: 1px !important;
 }
+
+
+/* Yellow previews in the team HP/stamina roster bars. */
+#teamRoster .roster-hp-track,
+#teamRoster .roster-sta-track {
+  position: relative !important;
+}
+#teamRoster .roster-hp-preview,
+#teamRoster .roster-sta-preview {
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  z-index: 3 !important;
+  background: #ffdf57 !important;
+  opacity: .95 !important;
+  pointer-events: none !important;
+}
