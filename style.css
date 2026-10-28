@@ -6566,3 +6566,62 @@ body {
 .battlefield .enemy-side .unit:nth-child(2) { translate: 0 22px !important; }
 .battlefield .hero-side .team-grid > .unit:nth-child(3) { translate: -14px 0 !important; }
 .battlefield .enemy-side .team-grid > .unit:nth-child(3) { translate: 14px 0 !important; }
+
+
+/* Image-based status buttons: green for buffs, red for debuffs. */
+.battlefield .unit > .unit-effect-indicators {
+  display: flex !important;
+  position: absolute !important;
+  top: auto !important;
+  bottom: -27px !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 23px !important;
+  min-height: 23px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 5px !important;
+  z-index: 999 !important;
+  background: transparent !important;
+  border: 0 !important;
+  overflow: visible !important;
+}
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator,
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.buff,
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.debuff {
+  display: flex !important;
+  flex: 0 0 22px !important;
+  width: 22px !important;
+  min-width: 22px !important;
+  max-width: 22px !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  padding: 2px !important;
+  margin: 0 !important;
+  border: 1px solid rgba(255,255,255,.7) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.65) !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+}
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.buff {
+  background: #159447 !important;
+}
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator.debuff {
+  background: #c62828 !important;
+}
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  pointer-events: none !important;
+}
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator:hover,
+.battlefield .unit > .unit-effect-indicators > button.unit-effect-indicator:focus-visible {
+  filter: brightness(1.2) !important;
+  outline: 2px solid #fff !important;
+  outline-offset: 1px !important;
+}
