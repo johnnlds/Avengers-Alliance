@@ -6632,3 +6632,12 @@ body {
   }
   100% { translate: 0 0; filter: brightness(1); }
 }
+
+
+/* Single source of truth for melee movement: game.js supplies the shared
+   Web Animations choreography for every melee attack type. Disable legacy
+   CSS keyframes here so character/type-specific rules cannot stack on top. */
+.unit.attacking.hero[class*="attack-"][class*="melee"],
+.unit.attacking.enemy[class*="attack-"][class*="melee"] {
+  animation: none !important;
+}
