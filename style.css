@@ -6862,3 +6862,133 @@ body {
   height: 100% !important;
   min-height: 0 !important;
 }
+
+
+/* Always-visible compact character nameplates; highlight the current actor in yellow. */
+.battlefield .unit > .unit-nameplate {
+  display: flex !important;
+  position: absolute !important;
+  z-index: 30 !important;
+  left: 50% !important;
+  top: -31px !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 2px !important;
+  width: clamp(66px, 18vw, 112px) !important;
+  max-width: 140% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 3px !important;
+  box-sizing: border-box !important;
+  border: 1px solid rgba(210,225,242,.72) !important;
+  border-radius: 4px !important;
+  background: rgba(10,16,25,.94) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.7) !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+.battlefield .unit > .unit-nameplate .unit-name,
+.battlefield .unit > .unit-nameplate .battle-unit-hp {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+.battlefield .unit > .unit-nameplate .unit-name {
+  height: auto !important;
+  min-height: 12px !important;
+  padding: 1px 2px !important;
+  line-height: 1.1 !important;
+  text-align: center !important;
+  font-size: clamp(8px, 2vw, 11px) !important;
+  white-space: nowrap !important;
+  color: #f1f5fa !important;
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+}
+.battlefield .unit > .unit-nameplate .battle-unit-hp {
+  height: 6px !important;
+  min-height: 6px !important;
+  overflow: hidden !important;
+  background: #303b49 !important;
+  border: 1px solid rgba(255,255,255,.75) !important;
+  border-radius: 3px !important;
+}
+.battlefield .unit > .unit-nameplate .battle-unit-hp-fill {
+  display: block !important;
+  height: 100% !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicators {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 3px !important;
+  width: 100% !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicator {
+  display: block !important;
+  flex: 0 0 8px !important;
+  width: 8px !important;
+  min-width: 8px !important;
+  max-width: 8px !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  max-height: 8px !important;
+  border: 1px solid rgba(255,255,255,.8) !important;
+  border-radius: 2px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.battlefield .unit > .unit-nameplate .unit-effect-indicator.buff { background: #159447 !important; }
+.battlefield .unit > .unit-nameplate .unit-effect-indicator.debuff { background: #c62828 !important; }
+.battlefield .unit.active-turn > .unit-nameplate {
+  border-color: #ffd740 !important;
+  box-shadow: 0 0 0 2px #ffd740, 0 0 10px rgba(255,215,64,.7) !important;
+}
+.battlefield .unit.active-turn > .unit-nameplate .unit-name {
+  color: #ffd740 !important;
+  border-color: #ffd740 !important;
+  background: rgba(92,68,0,.55) !important;
+}
+.battlefield .unit.active-turn > .unit-nameplate .battle-unit-hp {
+  border-color: #ffd740 !important;
+}
+@media (max-width: 760px) {
+  .battlefield .unit > .unit-nameplate {
+    top: -31px !important;
+    width: clamp(56px, 19vw, 88px) !important;
+    padding: 2px !important;
+    gap: 1px !important;
+  }
+  .battlefield .unit > .unit-nameplate .unit-name {
+    min-height: 11px !important;
+    font-size: clamp(7px, 2vw, 9px) !important;
+  }
+  .battlefield .unit > .unit-nameplate .battle-unit-hp {
+    height: 5px !important;
+    min-height: 5px !important;
+  }
+}
