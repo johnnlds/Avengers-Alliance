@@ -732,6 +732,24 @@ function renderRoster() {
       hpFill.className = "roster-bar-fill";
       hpFill.style.width = `${Math.max(0, unit.hp / unit.maxHp * 100)}%`;
       hpTrack.appendChild(hpFill);
+
+      // Yellow preview shows expected HP loss for the currently selected attack.
+      const previewMove = pendingMoveId ? getMove(pendingMoveId) : null;
+      const previewsHpLoss = unit.team === "enemy" && unit.alive && previewMove &&
+        previewMove.type === "attack" && ["enemy", "all-enemies"].includes(previewMove.target) &&
+        previewMove.damage > 0;
+      if (previewsHpLoss) {
+        const hpPreview = document.createElement("span");
+        hpPreview.className = "roster-hp-preview";
+        const currentPercent = Math.max(0, Math.min(100, unit.hp / unit.maxHp * 100));
+        const previewDamage = Math.min(unit.hp, previewMove.damage);
+        const previewPercent = previewDamage / unit.maxHp * 100;
+        hpPreview.style.left = `${Math.max(0, currentPercent - previewPercent)}%`;
+        hpPreview.style.width = `${Math.min(currentPercent, previewPercent)}%`;
+        hpPreview.setAttribute("aria-label", `Approximate HP loss: ${Math.round(previewDamage)}`);
+        hpTrack.appendChild(hpPreview);
+      }
+
       const hpValue = document.createElement("span");
       hpValue.className = "roster-value";
       hpValue.textContent = `${Math.ceil(unit.hp)}`;
@@ -748,6 +766,22 @@ function renderRoster() {
       staFill.className = "roster-bar-fill";
       staFill.style.width = `${Math.max(0, unit.sta / unit.maxSta * 100)}%`;
       staTrack.appendChild(staFill);
+
+      // Yellow preview marks the stamina a selected move would consume.
+      const selectedForUnit = currentActor?.id === unit.id && unit.team === "hero" && pendingMoveId
+        ? getMove(pendingMoveId)
+        : null;
+      if (selectedForUnit && selectedForUnit.cost > 0) {
+        const staPreview = document.createElement("span");
+        staPreview.className = "roster-sta-preview";
+        const currentPercent = Math.max(0, Math.min(100, unit.sta / unit.maxSta * 100));
+        const costPercent = Math.min(unit.sta, getMoveCost(unit, selectedForUnit)) / unit.maxSta * 100;
+        staPreview.style.left = `${Math.max(0, currentPercent - costPercent)}%`;
+        staPreview.style.width = `${Math.min(currentPercent, costPercent)}%`;
+        staPreview.setAttribute("aria-label", `Stamina cost preview: ${getMoveCost(unit, selectedForUnit)}`);
+        staTrack.appendChild(staPreview);
+      }
+
       const staValue = document.createElement("span");
       staValue.className = "roster-value";
       staValue.textContent = `${Math.ceil(unit.sta)}`;
@@ -966,7 +1000,7 @@ function renderTeam(containerId, units) {
       ["enemy", "all-enemies"].includes(pendingMove.target);
     const showEnemyHealth = unit.team === "enemy" && unit.alive && attackTargetsEnemies;
     if (isActive) {
-      if (unit.team === "hero") card.append(name, hpBar, staBar, portrait, status);
+      if (unit.team === "hero") card.append(name, hpBar, portrait, status);
       else card.append(name, hpBar, portrait, status);
     } else if (showEnemyHealth) {
       card.append(hpBar, portrait, status);
