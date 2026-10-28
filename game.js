@@ -265,6 +265,7 @@ let battleOver = false;
 let waitingForEnemy = false;
 let imageExtensions = {};
 let inspectedMoveId = null;
+let destroyerPrototypePrimed = false;
 
 function createUnit(template) {
   return {
@@ -1358,48 +1359,47 @@ function applyCombatAnimationPath() {
 
 function showDestroyerPrototypeImage() {
   const battlefield = document.querySelector(".battlefield");
-  if (!battlefield) return;
+  const philCard = document.querySelector('.unit[data-unit-id="phil"]');
+  if (!battlefield || !philCard) return;
   const previous = battlefield.querySelector(".destroyer-prototype-image");
   if (previous) previous.remove();
 
-  const wasPositioned = getComputedStyle(battlefield).position !== "static";
-  if (!wasPositioned) battlefield.style.position = "relative";
-
+  const battlefieldRect = battlefield.getBoundingClientRect();
+  const philRect = philCard.getBoundingClientRect();
   const image = document.createElement("img");
   image.className = "destroyer-prototype-image";
   image.src = "../assets/Phil%20Gun.png";
-  image.alt = "Phil Coulson fires the Destroyer Prototype";
+  image.alt = "Phil Coulson's Destroyer Prototype";
   image.setAttribute("aria-hidden", "true");
   Object.assign(image.style, {
     position: "absolute",
-    left: "50%",
-    top: "50%",
-    transform: "translate(-50%, -50%) scale(0.75)",
-    width: "min(58%, 420px)",
-    maxHeight: "75%",
+    left: `${philRect.left - battlefieldRect.left + philRect.width * 0.76}px`,
+    top: `${philRect.top - battlefieldRect.top + philRect.height * 0.08}px`,
+    transform: "scale(0.85)",
+    transformOrigin: "left top",
+    width: "min(30%, 190px)",
+    maxHeight: "38%",
     objectFit: "contain",
     zIndex: "30",
     pointerEvents: "none",
     opacity: "0",
-    filter: "drop-shadow(0 0 16px rgba(255, 180, 55, 0.8))",
+    filter: "drop-shadow(0 0 9px rgba(255, 180, 55, 0.7))",
     transition: "opacity 120ms ease, transform 180ms ease"
   });
   battlefield.appendChild(image);
   requestAnimationFrame(() => {
     image.style.opacity = "1";
-    image.style.transform = "translate(-50%, -50%) scale(1)";
+    image.style.transform = "scale(1)";
   });
+  // Hold the weapon image on screen during the one-second wind-up.
   window.setTimeout(() => {
     image.style.opacity = "0";
-    image.style.transform = "translate(-50%, -50%) scale(1.08)";
+    image.style.transform = "scale(1.05)";
     window.setTimeout(() => image.remove(), 180);
-  }, 950);
+  }, 1150);
 }
 
 function triggerCombatAnimation(actor, target, move) {
-  if (actor.id === "phil" && move?.id === "destroyer-prototype") {
-    showDestroyerPrototypeImage();
-  }
   animatingActorId = actor.id;
   animatingTargetId = target.id;
   animatingMoveId = move ? move.id : null;
@@ -1460,6 +1460,20 @@ function useMove(moveId, chosenTarget = null) {
     ? chosenTarget : targetTeam.find(unit => unit.id === selectedTargetId && unit.alive));
   if (["enemy","ally","all-enemies","all-allies"].includes(move.target) && !target) {
     log(["ally","all-allies"].includes(move.target) ? "Select a living ally first." : "Select a living enemy first.", "miss");
+    return;
+  }
+
+  // Give Destroyer Prototype a one-second visual wind-up before its attack resolves.
+  if (actor.id === "phil" && move.id === "destroyer-prototype" && !destroyerPrototypePrimed) {
+    destroyerPrototypePrimed = true;
+    waitingForEnemy = true;
+    showDestroyerPrototypeImage();
+    renderAll();
+    window.setTimeout(() => {
+      destroyerPrototypePrimed = false;
+      waitingForEnemy = false;
+      useMove(moveId, target);
+    }, 1000);
     return;
   }
 
