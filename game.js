@@ -1581,6 +1581,11 @@ function performAttack(actor, target, move) {
       if (move.applyDebuff === "stun") actualTarget.stunned = true;
       else applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
     }
+    if (move.bleedOthersOnly) {
+      const otherEnemies = (actualTarget.team === "hero" ? heroes : enemies)
+        .filter(unit => unit.alive && unit.id !== actualTarget.id);
+      for (const other of otherEnemies) applyEffect(other, "bleed", 3);
+    }
     if (actualTarget.hp <= 0) {
       actualTarget.alive = false;
       actualTarget.hp = 0;
