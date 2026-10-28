@@ -512,7 +512,7 @@ function applyEffect(unit, name, duration = 1) {
   };
   if (durationEffects[effect]) {
     const key = durationEffects[effect];
-    unit.effects[key] = Math.max(unit.effects[key] || 0, duration);
+    unit.effects[key] = duration;
   } else if (effect === "supercrit") unit.effects.superCrit = true;
   else if (effect === "lucky") unit.effects.lucky = true;
   else if (effect === "weakened") unit.effects.weakened = true;
@@ -561,6 +561,10 @@ function expireTurnEffects(unit) {
   if (!unit || !unit.effects) return;
   for (const key of ["strengthened", "stealth", "armor", "attention", "bleed", "confused", "burn", "slow", "fear", "monkeyJoe"]) {
     if (unit.effects[key] > 0) unit.effects[key]--;
+  }
+  if (unit.effects.allStatsTurns > 0) {
+    unit.effects.allStatsTurns--;
+    if (unit.effects.allStatsTurns === 0) unit.effects.allStatsBoost = 0;
   }
   // Squirrelly is a two-turn buff, then disappears.
   if (unit.effects.squirrelly > 0) unit.effects.squirrelly--;
