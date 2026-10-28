@@ -871,22 +871,12 @@ button:focus-visible {
 .unit.attack-ranged-gun {
   animation: gunner-recoil 900ms ease-out both !important;
 }
-.unit.attack-flying-melee {
-  animation: flying-kick 1.28s cubic-bezier(.2,.75,.2,1) both !important;
-}
 @keyframes gunner-recoil {
   0%, 100% { transform: translate(0, 0) scale(1); filter: brightness(1); }
   18% { transform: translate(0, 0) scale(1); }
   30% { transform: translate(-4px, 0) scale(1.02); filter: brightness(1.8); }
   45% { transform: translate(3px, 0) scale(1); filter: brightness(1.2); }
   62% { transform: translate(0, 0) scale(1); filter: brightness(1); }
-}
-@keyframes flying-kick {
-  0% { transform: translate(0, 0) scale(1); filter: brightness(1); }
-  30% { transform: translate(var(--attack-x, 35px), var(--attack-y, 0px)) scale(1.08) rotate(-4deg); }
-  43%, 55% { transform: translate(var(--attack-x, 35px), var(--attack-y, 0px)) scale(1.18) rotate(9deg); filter: brightness(1.7) saturate(1.25); }
-  68% { transform: translate(calc(var(--attack-x, 35px) - 8px), calc(var(--attack-y, 0px) - 2px)) scale(1.06) rotate(2deg); }
-  100% { transform: translate(0, 0) scale(1) rotate(0); filter: brightness(1); }
 }
 .combat-effect.ranged-gun.projectile {
   width: 10px;
