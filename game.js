@@ -182,7 +182,16 @@ function createUnit(template) {
     stunPrimed: false,
     stunned: false,
     damageBoost: 0,
-    protectedUntilAttack: false
+    protectedUntilAttack: false,
+    effects: {
+      strengthened: 0, superCrit: false, lucky: false, stealth: 0, armor: 0,
+      squirrelly: 2, attention: 0,
+      weakened: false, bleed: 0, confused: 0, burn: 0, slow: 0, fear: 0,
+      monkeyJoe: 0
+    },
+    baseDef: template.def,
+    baseEva: template.eva,
+    freeActions: 0
   };
 }
 
@@ -387,6 +396,96 @@ function setCharacterImage(img, imageName) {
 }
 
 /* =========================================
+   STATUS EFFECTS
+   ========================================= */
+
+function applyEffect(unit, name, duration = 1) {
+  if (!unit || !unit.alive || !unit.effects) return;
+  const effect = name.replace(/[^a-z]/gi, "").toLowerCase();
+  const durationEffects = {
+    strengthened: "strengthened", stealth: "stealth", armor: "armor",
+    attention: "attention", bleed: "bleed", confused: "confused",
+    burn: "burn", slow: "slow", fear: "fear", monkeyjoe: "monkeyJoe"
+  };
+  if (durationEffects[effect]) {
+    const key = durationEffects[effect];
+    unit.effects[key] = Math.max(unit.effects[key] || 0, duration);
+  } else if (effect === "supercrit") unit.effects.superCrit = true;
+  else if (effect === "lucky") unit.effects.lucky = true;
+  else if (effect === "weakened") unit.effects.weakened = true;
+  else if (effect === "squirrelly") unit.effects.squirrelly = 2;
+  else if (effect === "freeaction") unit.freeActions = (unit.freeActions || 0) + 1;
+  else if (effect === "shielded") unit.protectedUntilAttack = true;
+  else if (effect === "smallheal") healUnit(unit, 0.2);
+  else if (effect === "mediumheal") healUnit(unit, 0.4);
+  else if (effect === "largeheal") healUnit(unit, 0.6);
+  else if (effect === "fullheal") healUnit(unit, 1);
+  syncEffectStats(unit);
+  renderAll();
+}
+
+function healUnit(unit, fraction) {
+  if (!unit || !unit.alive) return;
+  const before = unit.hp;
+  unit.hp = Math.min(unit.maxHp, unit.hp + unit.maxHp * fraction);
+  log(`${unit.name} recovers ${Math.ceil(unit.hp - before)} HP.`, "good");
+}
+
+function syncEffectStats(unit) {
+  if (!unit || !unit.effects) return;
+  unit.atk = unit.baseAtk * (unit.attackDebuffTurns > 0 ? 0.5 : 1) *
+    (unit.effects.strengthened > 0 ? 1.25 : 1);
+  unit.def = unit.baseDef * (unit.effects.armor > 0 ? 1.25 : 1);
+  unit.eva = unit.baseEva * (unit.effects.slow > 0 ? 0.8 : 1);
+}
+
+function removeAllBuffs(unit) {
+  if (!unit || !unit.effects) return;
+  unit.effects.strengthened = 0;
+  unit.effects.superCrit = false;
+  unit.effects.lucky = false;
+  unit.effects.stealth = 0;
+  unit.effects.armor = 0;
+  unit.effects.squirrelly = 0;
+  unit.effects.attention = 0;
+  unit.damageBoost = 0;
+  unit.protectedUntilAttack = false;
+  syncEffectStats(unit);
+}
+
+function expireTurnEffects(unit) {
+  if (!unit || !unit.effects) return;
+  for (const key of ["strengthened", "stealth", "armor", "attention", "bleed", "confused", "burn", "slow", "fear", "monkeyJoe"]) {
+    if (unit.effects[key] > 0) unit.effects[key]--;
+  }
+  // Squirrelly is a two-turn buff, then disappears.
+  if (unit.effects.squirrelly > 0) unit.effects.squirrelly--;
+  syncEffectStats(unit);
+}
+
+function applyEndOfTurnDamage(unit) {
+  if (!unit || !unit.alive || !unit.effects) return;
+  const effects = unit.effects;
+  const damage = (effects.bleed > 0 ? unit.maxHp * 0.04 : 0) +
+    (effects.burn > 0 ? unit.maxHp * 0.04 : 0) +
+    (effects.monkeyJoe > 0 ? unit.maxHp * 0.05 : 0);
+  if (damage <= 0) return;
+  unit.hp = Math.max(0, unit.hp - damage);
+  log(`${unit.name} takes ${Math.ceil(damage)} damage from ongoing effects.`, "damage");
+  if (unit.hp <= 0) {
+    unit.alive = false;
+    log(`${unit.name} has been defeated!`, "good");
+  }
+}
+
+function redirectSingleTarget(attacker, target, move) {
+  if (!target || !attacker || move.target !== "enemy" && move.target !== "ally") return target;
+  const targetTeam = target.team === "hero" ? heroes : enemies;
+  const protectedUnit = targetTeam.find(unit => unit.alive && unit.id !== target.id && unit.effects?.attention > 0);
+  return protectedUnit || target;
+}
+
+/* =========================================
    RENDERING
    ========================================= */
 
@@ -425,6 +524,27 @@ function renderBuffsDebuffs() {
       name: "Stunned",
       description: "This character loses their next action."
     });
+    for (const [key, label, type, description] of [
+      ["strengthened", "Strengthened", "buff", "Attack increased by 25%."],
+      ["superCrit", "Super Crit", "buff", "Next attack deals double damage; a dodge consumes it."],
+      ["lucky", "Lucky", "buff", "Next successful attack is guaranteed to critically hit."],
+      ["stealth", "Stealth", "buff", "40% chance to dodge incoming attacks."],
+      ["armor", "Armor", "buff", "Defense increased by 25%."],
+      ["squirrelly", "Squirrelly", "buff", "Next attack gains an extra hit for 50% of total attack damage."],
+      ["attention", "Attention", "buff", "Redirects single-target attacks away from allies to this character."],
+      ["weakened", "Weakened", "debuff", "Next attack deals 50% less damage."],
+      ["bleed", "Bleed", "debuff", "Takes 4% of max HP damage at end of turn."],
+      ["confused", "Confused", "debuff", "40% chance offensive abilities target a living teammate."],
+      ["burn", "Burn", "debuff", "Takes 4% of max HP damage at end of turn."],
+      ["slow", "Slow", "debuff", "Evasion reduced by 20%."],
+      ["fear", "Fear", "debuff", "Attacks are 20% less likely to hit."],
+      ["monkeyJoe", "Monkey Joe", "debuff", "Takes 5% of max HP damage at end of turn."]
+    ]) {
+      const value = unit.effects?.[key];
+      if (value === true || (typeof value === "number" && value > 0)) {
+        effects.push({ type, name: label, description: typeof value === "number" ? `${description} (${value} turn(s) left.)` : description });
+      }
+    }
     if (!effects.length) continue;
 
     const character = document.createElement("div");
@@ -1004,6 +1124,8 @@ function nextTurn() {
 
   if (unit.stunned) {
     unit.stunned = false;
+    applyEndOfTurnDamage(unit);
+    expireTurnEffects(unit);
 
     if (unit.attackDebuffTurns > 0) {
       unit.attackDebuffTurns--;
@@ -1200,6 +1322,8 @@ function useMove(moveId, chosenTarget = null) {
     if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
   }
 
+  applyEndOfTurnDamage(actor);
+  expireTurnEffects(actor);
   renderAll();
   if (checkBattleEnd()) return;
   turnIndex++;
@@ -1207,9 +1331,19 @@ function useMove(moveId, chosenTarget = null) {
 }
 
 function doesAttackHit(attacker, target, move) {
+  if (target.effects?.stealth > 0 && Math.random() < 0.4) return false;
   // A 100-point Accuracy advantage over Defense guarantees a hit.
   if (attacker.acc >= target.def + 100) return true;
-  return Math.random() <= move.accuracy / 100;
+  let chance = move.accuracy / 100;
+  if (attacker.effects?.fear > 0) chance *= 0.8;
+  return Math.random() <= chance;
+}
+
+function getConfusedTarget(actor, target, move) {
+  if (!actor.effects?.confused || actor.effects.confused <= 0) return target;
+  const teammates = (actor.team === "hero" ? heroes : enemies).filter(unit => unit.alive && unit.id !== actor.id);
+  if (!teammates.length || Math.random() >= 0.4) return target;
+  return teammates[Math.floor(Math.random() * teammates.length)];
 }
 
 function performAttackOnTargets(actor, targets, move) {
@@ -1262,21 +1396,28 @@ function performAttack(actor, target, move) {
       log(`${target.name} is protected by S.H.I.E.L.D! The incoming attack deals no damage, and the protection wears off.`, "good");
       break;
     }
-    if (!doesAttackHit(actor, target, move)) {
-      log(`${move.name} misses ${target.name}!`, "miss");
-      showDamageNumber(target, 0, false, true, 80 + (hitNumber - 1) * 480);
+    const actualTarget = redirectSingleTarget(actor, getConfusedTarget(actor, target, move), move);
+    if (!doesAttackHit(actor, actualTarget, move)) {
+      log(`${move.name} misses ${actualTarget.name}!`, "miss");
+      if (actor.effects?.superCrit) actor.effects.superCrit = false;
+      if (actor.effects?.lucky) actor.effects.lucky = false;
+      showDamageNumber(actualTarget, 0, false, true, 80 + (hitNumber - 1) * 480);
       continue;
     }
-    const damage = calculateDamage(actor, target, move);
-    target.hp = Math.max(0, target.hp - damage.amount);
-    showDamageNumber(target, damage.amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
-    log(`${damage.critical ? "CRITICAL! " : ""}${target.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
+    const damage = calculateDamage(actor, actualTarget, move);
+    if (actor.effects?.superCrit) actor.effects.superCrit = false;
+    if (actor.effects?.lucky) actor.effects.lucky = false;
+    if (actor.effects?.weakened) actor.effects.weakened = false;
+    if (actor.effects?.squirrelly > 0) damage.amount *= 1.5;
+    actualTarget.hp = Math.max(0, actualTarget.hp - damage.amount);
+    showDamageNumber(actualTarget, damage.amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
+    log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
     if (actor.stunPrimed) {
       actor.stunPrimed = false;
       if (Math.random() < 0.75 && target.alive) { target.stunned = true; log(`${target.name} is stunned and will lose their next action!`, "good"); }
       else log("The stun attempt fails.");
     }
-    if (target.hp <= 0) { target.alive = false; target.hp = 0; log(`${target.name} has been defeated!`, "good"); }
+    if (actualTarget.hp <= 0) { actualTarget.alive = false; actualTarget.hp = 0; log(`${actualTarget.name} has been defeated!`, "good"); }
   }
   if (actor.team === "hero" && actor.damageBoost > 0) {
     actor.damageBoost = 0;
@@ -1301,6 +1442,7 @@ function calculateDamage(attacker, target, move) {
   amount *= 1 + variance;
   if (attacker.team === "enemy") amount *= 1 + (wave - 1) * 0.01;
   amount *= 1 + (attacker.damageBoost || 0);
+  if (attacker.effects?.weakened) amount *= 0.5;
 
   const accuracyAdvantage = attacker.acc - target.def;
   let critBonus = 0;
@@ -1309,8 +1451,11 @@ function calculateDamage(attacker, target, move) {
   else if (accuracyAdvantage > 25 && accuracyAdvantage < 50) critBonus = 7;
   else if (accuracyAdvantage >= 50) critBonus = 10;
   const criticalChance = Math.min(100, move.crit + critBonus);
-  const critical = Math.random() < criticalChance / 100;
-  if (critical) amount *= 1.15 + Math.random() * 0.10;
+  const guaranteedCrit = !!attacker.effects?.lucky;
+  const superCrit = !!attacker.effects?.superCrit;
+  const critical = guaranteedCrit || Math.random() < criticalChance / 100;
+  if (superCrit) amount *= 2;
+  else if (critical) amount *= 1.15 + Math.random() * 0.10;
 
   return { amount: Math.max(1, Math.round(amount * 10) / 10), critical };
 }
@@ -1371,6 +1516,8 @@ function enemyAct() {
     }
   }
 
+  applyEndOfTurnDamage(actor);
+  expireTurnEffects(actor);
   waitingForEnemy = false;
   renderAll();
 
