@@ -792,6 +792,7 @@ function renderTurnOrder() {
     const img = document.createElement("img");
     img.alt = unit.name;
     img.loading = "eager";
+    img.classList.add("portrait-" + unit.id);
     setCharacterImage(img, unit.image);
     chip.appendChild(img);
     track.appendChild(chip);
