@@ -923,6 +923,17 @@ button:focus-visible {
 .unit.attacking.enemy.attack-ranged-gun {
   animation: gunner-recoil 900ms ease-out both !important;
 }
+/* Bow/arrow ranged attacks fire from the attacker's current position. */
+.unit.attacking.hero[class*="attack-ranged-"]:not(.attack-ranged-gun),
+.unit.attacking.enemy[class*="attack-ranged-"]:not(.attack-ranged-gun) {
+  animation: ranged-shot 900ms ease-out both !important;
+}
+@keyframes ranged-shot {
+  0%, 100% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+  25% { transform: translate(0, 0) scale(1.025); filter: brightness(1.35); }
+  42% { transform: translate(0, 0) scale(.99); filter: brightness(1.8) saturate(1.25); }
+  60% { transform: translate(0, 0) scale(1); filter: brightness(1.2); }
+}
 .unit.attacking.hero.attack-flying-melee,
 .unit.attacking.enemy.attack-flying-melee {
   animation: flying-kick 1.28s cubic-bezier(.2,.75,.2,1) both !important;
