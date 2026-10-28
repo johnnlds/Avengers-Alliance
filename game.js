@@ -1367,7 +1367,7 @@ function applyCombatAnimationPath() {
       { translate: `${x}px ${y}px`, transform: "scale(1.16)", filter: "brightness(1.75) saturate(1.25)", offset: 0.54 },
       { translate: `${x * 0.88}px ${y * 0.88}px`, transform: "scale(1.08)", filter: "brightness(1.3)", offset: 0.68 },
       { translate: "0px 0px", transform: "scale(1)", filter: "brightness(1)" }
-    ], { duration: 1280, easing: "linear", fill: "both" });
+    ], { duration: 1280, easing: "cubic-bezier(.18,.78,.22,1)", fill: "both" });
   }
 }
 
