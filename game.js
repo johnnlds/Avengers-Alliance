@@ -46,7 +46,7 @@ const MOVE_DATA = [
   {id:"assault-rifle",name:"Assault Rifle",attackType:"ranged-gun",description:"Three rifle hits.",cost:8,damage:36.55,hits:3,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"punisher"},
   {id:"frag-grenade",name:"Frag Grenade",attackType:"ranged-arrow",description:"A grenade that damages one target and causes the other enemies to Bleed.",cost:17,damage:38.7,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"punisher",bleedOthersOnly:true},
   {id:"battle-van",name:"Battle Van",attackType:"spin-melee",description:"Attack all enemies with a 50% chance to inflict Fear.",cost:25,damage:21.5,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"punisher",applyDebuff:"fear",debuffChance:50},
-  {id:"sniper-rifle",name:"Sniper Rifle",attackType:"ranged-gun",description:"A deadly shot that eliminates its target from the next wave if it hits.",cost:0,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"attack",target:"enemy",owner:"punisher",eliminateNextWave:true},
+  {id:"sniper-rifle",name:"Sniper Rifle",attackType:"ranged-gun",description:"A deadly shot with a 40% hit chance that eliminates its target from the next wave if it hits.",cost:15,damage:0,hits:1,accuracy:40,crit:0,cooldown:2,type:"attack",target:"enemy",owner:"punisher",eliminateNextWave:true},
   {id:"squirrel-strike",name:"Squirrel Strike",attackType:"unarmed-melee",description:"A precise strike.",cost:8,damage:34.85,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"squirrelgirl"},
   {id:"tippy-toe",name:"Tippy Toe",attackType:"buff",description:"Gain Squirrelly for two turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:1,type:"buff",target:"self",owner:"squirrelgirl",buffs:["squirrelly"],duration:2},
   {id:"furry-fury",name:"Furry Fury",attackType:"unarmed-melee",description:"Attack all enemies.",cost:25,damage:20.5,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"squirrelgirl"},
@@ -1432,6 +1432,16 @@ function triggerCombatAnimation(actor, target, move) {
   }, 1280);
 }
 
+function showSniperResult(hit) {
+  const indicator = document.createElement("div");
+  indicator.className = "sniper-result " + (hit ? "sniper-hit" : "sniper-miss");
+  indicator.textContent = hit ? "HIT" : "MISS";
+  indicator.setAttribute("role", "status");
+  indicator.setAttribute("aria-live", "assertive");
+  document.body.appendChild(indicator);
+  window.setTimeout(() => indicator.remove(), 1200);
+}
+
 function showDamageNumber(target, amount, critical = false, missed = false, delay = 80) {
   // Anchor each damage number to the unit that was hit, on both desktop and mobile.
   window.setTimeout(() => {
@@ -1584,6 +1594,7 @@ function performAttackOnTargets(actor, targets, move) {
       continue;
     }
     if (!doesAttackHit(actor, actualTarget, move)) {
+      if (move.eliminateNextWave) showSniperResult(false);
       log(`${move.name} misses ${actualTarget.name}!`, "miss");
       if (actor.effects?.superCrit) actor.effects.superCrit = false;
       showDamageNumber(actualTarget, 0, false, true, 100);
@@ -1654,6 +1665,7 @@ function performAttack(actor, target, move) {
     hitAny = true;
     if (move.eliminateNextWave) {
       actor.pendingWaveEliminations = (actor.pendingWaveEliminations || 0) + 1;
+      showSniperResult(true);
       if (actor.effects?.superCrit) actor.effects.superCrit = false;
       if (actor.effects?.lucky) actor.effects.lucky = false;
       log(`${move.name} hits! One enemy will be removed from the next wave.`, "good");
