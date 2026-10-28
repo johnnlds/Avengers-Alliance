@@ -1035,7 +1035,7 @@ function renderTeam(containerId, units) {
 
       const showEffects = event => {
         event.stopPropagation();
-        openEffectsInfo(unit.name, buffs, debuffs);
+        openEffectsInfo(unit.name, buffs, debuffs, unit.id);
       };
       nameplate.addEventListener("click", showEffects);
       nameplate.addEventListener("keydown", event => {
@@ -1082,7 +1082,7 @@ function renderTeam(containerId, units) {
   }
 }
 
-function openEffectsInfo(unitName, buffs, debuffs) {
+function openEffectsInfo(unitName, buffs, debuffs, unitId) {
   const overlay = $("effectsInfoOverlay");
   const card = overlay.querySelector(".move-info-card");
   $("effectsInfoTitle").textContent = `${unitName} — Active Effects`;
@@ -1109,15 +1109,29 @@ function openEffectsInfo(unitName, buffs, debuffs) {
   };
   addGroup("Buffs", "buff", buffs);
   addGroup("Debuffs", "debuff", debuffs);
+  const unitCard = document.querySelector(`.battlefield .unit[data-unit-id="${CSS.escape(String(unitId))}"]`);
   overlay.classList.remove("hidden");
   requestAnimationFrame(() => {
-    const rect = card.getBoundingClientRect();
-    if (rect.bottom > window.innerHeight - 12) {
-      card.style.maxHeight = `${window.innerHeight - 32}px`;
-      card.style.overflowY = "auto";
+    const unitRect = unitCard?.getBoundingClientRect();
+    const viewportPad = 12;
+    const cardWidth = Math.min(360, window.innerWidth - viewportPad * 2);
+    card.style.position = "fixed";
+    card.style.width = `${cardWidth}px`;
+    card.style.maxHeight = `${window.innerHeight - viewportPad * 2}px`;
+    card.style.overflowY = "auto";
+    if (unitRect) {
+      const cardHeight = Math.min(card.scrollHeight, window.innerHeight - viewportPad * 2);
+      let left = unitRect.right + 10;
+      if (left + cardWidth > window.innerWidth - viewportPad) left = unitRect.left - cardWidth - 10;
+      if (left < viewportPad) left = Math.max(viewportPad, Math.min(unitRect.left, window.innerWidth - cardWidth - viewportPad));
+      let top = unitRect.top + unitRect.height / 2 - cardHeight / 2;
+      top = Math.max(viewportPad, Math.min(top, window.innerHeight - cardHeight - viewportPad));
+      card.style.left = `${left}px`;
+      card.style.top = `${top}px`;
+      card.style.margin = "0";
     } else {
-      card.style.maxHeight = "";
-      card.style.overflowY = "";
+      card.style.left = `${viewportPad}px`;
+      card.style.top = `${viewportPad}px`;
     }
   });
 }
