@@ -995,15 +995,11 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    // Tapping a character reveals their nameplate and status boxes.
+    // Keep every character nameplate visible at all times.
     const activeEffects = getUnitActiveEffects(unit);
     const buffs = activeEffects.filter(effect => effect.type === "buff");
     const debuffs = activeEffects.filter(effect => effect.type === "debuff");
-    const isInspected = inspectedUnitId === unit.id;
-    const attackTargetsEnemies = !!pendingMove && pendingMove.type === "attack" &&
-      ["enemy", "all-enemies"].includes(pendingMove.target);
-    const showEnemyHealth = unit.team === "enemy" && unit.alive && attackTargetsEnemies;
-    const showNameplate = isActive || isInspected || showEnemyHealth;
+    const showNameplate = true;
 
     if (showNameplate) {
       const nameplate = document.createElement("div");
