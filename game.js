@@ -253,6 +253,7 @@ let waveAnnouncementTimer = null;
 let initiative = [];
 let turnIndex = 0;
 let currentActor = null;
+let inspectedUnitId = null;
 let selectedHeroId = null;
 let selectedTargetId = null;
 let pendingMoveId = null;
@@ -994,54 +995,67 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
-    // Show overhead vitals for the active fighter. When a hero selects an
-    // enemy-targeting attack, show enemy HP bars so the player can preview damage.
+    // Tapping a character reveals their nameplate and status boxes.
+    const activeEffects = getUnitActiveEffects(unit);
+    const buffs = activeEffects.filter(effect => effect.type === "buff");
+    const debuffs = activeEffects.filter(effect => effect.type === "debuff");
+    const isInspected = inspectedUnitId === unit.id;
     const attackTargetsEnemies = !!pendingMove && pendingMove.type === "attack" &&
       ["enemy", "all-enemies"].includes(pendingMove.target);
     const showEnemyHealth = unit.team === "enemy" && unit.alive && attackTargetsEnemies;
-    if (isActive) {
-      if (unit.team === "hero") card.append(name, hpBar, portrait, status);
-      else card.append(name, hpBar, portrait, status);
-    } else if (showEnemyHealth) {
-      card.append(hpBar, portrait, status);
+    const showNameplate = isActive || isInspected || showEnemyHealth;
+
+    if (showNameplate) {
+      const nameplate = document.createElement("div");
+      nameplate.className = "unit-nameplate";
+      nameplate.setAttribute("role", "button");
+      nameplate.setAttribute("tabindex", "0");
+      nameplate.setAttribute("aria-label", `Show ${unit.name} buffs and debuffs`);
+      nameplate.append(name, hpBar);
+
+      if (buffs.length || debuffs.length) {
+        const statusBoxes = document.createElement("div");
+        statusBoxes.className = "unit-effect-indicators";
+        if (buffs.length) {
+          const buffBox = document.createElement("span");
+          buffBox.className = "unit-effect-indicator buff";
+          buffBox.setAttribute("aria-label", `${buffs.length} buff(s)`);
+          buffBox.title = `${buffs.length} active buff(s)`;
+          statusBoxes.appendChild(buffBox);
+        }
+        if (debuffs.length) {
+          const debuffBox = document.createElement("span");
+          debuffBox.className = "unit-effect-indicator debuff";
+          debuffBox.setAttribute("aria-label", `${debuffs.length} debuff(s)`);
+          debuffBox.title = `${debuffs.length} active debuff(s)`;
+          statusBoxes.appendChild(debuffBox);
+        }
+        nameplate.appendChild(statusBoxes);
+      }
+
+      const showEffects = event => {
+        event.stopPropagation();
+        openEffectsInfo(unit.name, buffs, debuffs);
+      };
+      nameplate.addEventListener("click", showEffects);
+      nameplate.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          showEffects(event);
+        }
+      });
+      card.append(nameplate, portrait, status);
     } else {
       card.append(portrait, status);
     }
 
-    // Show an icon for each effect category currently affecting this character.
-    const activeEffects = getUnitActiveEffects(unit);
-    const buffs = activeEffects.filter(effect => effect.type === "buff");
-    const debuffs = activeEffects.filter(effect => effect.type === "debuff");
-
-    if (buffs.length || debuffs.length) {
-      const indicators = document.createElement("div");
-      indicators.className = "unit-effect-indicators";
-      const openEffects = (event) => {
-        event.stopPropagation();
-        openEffectsInfo(unit.name, buffs, debuffs);
-      };
-      const addIndicator = (kind, imagePath, label) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `unit-effect-indicator ${kind}`;
-        button.setAttribute("aria-label", `Show ${label.toLowerCase()} on ${unit.name}`);
-        button.title = `Show ${label.toLowerCase()} on ${unit.name}`;
-        const image = document.createElement("img");
-        image.src = imagePath;
-        image.alt = "";
-        image.setAttribute("aria-hidden", "true");
-        button.appendChild(image);
-        button.addEventListener("click", openEffects);
-        indicators.appendChild(button);
-      };
-      if (buffs.length) addIndicator("buff", "../assets/Buff.png", "Buffs");
-      if (debuffs.length) addIndicator("debuff", "../assets/Debuff.png", "Debuffs");
-      card.appendChild(indicators);
-    }
-
-    card.addEventListener("click", () => selectUnit(unit));
+    card.addEventListener("click", () => {
+      inspectedUnitId = unit.id;
+      selectUnit(unit);
+      renderAll();
+    });
     card.addEventListener("keydown", event => {
-      if (event.target.closest(".unit-effect-indicator")) return;
+      if (event.target.closest(".unit-nameplate")) return;
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         selectUnit(unit);
@@ -1233,7 +1247,10 @@ function selectUnit(unit) {
   if (!unit.alive || battleOver) return;
   if (!currentActor || currentActor.team !== "hero" || waitingForEnemy) return;
   if (!pendingMoveId) {
-    if (unit.team === "enemy") { selectedTargetId = unit.id; renderAll(); }
+    if (unit.team === "enemy") selectedTargetId = unit.id;
+    else selectedHeroId = unit.id;
+    inspectedUnitId = unit.id;
+    renderAll();
     return;
   }
   const move = getMove(pendingMoveId);
