@@ -6552,3 +6552,15 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .sniper-result { animation-duration: .01ms; }
 }
+
+
+/* Individual turn-order portrait framing corrections. */
+.turn-chip img.portrait-elektra {
+  left: calc(50% + 5px);
+}
+.turn-chip img.portrait-hawkeye {
+  top: -5px;
+}
+.turn-chip img.portrait-punisher {
+  top: -2px;
+}
