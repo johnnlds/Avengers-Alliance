@@ -44,7 +44,7 @@ const MOVE_DATA = [
   {id:"big-freaking-gun",name:"Big Freaking Gun",attackType:"ranged-gun",description:"Fire Howard's massive gun.",cost:22,damage:49.45,hits:1,accuracy:75,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"howard"},
   {id:"iron-duck",name:"Iron Duck",attackType:"buff",description:"Gain Strengthened and Armor for two turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:4,type:"buff",target:"self",owner:"howard",buffs:["strengthened","armor"],duration:2},
   {id:"assault-rifle",name:"Assault Rifle",attackType:"ranged-gun",description:"Three rifle hits.",cost:8,damage:36.55,hits:3,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"punisher"},
-  {id:"frag-grenade",name:"Frag Grenade",attackType:"ranged-arrow",description:"A grenade that causes nearby enemies to Bleed.",cost:17,damage:38.7,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"punisher",applyDebuff:"bleed",debuffChance:100},
+  {id:"frag-grenade",name:"Frag Grenade",attackType:"ranged-arrow",description:"A grenade that damages one target and causes the other enemies to Bleed.",cost:17,damage:38.7,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"punisher",bleedOthersOnly:true},
   {id:"battle-van",name:"Battle Van",attackType:"spin-melee",description:"Attack all enemies with a 50% chance to inflict Fear.",cost:25,damage:21.5,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"punisher",applyDebuff:"fear",debuffChance:50},
   {id:"sniper-rifle",name:"Sniper Rifle",attackType:"ranged-gun",description:"A deadly shot that eliminates its target from the next wave if it hits.",cost:0,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"attack",target:"enemy",owner:"punisher",eliminateNextWave:true},
   {id:"squirrel-strike",name:"Squirrel Strike",attackType:"unarmed-melee",description:"A precise strike.",cost:8,damage:34.85,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"squirrelgirl"},
@@ -1509,6 +1509,11 @@ function performAttackOnTargets(actor, targets, move) {
     if (move.applyDebuff && Math.random() < (move.debuffChance || 100) / 100) {
       if (move.applyDebuff === "stun") actualTarget.stunned = true;
       else applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
+    }
+    if (move.bleedOthersOnly) {
+      const otherEnemies = (actualTarget.team === "hero" ? heroes : enemies)
+        .filter(unit => unit.alive && unit.id !== actualTarget.id);
+      for (const other of otherEnemies) applyEffect(other, "bleed", 3);
     }
     if (move.removeBuffs) removeAllBuffs(actualTarget);
     if (actualTarget.hp <= 0) {
