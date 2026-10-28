@@ -6564,3 +6564,20 @@ body {
 .turn-chip img.portrait-punisher {
   top: -6px !important;
 }
+
+
+/* Face-first turn-order portraits. Keep the head centered without over-enlarging the crop. */
+.turn-chip { overflow: hidden; }
+.turn-chip img {
+  left: 50% !important;
+  top: -2% !important;
+  width: 158% !important;
+  height: 158% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: 50% 8% !important;
+  transform: translateX(-50%) !important;
+}
+.turn-chip img.portrait-elektra { object-position: 56% 8% !important; }
+.turn-chip img.portrait-hawkeye { object-position: 50% 5% !important; }
+.turn-chip img.portrait-punisher { object-position: 50% 7% !important; }
