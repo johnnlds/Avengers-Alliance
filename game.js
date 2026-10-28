@@ -1652,6 +1652,13 @@ function performAttack(actor, target, move) {
       continue;
     }
     hitAny = true;
+    if (move.eliminateNextWave) {
+      actor.pendingWaveEliminations = (actor.pendingWaveEliminations || 0) + 1;
+      if (actor.effects?.superCrit) actor.effects.superCrit = false;
+      if (actor.effects?.lucky) actor.effects.lucky = false;
+      log(`${move.name} hits! One enemy will be removed from the next wave.`, "good");
+      break;
+    }
     const damage = calculateDamage(actor, actualTarget, move);
     if (actor.effects?.superCrit) actor.effects.superCrit = false;
     if (actor.effects?.lucky) actor.effects.lucky = false;
@@ -1685,7 +1692,7 @@ function performAttack(actor, target, move) {
   }
   if (move.removeBuffs && actualTarget.alive && hitAny) removeAllBuffs(actualTarget);
   // Squirrelly adds one separate bonus hit worth 50% of the attack's total damage.
-  if (hitAny && actor.effects?.squirrelly > 0 && actualTarget.alive) {
+  if (hitAny && totalDamage > 0 && actor.effects?.squirrelly > 0 && actualTarget.alive) {
     const bonus = totalDamage * 0.5;
     actualTarget.hp = Math.max(0, actualTarget.hp - bonus);
     showDamageNumber(actualTarget, bonus, false, false, 80 + move.hits * 480);
