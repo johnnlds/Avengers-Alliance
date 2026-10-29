@@ -86,9 +86,12 @@ document.getElementById("selectAllBtn").addEventListener("click", () => {
   error.textContent = "";
   render();
 });
-startButton.addEventListener("click", () => {
+function saveTeamAndLaunch(url) {
   if (selected.size === 0) { error.textContent = "Select at least one hero to begin."; return; }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(HEROES.filter(hero => selected.has(hero.id)).map(hero => hero.id)));
-  window.location.href = "battle/";
-});
+  window.location.href = url;
+}
+startButton.addEventListener("click", () => saveTeamAndLaunch("battle/"));
+document.getElementById("practice2StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=2-star"));
+document.getElementById("practice3StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=3-star"));
 render();
