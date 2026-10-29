@@ -1972,9 +1972,9 @@ function checkBattleEnd() {
   $("resultTitle").style.color =
     victory ? "var(--gold)" : "var(--red)";
 
-  $("resultMessage").textContent = victory
-    ? "Hydra has been defeated. Your team wins the battle!"
-    : "Your entire team has been defeated by Hydra.";
+  $("resultMessage").textContent = practiceMode
+    ? (victory ? `You defeated ${enemies[0]?.name || "your opponent"}! Practice complete.` : `Your team was defeated by ${enemies[0]?.name || "your opponent"}.`)
+    : (victory ? "Hydra has been defeated. Your team wins the battle!" : "Your entire team has been defeated by Hydra.");
 
   const turnLabel = $("turnLabel");
   if (turnLabel) turnLabel.textContent = "BATTLE OVER";
