@@ -1554,7 +1554,19 @@ function showBattleVanAnimation() {
 
 function triggerCombatAnimation(actor, target, move) {
   if (actor.id === "punisher" && move?.id === "battle-van") {
+    // This move is represented entirely by the van; suppress Punisher's
+    // portrait lunge/attack effect and the usual combat animation state.
     showBattleVanAnimation();
+    animatingActorId = null;
+    animatingTargetId = null;
+    animatingMoveId = null;
+    animatingMode = null;
+    const token = ++animationToken;
+    window.setTimeout(() => {
+      if (token !== animationToken) return;
+      renderAll();
+    }, 1280);
+    return;
   }
   const isBuffAnimation = move && (move.type === "buff" || move.type === "protect");
   if (isBuffAnimation) {
