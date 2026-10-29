@@ -1516,7 +1516,41 @@ function showDestroyerPrototypeImage() {
   }, 1150);
 }
 
+function showBattleVanAnimation() {
+  const van = document.createElement("img");
+  van.src = "../assets/Battle%20van.png";
+  van.alt = "";
+  van.setAttribute("aria-hidden", "true");
+  Object.assign(van.style, {
+    position: "fixed",
+    left: "0",
+    top: "50%",
+    width: "min(72vw, 520px)",
+    maxHeight: "42vh",
+    objectFit: "contain",
+    zIndex: "99998",
+    pointerEvents: "none",
+    transform: "translate3d(0, -50%, 0)",
+    willChange: "transform"
+  });
+  document.body.appendChild(van);
+  const travelDistance = window.innerWidth + Math.min(window.innerWidth * 0.72, 520) + 40;
+  const animation = van.animate([
+    { transform: "translate3d(-110%, -50%, 0)" },
+    { transform: `translate3d(${travelDistance}px, -50%, 0)` }
+  ], {
+    duration: 1650,
+    easing: "linear",
+    fill: "forwards"
+  });
+  animation.onfinish = () => van.remove();
+  van.onerror = () => van.remove();
+}
+
 function triggerCombatAnimation(actor, target, move) {
+  if (actor.id === "punisher" && move?.id === "battle-van") {
+    showBattleVanAnimation();
+  }
   const isBuffAnimation = move && (move.type === "buff" || move.type === "protect");
   if (isBuffAnimation) {
     // Support effects should glow on the recipient, not travel toward an enemy.
