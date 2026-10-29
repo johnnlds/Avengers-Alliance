@@ -1517,16 +1517,21 @@ function showDestroyerPrototypeImage() {
 }
 
 function showBattleVanAnimation() {
+  const battlefield = document.querySelector(".battlefield");
+  if (!battlefield) return;
+  const field = battlefield.getBoundingClientRect();
+  const vanWidth = Math.max(150, Math.min(field.width * 0.62, 520));
+  const duration = 1750;
   const van = document.createElement("img");
   van.src = "../assets/Battle%20van.png";
   van.alt = "";
   van.setAttribute("aria-hidden", "true");
   Object.assign(van.style, {
     position: "fixed",
-    left: "0",
-    top: "50%",
-    width: "min(72vw, 520px)",
-    maxHeight: "42vh",
+    left: (field.left - vanWidth) + "px",
+    top: (field.top + field.height / 2) + "px",
+    width: vanWidth + "px",
+    maxHeight: Math.min(field.height * 0.62, window.innerHeight * 0.42) + "px",
     objectFit: "contain",
     zIndex: "99998",
     pointerEvents: "none",
@@ -1534,15 +1539,15 @@ function showBattleVanAnimation() {
     willChange: "transform"
   });
   document.body.appendChild(van);
-  const travelDistance = window.innerWidth + Math.min(window.innerWidth * 0.72, 520) + 40;
   const animation = van.animate([
-    { transform: "translate3d(-110%, -50%, 0)" },
-    { transform: `translate3d(${travelDistance}px, -50%, 0)` }
+    { transform: "translate3d(0, -50%, 0)" },
+    { transform: `translate3d(${field.width + vanWidth + 2}px, -50%, 0)` }
   ], {
-    duration: 1650,
+    duration,
     easing: "linear",
     fill: "forwards"
   });
+  window.battleVanDamageDelayUntil = Date.now() + duration + 80;
   animation.onfinish = () => van.remove();
   van.onerror = () => van.remove();
 }
@@ -1590,6 +1595,9 @@ function showSniperResult(hit) {
 }
 
 function showDamageNumber(target, amount, critical = false, missed = false, delay = 80) {
+  // Battle Van must fully clear the battlefield before its damage appears.
+  const vanWait = Math.max(0, (window.battleVanDamageDelayUntil || 0) - Date.now());
+  delay = Math.max(delay, vanWait);
   // Anchor each damage number to the unit that was hit, on both desktop and mobile.
   window.setTimeout(() => {
     const number = document.createElement("span");
