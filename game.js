@@ -74,13 +74,16 @@ function getMove(moveId) {
   return MOVE_DATA.find(move => move.id === moveId);
 }
 function getMoveCost(unit, move) {
-  return move && unit && ["phil","bruiser","blackwidow","blackcat","elektra","hawkeye","antman","daredevil","howard","punisher","squirrelgirl","captainamerica"].includes(unit.id)
+  const scalingHeroId = unit?.practiceHeroId || unit?.id;
+  return move && unit && ["phil","bruiser","blackwidow","blackcat","elektra","hawkeye","antman","daredevil","howard","punisher","squirrelgirl","captainamerica"].includes(scalingHeroId)
     ? Math.ceil(unit.maxSta * move.cost / 100)
     : (move?.cost || 0);
 }
 function getMovesForUnit(unit) {
   if (!unit) return [];
-  if (unit.team === "enemy") return MOVE_DATA.filter(move => move.enemyUsable);
+  if (unit.team === "enemy") return unit.practiceOpponent
+    ? (unit.moveIds || []).map(getMove).filter(Boolean)
+    : MOVE_DATA.filter(move => move.enemyUsable);
   return (unit.moveIds || []).map(getMove).filter(Boolean);
 }
 
@@ -246,6 +249,7 @@ const ENEMY_TEMPLATES = [
 
 let heroes = [];
 let enemies = [];
+let practiceMode = null;
 let round = 1;
 const TOTAL_WAVES = 10;
 let wave = 1;
@@ -411,6 +415,8 @@ function resetBattle() {
     announcement.classList.remove("wave-announcement-show");
   }
   wave = 1;
+  practiceMode = new URLSearchParams(window.location.search).get("practice");
+  if (!["2-star", "3-star"].includes(practiceMode)) practiceMode = null;
   let selectedHeroIds = null;
   try {
     const savedSelection = JSON.parse(localStorage.getItem("avengersAllianceSelectedHeroes") || "null");
@@ -422,7 +428,14 @@ function resetBattle() {
   }
   if (!selectedHeroIds || selectedHeroIds.length === 0) selectedHeroIds = HERO_TEMPLATES.map(hero => hero.id);
   heroes = HERO_TEMPLATES.filter(hero => selectedHeroIds.includes(hero.id)).map(createUnit);
-  enemies = createWaveEnemies();
+  if (practiceMode) {
+    const opponentId = practiceMode === "2-star" ? "daredevil" : "captainamerica";
+    const template = HERO_TEMPLATES.find(hero => hero.id === opponentId);
+    const opponent = { ...template, id: `practice-${opponentId}`, team: "enemy", practiceOpponent: true, practiceHeroId: opponentId };
+    enemies = [createUnit(opponent)];
+  } else {
+    enemies = createWaveEnemies();
+  }
 
   round = 1;
   initiative = [];
@@ -442,9 +455,15 @@ function resetBattle() {
   $("resultOverlay").classList.add("hidden");
   $("battleLog").innerHTML = "";
 
-  log("Battle started! S.H.I.E.L.D. versus Hydra.", "good");
-  log(`Wave ${wave} of ${TOTAL_WAVES}: Hydra forces are advancing.`, "good");
-  log("Choose an ability first, then select a Hydra target.");
+  if (practiceMode) {
+    log(`Practice battle started: your team versus ${enemies[0].name}.`, "good");
+    log("Defeat your practice opponent to complete the fight.", "good");
+    log("Choose an ability first, then select your opponent.");
+  } else {
+    log("Battle started! S.H.I.E.L.D. versus Hydra.", "good");
+    log(`Wave ${wave} of ${TOTAL_WAVES}: Hydra forces are advancing.`, "good");
+    log("Choose an ability first, then select a Hydra target.");
+  }
 
   renderAll();
   startRound();
@@ -1885,21 +1904,22 @@ function enemyAct() {
   const target =
     livingHeroes[Math.floor(Math.random() * livingHeroes.length)];
 
-  const availableMoves = MOVE_DATA.filter(move =>
-    move.enemyUsable && move.type === "attack" &&
-    actor.sta >= move.cost &&
+  const availableMoves = getMovesForUnit(actor).filter(move =>
+    move.type === "attack" &&
+    actor.sta >= getMoveCost(actor, move) &&
     (actor.cooldowns[move.id] || 0) === 0
   );
 
   if (availableMoves.length === 0) {
     log(`${actor.name} has insufficient stamina and skips their attack.`);
   } else {
-    // Hydra chooses an affordable attack, favoring stronger moves.
+    // Enemies choose an affordable attack from their available abilities.
     const move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
 
-    actor.sta -= move.cost;
+    actor.sta -= getMoveCost(actor, move);
     triggerCombatAnimation(actor, target, move);
-    performAttack(actor, target, move);
+    if (move.target === "all-enemies") performAttackOnTargets(actor, heroes.filter(hero => hero.alive), move);
+    else performAttack(actor, target, move);
   }
 
   if (actor.attackDebuffTurns > 0) {
@@ -1938,7 +1958,7 @@ function checkBattleEnd() {
 
   if (heroesAlive && enemiesAlive) return false;
 
-  if (heroesAlive && !enemiesAlive && wave < TOTAL_WAVES) {
+  if (heroesAlive && !enemiesAlive && wave < TOTAL_WAVES && !practiceMode) {
     beginNextWave();
     return true;
   }
