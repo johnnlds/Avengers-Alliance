@@ -673,7 +673,13 @@ function onUnitDamaged(unit) {
 
 function resolveDefeat(unit) {
   const team = unit.team === "hero" ? heroes : enemies;
-  if (unit.characterAbilities?.includes("regeneration") && team.some(other => other !== unit && other.alive)) { unit.hp = Math.max(1, unit.maxHp * 0.05); log(`${unit.name} regenerates with 5% health!`, "good"); return; }
+  if (unit.characterAbilities?.includes("regeneration") && team.some(other => other !== unit && other.alive)) {
+    unit.alive = false;
+    unit.hp = 0;
+    unit.pendingRegeneration = true;
+    log(`${unit.name} has been defeated, but may regenerate on their turn.`, "good");
+    return;
+  }
   if (unit.characterAbilities?.includes("revival") && !unit.revivedThisWave && Math.random() < 0.30) { unit.revivedThisWave = true; unit.hp = Math.max(1, unit.maxHp * 0.30); log(`${unit.name} revives with 30% health!`, "good"); return; }
   unit.alive = false; unit.hp = 0; log(`${unit.name} has been defeated!`, "good");
 }
@@ -1371,7 +1377,7 @@ function startRound() {
   if (battleOver) return;
 
   initiative = [...heroes, ...enemies]
-    .filter(unit => unit.alive)
+    .filter(unit => unit.alive || unit.pendingRegeneration)
     .map((unit, index) => ({ id: unit.id, evasion: unit.eva, index }))
     .sort((a, b) => {
       const evasionDifference = b.evasion - a.evasion;
@@ -1399,10 +1405,31 @@ function nextTurn() {
   const id = initiative[turnIndex];
   const unit = getUnit(id);
 
-  if (!unit || !unit.alive) {
+  if (!unit) {
     turnIndex++;
     nextTurn();
     return;
+  }
+
+  if (!unit.alive) {
+    if (unit.pendingRegeneration) {
+      unit.pendingRegeneration = false;
+      const team = unit.team === "hero" ? heroes : enemies;
+      if (team.some(other => other !== unit && other.alive) && Math.random() < 0.10) {
+        unit.alive = true;
+        unit.hp = Math.max(1, Math.ceil(unit.maxHp * 0.05));
+        log(`${unit.name} regenerates and revives with 5% health!`, "good");
+        renderAll();
+      } else {
+        unit.hp = 0;
+        log(`${unit.name} does not regenerate and remains defeated.`, "miss");
+      }
+    }
+    if (!unit.alive) {
+      turnIndex++;
+      nextTurn();
+      return;
+    }
   }
 
   currentActor = unit;
