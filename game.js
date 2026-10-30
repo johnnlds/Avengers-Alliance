@@ -96,7 +96,7 @@ function getMove(moveId) {
 }
 function getMoveCost(unit, move) {
   const scalingHeroId = unit?.practiceHeroId || unit?.id;
-  return move && unit && ["phil","bruiser","blackwidow","blackcat","elektra","hawkeye","antman","daredevil","howard","punisher","squirrelgirl","captainamerica"].includes(scalingHeroId)
+  return move && unit && ["phil","bruiser","blackwidow","blackcat","elektra","hawkeye","antman","daredevil","howard","punisher","squirrelgirl","captainamerica","moonknight","cloakdagger","spiderman","deadpool","thing"].includes(scalingHeroId)
     ? Math.ceil(unit.maxSta * move.cost / 100)
     : (move?.cost || 0);
 }
