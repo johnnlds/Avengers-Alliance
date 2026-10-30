@@ -463,7 +463,7 @@ function resetBattle() {
   }
   wave = 1;
   practiceMode = new URLSearchParams(window.location.search).get("practice");
-  if (!["2-star", "3-star"].includes(practiceMode)) practiceMode = null;
+  if (!["2-star", "3-star", "4-star"].includes(practiceMode)) practiceMode = null;
   let selectedHeroIds = null;
   try {
     const savedSelection = JSON.parse(localStorage.getItem("avengersAllianceSelectedHeroes") || "null");
@@ -476,7 +476,7 @@ function resetBattle() {
   if (!selectedHeroIds || selectedHeroIds.length === 0) selectedHeroIds = HERO_TEMPLATES.map(hero => hero.id);
   heroes = HERO_TEMPLATES.filter(hero => selectedHeroIds.includes(hero.id)).map(createUnit);
   if (practiceMode) {
-    const opponentId = practiceMode === "2-star" ? "daredevil" : "captainamerica";
+    const opponentId = practiceMode === "2-star" ? "daredevil" : practiceMode === "3-star" ? "captainamerica" : "spiderman";
     const template = HERO_TEMPLATES.find(hero => hero.id === opponentId);
     const opponent = { ...template, id: `practice-${opponentId}`, team: "enemy", practiceOpponent: true, practiceHeroId: opponentId };
     enemies = [createUnit(opponent)];
