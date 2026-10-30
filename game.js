@@ -2056,7 +2056,7 @@ function calculateDamage(attacker, target, move) {
 
   let amount = move.damage / move.hits;
   amount *= 1 + variance;
-  if (attacker.team === "enemy") amount *= 1 + (wave - 1) * 0.01;
+  if (attacker.team === "enemy" && !String(attacker.id).startsWith("bot-")) amount *= 1 + (wave - 1) * 0.01;
   amount *= 1 + (attacker.damageBoost || 0);
   if (attacker.effects?.weakened) amount *= 0.5;
 
