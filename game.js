@@ -287,7 +287,7 @@ function createUnit(template) {
     damageBoost: 0,
     protectedUntilAttack: false,
     effects: {
-      strengthened: 0, superCrit: false, lucky: false, stealth: 0, armor: 0,
+      strengthened: 0, superCrit: false, lucky: false, stealth: 0, armor: 0, armorDamageReduction: 0,
       squirrelly: 0, attention: 0,
       weakened: false, bleed: 0, confused: 0, burn: 0, slow: 0, fear: 0,
       monkeyJoe: 0, bleedOut: 0, blind: 0, cantMiss: 0, temporaryDamage: 0, darkforceDimension: 0, spiderSense: 0
@@ -529,7 +529,7 @@ function applyEffect(unit, name, duration = 1) {
   if (!unit || !unit.alive || !unit.effects) return;
   const effect = name.replace(/[^a-z]/gi, "").toLowerCase();
   const durationEffects = {
-    strengthened: "strengthened", stealth: "stealth", armor: "armor",
+    strengthened: "strengthened", stealth: "stealth", armor: "armor", damagearmor: "armorDamageReduction",
     attention: "attention", bleed: "bleed", confused: "confused",
     burn: "burn", slow: "slow", fear: "fear", monkeyjoe: "monkeyJoe", bleedout: "bleedOut", blind: "blind", cantmiss: "cantMiss", temporarydamage: "temporaryDamage", darkforcedimension: "darkforceDimension", spidersense: "spiderSense"
   };
@@ -578,6 +578,7 @@ function removeAllBuffs(unit) {
   unit.effects.lucky = false;
   unit.effects.stealth = 0;
   unit.effects.armor = 0;
+  unit.effects.armorDamageReduction = 0;
   unit.effects.squirrelly = 0;
   unit.effects.attention = 0;
   unit.damageBoost = 0;
@@ -587,7 +588,7 @@ function removeAllBuffs(unit) {
 
 function expireTurnEffects(unit) {
   if (!unit || !unit.effects) return;
-  for (const key of ["strengthened", "stealth", "armor", "attention", "bleed", "confused", "burn", "slow", "fear", "monkeyJoe", "bleedOut", "blind", "cantMiss", "temporaryDamage", "darkforceDimension", "spiderSense"]) {
+  for (const key of ["strengthened", "stealth", "armor", "armorDamageReduction", "attention", "bleed", "confused", "burn", "slow", "fear", "monkeyJoe", "bleedOut", "blind", "cantMiss", "temporaryDamage", "darkforceDimension", "spiderSense"]) {
     if (unit.effects[key] > 0) unit.effects[key]--;
   }
   if (unit.effects.allStatsTurns > 0) {
@@ -602,9 +603,9 @@ function expireTurnEffects(unit) {
 function applyEndOfTurnDamage(unit) {
   if (!unit || !unit.alive || !unit.effects) return;
   const effects = unit.effects;
-  const damage = (effects.bleed > 0 ? unit.maxHp * 0.04 * (effects.bleedOut > 0 ? 2 : 1) : 0) +
+  const damage = ((effects.bleed > 0 ? unit.maxHp * 0.04 * (effects.bleedOut > 0 ? 2 : 1) : 0) +
     (effects.burn > 0 ? unit.maxHp * 0.04 : 0) + (effects.monkeyJoe > 0 ? unit.maxHp * 0.05 : 0) +
-    (effects.darkforceDimension > 0 ? unit.maxHp * 0.06 : 0) + (effects.temporaryDamage > 0 ? unit.maxHp * 0.30 : 0);
+    (effects.darkforceDimension > 0 ? unit.maxHp * 0.06 : 0) + (effects.temporaryDamage > 0 ? unit.maxHp * 0.30 : 0)) * (effects.armorDamageReduction > 0 ? 0.8 : 1);
   if (damage <= 0) return;
   unit.hp = Math.max(0, unit.hp - damage);
   log(`${unit.name} takes ${Math.ceil(damage)} damage from ongoing effects.`, "damage");
@@ -673,6 +674,8 @@ function renderBuffsDebuffs() {
       ["lucky", "Lucky", "buff", "Next successful attack is guaranteed to critically hit."],
       ["stealth", "Stealth", "buff", "40% chance to dodge incoming attacks."],
       ["armor", "Protection", "buff", "Defense increased by 25%."],
+    ["armorDamageReduction", "Armor", "buff", "Damage taken is reduced by 20%."],
+      ["armorDamageReduction", "Armor", "buff", "Damage taken is reduced by 20%."],
       ["squirrelly", "Squirrelly", "buff", "Next attack gains an extra hit for 50% of total attack damage."],
       ["attention", "Attention", "buff", "Allies cannot be targeted while this is active."],
       ["weakened", "Weakened", "debuff", "Next attack deals 50% less damage."],
@@ -1944,6 +1947,7 @@ function calculateDamage(attacker, target, move) {
     if (guaranteedCrit) amount *= 1.15 + Math.random() * 0.10;
   } else if (critical) amount *= 1.15 + Math.random() * 0.10;
 
+  if (target.effects?.armorDamageReduction > 0) amount *= 0.8;
   return { amount: Math.max(1, Math.round(amount * 10) / 10), critical };
 }
 
