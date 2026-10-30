@@ -276,7 +276,7 @@ function getBotTemplateForWave(currentWave) {
     id: "bot-" + entry.bot.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
     name: entry.bot,
     description: "Campaign combat bot",
-    image: entry.bot,
+    image: "Bot",
     team: "enemy",
     maxHp: Math.round(80 * multiplier),
     maxSta: Math.round(80 * multiplier),
