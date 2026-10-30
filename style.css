@@ -7138,13 +7138,7 @@ body {
   font-size: clamp(15px, 2.1vw, 22px) !important;
   line-height: 1 !important;
   padding: 2px 3px !important;
-  animation: damage-side-rise 900ms ease-out forwards !important;
-}
-.damage-number.damage-overlay.damage-left {
-  transform: translate(-100%, 0) !important;
-}
-.damage-number.damage-overlay.damage-right {
-  transform: translate(0, 0) !important;
+  animation: damage-side-rise 1050ms ease-out forwards !important;
 }
 @keyframes damage-side-rise {
   0% { opacity: 0; }
@@ -7152,14 +7146,14 @@ body {
   100% { opacity: 0; }
 }
 @keyframes damage-side-rise-left {
-  0% { opacity: 0; transform: translate(-100%, 14px) scale(.88); }
-  12% { opacity: 1; transform: translate(-100%, 9px) scale(1); }
-  100% { opacity: 0; transform: translate(-100%, -42px) scale(1); }
+  0% { opacity: 0; transform: translate(-100%, 22px) scale(.82); }
+  12% { opacity: 1; transform: translate(-100%, 16px) scale(1); }
+  100% { opacity: 0; transform: translate(-100%, -48px) scale(1); }
 }
 @keyframes damage-side-rise-right {
-  0% { opacity: 0; transform: translate(0, 14px) scale(.88); }
-  12% { opacity: 1; transform: translate(0, 9px) scale(1); }
-  100% { opacity: 0; transform: translate(0, -42px) scale(1); }
+  0% { opacity: 0; transform: translate(0, 22px) scale(.82); }
+  12% { opacity: 1; transform: translate(0, 16px) scale(1); }
+  100% { opacity: 0; transform: translate(0, -48px) scale(1); }
 }
 .damage-number.damage-overlay.damage-left { animation-name: damage-side-rise-left !important; }
 .damage-number.damage-overlay.damage-right { animation-name: damage-side-rise-right !important; }
