@@ -290,8 +290,9 @@ function createUnit(template) {
       strengthened: 0, superCrit: false, lucky: false, stealth: 0, armor: 0,
       squirrelly: 0, attention: 0,
       weakened: false, bleed: 0, confused: 0, burn: 0, slow: 0, fear: 0,
-      monkeyJoe: 0
+      monkeyJoe: 0, bleedOut: 0, blind: 0, cantMiss: 0, temporaryDamage: 0, darkforceDimension: 0, spiderSense: 0
     },
+    characterAbilities: [...(template.characterAbilities || [])], revivedThisWave: false, temporaryDamageHealTurns: 0,
     baseDef: template.def,
     baseEva: template.eva,
     freeActions: 0
@@ -530,19 +531,23 @@ function applyEffect(unit, name, duration = 1) {
   const durationEffects = {
     strengthened: "strengthened", stealth: "stealth", armor: "armor",
     attention: "attention", bleed: "bleed", confused: "confused",
-    burn: "burn", slow: "slow", fear: "fear", monkeyjoe: "monkeyJoe"
+    burn: "burn", slow: "slow", fear: "fear", monkeyjoe: "monkeyJoe", bleedout: "bleedOut", blind: "blind", cantmiss: "cantMiss", temporarydamage: "temporaryDamage", darkforcedimension: "darkforceDimension", spidersense: "spiderSense"
   };
   if (durationEffects[effect]) {
     const key = durationEffects[effect];
     unit.effects[key] = duration;
   } else if (effect === "supercrit") unit.effects.superCrit = true;
   else if (effect === "lucky") unit.effects.lucky = true;
+  else if (effect === "spiderSense") unit.effects.spiderSense = duration;
+  else if (effect === "cantMiss") unit.effects.cantMiss = duration;
+  else if (effect === "temporaryDamage") unit.effects.temporaryDamage = 1;
+  else if (effect === "darkforceDimension") unit.effects.darkforceDimension = duration;
   else if (effect === "weakened") unit.effects.weakened = true;
   else if (effect === "squirrelly") unit.effects.squirrelly = 2;
   else if (effect === "freeaction") unit.freeActions = (unit.freeActions || 0) + 1;
   else if (effect === "shielded") unit.protectedUntilAttack = true;
-  else if (effect === "smallheal") healUnit(unit, 0.2);
-  else if (effect === "mediumheal") healUnit(unit, 0.4);
+  else if (effect === "smallheal") healUnit(unit, 0.15);
+  else if (effect === "mediumheal") healUnit(unit, 0.35);
   else if (effect === "largeheal") healUnit(unit, 0.6);
   else if (effect === "fullheal") healUnit(unit, 1);
   syncEffectStats(unit);
@@ -581,7 +586,7 @@ function removeAllBuffs(unit) {
 
 function expireTurnEffects(unit) {
   if (!unit || !unit.effects) return;
-  for (const key of ["strengthened", "stealth", "armor", "attention", "bleed", "confused", "burn", "slow", "fear", "monkeyJoe"]) {
+  for (const key of ["strengthened", "stealth", "armor", "attention", "bleed", "confused", "burn", "slow", "fear", "monkeyJoe", "bleedOut", "blind", "cantMiss", "temporaryDamage", "darkforceDimension", "spiderSense"]) {
     if (unit.effects[key] > 0) unit.effects[key]--;
   }
   if (unit.effects.allStatsTurns > 0) {
@@ -596,22 +601,22 @@ function expireTurnEffects(unit) {
 function applyEndOfTurnDamage(unit) {
   if (!unit || !unit.alive || !unit.effects) return;
   const effects = unit.effects;
-  const damage = (effects.bleed > 0 ? unit.maxHp * 0.04 : 0) +
-    (effects.burn > 0 ? unit.maxHp * 0.04 : 0) +
-    (effects.monkeyJoe > 0 ? unit.maxHp * 0.05 : 0);
+  const damage = (effects.bleed > 0 ? unit.maxHp * 0.04 * (effects.bleedOut > 0 ? 2 : 1) : 0) +
+    (effects.burn > 0 ? unit.maxHp * 0.04 : 0) + (effects.monkeyJoe > 0 ? unit.maxHp * 0.05 : 0) +
+    (effects.darkforceDimension > 0 ? unit.maxHp * 0.06 : 0) + (effects.temporaryDamage > 0 ? unit.maxHp * 0.30 : 0);
   if (damage <= 0) return;
   unit.hp = Math.max(0, unit.hp - damage);
   log(`${unit.name} takes ${Math.ceil(damage)} damage from ongoing effects.`, "damage");
-  if (unit.hp <= 0) {
-    unit.alive = false;
-    log(`${unit.name} has been defeated!`, "good");
-  }
+  if (effects.temporaryDamage > 0) { effects.temporaryDamage = 0; unit.temporaryDamageHealTurns = 3; }
+  if (unit.temporaryDamageHealTurns > 0 && unit.alive) { const before = unit.hp; unit.hp = Math.min(unit.maxHp, unit.hp + unit.maxHp * 0.10); if (unit.hp > before) log(`${unit.name} recovers ${Math.ceil(unit.hp-before)} HP.`, "good"); unit.temporaryDamageHealTurns--; }
+  if (unit.hp <= 0) { unit.alive = false; log(`${unit.name} has been defeated!`, "good"); }
 }
 
 function redirectSingleTarget(attacker, target, move) {
   if (!target || !attacker || move.target !== "enemy" && move.target !== "ally") return target;
   const targetTeam = target.team === "hero" ? heroes : enemies;
-  const protectedUnit = targetTeam.find(unit => unit.alive && unit.id !== target.id && unit.effects?.attention > 0);
+  if (target.effects?.attention > 0) return target;
+  const protectedUnit = targetTeam.find(unit => unit.alive && unit.effects?.attention > 0);
   return protectedUnit || target;
 }
 
@@ -668,7 +673,10 @@ function renderBuffsDebuffs() {
       ["burn", "Burn", "debuff", "Takes 4% of max HP damage at end of turn."],
       ["slow", "Slow", "debuff", "Evasion reduced by 20%."],
       ["fear", "Fear", "debuff", "Attacks are 20% less likely to hit."],
-      ["monkeyJoe", "Monkey Joe", "debuff", "Takes 5% of max HP damage at end of turn."]
+      ["monkeyJoe", "Monkey Joe", "debuff", "Takes 5% of max HP damage at end of turn."],
+      ["bleedOut", "Bleed Out", "debuff", "Bleed damage is doubled."], ["blind", "Blind", "debuff", "Attacks are 40% more likely to miss."],
+      ["cantMiss", "Can't Miss", "buff", "Attacks are guaranteed to hit."], ["temporaryDamage", "Temporary Damage", "debuff", "Takes 30% damage, then heals 10% max HP over 3 turns."],
+      ["darkforceDimension", "Darkforce Dimension", "debuff", "Loses 6% max HP instead of taking a normal turn."], ["spiderSense", "Spider Sense", "buff", "80% chance to dodge attacks."]
     ]) {
       const value = unit.effects?.[key];
       if (value === true || (typeof value === "number" && value > 0)) {
@@ -1372,6 +1380,8 @@ function nextTurn() {
     return;
   }
 
+  if (unit.effects?.darkforceDimension > 0) { applyEndOfTurnDamage(unit); expireTurnEffects(unit); turnIndex++; renderAll(); window.setTimeout(nextTurn, 700); return; }
+
   if (unit.team === "hero") {
     selectedHeroId = unit.id;
 
@@ -1720,6 +1730,10 @@ function useMove(moveId, chosenTarget = null) {
   }
 
   applyEndOfTurnDamage(actor);
+  if (actor.characterAbilities?.includes("lightforce-cleanse")) {
+    for (const key of ["weakened","bleed","confused","burn","slow","fear","monkeyJoe","bleedOut","blind","temporaryDamage","darkforceDimension"]) actor.effects[key] = 0;
+    log(`${actor.name}'s Lightforce Cleanse removes all debuffs.`, "good");
+  }
   expireTurnEffects(actor);
   renderAll();
   if (checkBattleEnd()) return;
@@ -1734,11 +1748,13 @@ function useMove(moveId, chosenTarget = null) {
 }
 
 function doesAttackHit(attacker, target, move) {
-  if (target.effects?.stealth > 0 && Math.random() < 0.4) return false;
+  if ((target.effects?.spiderSense > 0 && Math.random() < 0.8) || (target.effects?.stealth > 0 && Math.random() < 0.4)) return false;
   // A 100-point Accuracy advantage over Defense guarantees a hit.
   if (attacker.acc >= target.def + 100) return true;
   let chance = move.accuracy / 100;
   if (attacker.effects?.fear > 0) chance *= 0.8;
+  if (attacker.effects?.blind > 0) chance *= 0.6;
+  if (attacker.effects?.cantMiss > 0) return true;
   return Math.random() <= chance;
 }
 
@@ -1915,7 +1931,7 @@ function calculateDamage(attacker, target, move) {
   else if (accuracyAdvantage > 10 && accuracyAdvantage <= 25) critBonus = 5;
   else if (accuracyAdvantage > 25 && accuracyAdvantage < 50) critBonus = 7;
   else if (accuracyAdvantage >= 50) critBonus = 10;
-  const criticalChance = Math.min(100, move.crit + critBonus);
+  const criticalChance = Math.min(100, move.crit + critBonus + (attacker.characterAbilities?.includes("marksman") ? 20 : 0));
   const guaranteedCrit = !!attacker.effects?.lucky;
   const superCrit = !!attacker.effects?.superCrit;
   const critical = guaranteedCrit || Math.random() < criticalChance / 100;
