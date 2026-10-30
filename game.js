@@ -57,6 +57,27 @@ const MOVE_DATA = [
   {id:"vibranium-protection",name:"Vibranium Protection",attackType:"buff",description:"Gain Shielded and Attention for two turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:2,type:"buff",target:"self",owner:"captainamerica",buffs:["shielded","attention"],duration:2},
 
 
+  {id:"fist-of-khonshu",name:"Fist of Khonshu",attackType:"unarmed-melee",description:"A strike with a 40% chance to inflict Fear.",cost:8,damage:60.35,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"moonknight",applyDebuff:"fear",debuffChance:40},
+  {id:"crescent-darts",name:"Crescent Darts",attackType:"ranged-throwing",description:"Three ranged hits, each with a 40% chance to inflict Bleed.",cost:15,damage:71,hits:3,accuracy:87,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"moonknight",applyDebuff:"bleed",debuffChance:40},
+  {id:"blood-moon",name:"Blood Moon",attackType:"unarmed-melee",description:"Strike all enemies and inflict Bleed, with a 50% chance to cause Bleed Out.",cost:22,damage:81.65,hits:1,accuracy:75,crit:15,cooldown:0,type:"attack",target:"all-enemies",owner:"moonknight",applyDebuff:"bleed",debuffChance:100,secondaryDebuff:"bleedOut",secondaryDebuffChance:50},
+  {id:"no-dodging",name:"No Dodging",attackType:"buff",description:"Gain Can't Miss. While damaged, Moon Knight gains Strengthened and Protection.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:1,type:"buff",target:"self",owner:"moonknight",buffs:["cantMiss"],duration:3},
+  {id:"light-daggers",name:"Light Daggers",attackType:"ranged-energy",description:"Three energy hits with a 60% chance to Blind.",cost:8,damage:53.55,hits:3,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"cloakdagger",applyDebuff:"blind",debuffChance:60},
+  {id:"lightforce",name:"Lightforce",attackType:"buff",description:"Heal all allies for 15%.",cost:20,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"buff",target:"all-allies",owner:"cloakdagger",buffs:["smallheal"]},
+  {id:"darkforce",name:"Darkforce",attackType:"ranged-energy",description:"A dark energy attack with a 50% chance to inflict Fear.",cost:15,damage:63,hits:1,accuracy:87,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"cloakdagger",applyDebuff:"fear",debuffChance:50},
+  {id:"darkforce-dimension",name:"Darkforce Dimension",attackType:"debuff",description:"Trap one enemy in the Darkforce Dimension.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"apply-debuff",target:"enemy",owner:"cloakdagger",applyDebuff:"darkforceDimension",debuffChance:100,duration:4},
+  {id:"thwip-thwip",name:"Thwip Thwip",attackType:"ranged-web",description:"Two web attacks with a 50% chance to Slow.",cost:8,damage:103.7,hits:2,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"spiderman",applyDebuff:"slow",debuffChance:50},
+  {id:"web-swing",name:"Web Swing",attackType:"flying-melee",description:"A swinging kick with a 30% chance to Stun.",cost:15,damage:122,hits:1,accuracy:87,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"spiderman",stunChance:30},
+  {id:"spidey-sense",name:"Spidey Sense",attackType:"buff",description:"Gain a Free Action, Spider Sense, and Strengthened.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"buff",target:"self",owner:"spiderman",buffs:["freeaction","spiderSense","strengthened"],duration:2},
+  {id:"no-holding-back",name:"No Holding Back",attackType:"unarmed-melee",description:"A heavy attack with a 60% chance to Stun.",cost:22,damage:140.3,hits:1,accuracy:80,crit:25,cooldown:0,type:"attack",target:"enemy",owner:"spiderman",stunChance:60},
+  {id:"sword-dance",name:"Sword Dance",attackType:"unarmed-melee",description:"A sword strike with a 30% chance to inflict Bleed.",cost:8,damage:113.05,hits:1,accuracy:95,crit:8,cooldown:2,type:"attack",target:"enemy",owner:"deadpool",applyDebuff:"bleed",debuffChance:30},
+  {id:"pew-pew-pew",name:"Pew Pew Pew",attackType:"ranged-gun",description:"Twenty rapid gunshots.",cost:15,damage:133,hits:20,accuracy:87,crit:34,cooldown:0,type:"attack",target:"enemy",owner:"deadpool"},
+  {id:"mystery-box",name:"Mystery Box",attackType:"buff",description:"Randomly apply three buffs to your team and three debuffs to the enemy team.",cost:20,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"random-effects",target:"all",owner:"deadpool"},
+  {id:"maximum-effort",name:"Maximum Effort",attackType:"unarmed-melee",description:"A super-heavy strike that inflicts Temporary Damage on Deadpool.",cost:40,damage:186.2,hits:1,accuracy:93,crit:22,cooldown:2,type:"attack",target:"enemy",owner:"deadpool",selfDebuff:"temporaryDamage"},
+  {id:"rock-fists",name:"Rock Fists",attackType:"unarmed-melee",description:"Two heavy punches with a 30% chance to Stun.",cost:15,damage:86,hits:2,accuracy:93,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"thing",stunChance:30},
+  {id:"fault-line",name:"Fault Line",attackType:"unarmed-melee",description:"Strike all enemies.",cost:25,damage:60,hits:1,accuracy:95,crit:15,cooldown:0,type:"attack",target:"all-enemies",owner:"thing"},
+  {id:"clobberin-time",name:"Clobberin Time",attackType:"unarmed-melee",description:"Three powerful hits with a 30% chance to Stun and 50% chance to Weaken.",cost:22,damage:98.9,hits:3,accuracy:75,crit:25,cooldown:0,type:"attack",target:"enemy",owner:"thing",stunChance:30,applyDebuff:"weakened",debuffChance:50},
+  {id:"rock-wall",name:"Rock Wall",attackType:"buff",description:"Gain Attention and Armor.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:3,type:"buff",target:"self",owner:"thing",buffs:["attention","armorDamageReduction"],duration:2}
+
 
   { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true },
 
@@ -160,7 +181,7 @@ const HERO_TEMPLATES = [
   {
     id: "hawkeye", name: "Hawkeye", description: "Expert archer",
     image: "Hawkeye", team: "hero", maxHp: 90, maxSta: 110,
-    atk: 30, acc: 35, def: 19, eva: 72,
+    atk: 30, acc: 35, def: 19, eva: 72, characterAbilities:["marksman"],
     moveIds: ["sure-strike","putty-arrow","electric-arrow","boomerang-arrow"]
   },
   {
@@ -198,6 +219,32 @@ const HERO_TEMPLATES = [
     image: "Captain America", team: "hero", maxHp: 354, maxSta: 302,
     atk: 66, acc: 66, def: 97, eva: 125,
     moveIds: ["mericas-fist","shield-bash","not-a-frisbee","vibranium-protection"]
+  }
+
+  {
+    id:"moonknight",name:"Moon Knight",description:"Fist of Khonshu",image:"Moon Knight",team:"hero",
+    maxHp:329,maxSta:302,atk:71,acc:68,def:72,eva:90,
+    moveIds:["fist-of-khonshu","crescent-darts","blood-moon","no-dodging"]
+  },
+  {
+    id:"cloakdagger",name:"Cloak & Dagger",description:"Lightforce and Darkforce duo",image:"Cloak & Dagger",team:"hero",
+    maxHp:274,maxSta:312,atk:63,acc:86,def:87,eva:200,characterAbilities:["lightforce-cleanse"],
+    moveIds:["light-daggers","lightforce","darkforce","darkforce-dimension"]
+  },
+  {
+    id:"spiderman",name:"Spider-Man",description:"Friendly neighborhood Spider-Man",image:"Spider-Man",team:"hero",
+    maxHp:417,maxSta:421,atk:122,acc:130,def:115,eva:144,
+    moveIds:["thwip-thwip","web-swing","spidey-sense","no-holding-back"]
+  },
+  {
+    id:"deadpool",name:"Deadpool",description:"Merc with a Mouth",image:"Deadpool",team:"hero",
+    maxHp:457,maxSta:455,atk:133,acc:106,def:100,eva:125,characterAbilities:["regeneration"],
+    moveIds:["sword-dance","pew-pew-pew","mystery-box","maximum-effort"]
+  },
+  {
+    id:"thing",name:"Thing",description:"The Thing",image:"Thing",team:"hero",
+    maxHp:527,maxSta:435,atk:86,acc:105,def:173,eva:92,characterAbilities:["bulletproof-skin"],
+    moveIds:["rock-fists","fault-line","clobberin-time","rock-wall"]
   }
 ];
 
