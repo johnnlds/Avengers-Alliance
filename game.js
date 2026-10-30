@@ -1346,7 +1346,8 @@ function openMoveInfo(moveId) {
     ["ACCURACY", `${move.accuracy}%`],
     ["CRITICAL", `${move.crit}%`]
   ];
-  if (cooldown > 0) values.push(["COOLDOWN", `${cooldown} turn(s)`]);
+  if (move.cooldown > 0) values.push(["COOLDOWN", `${move.cooldown} turn(s)`]);
+  if (cooldown > 0) values.push(["REMAINING", `${cooldown} turn(s)`]);
   for (const [label, value] of values) {
     const item = document.createElement("div");
     item.className = "move-info-stat";
