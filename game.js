@@ -665,7 +665,16 @@ function applyEndOfTurnDamage(unit) {
 }
 
 function onUnitDamaged(unit) {
-  if (!unit?.alive || unit.id !== "moonknight") return;
+  if (!unit) return;
+  // Darkforce Dimension ends immediately when its inflictor takes damage.
+  for (const target of [...heroes, ...enemies]) {
+    if (target.effects?.darkforceDimension > 0 && target.darkforceDimensionInflictorId === unit.id) {
+      target.effects.darkforceDimension = 0;
+      target.darkforceDimensionInflictorId = null;
+      log(`${target.name} escapes the Darkforce Dimension after its inflictor takes damage!`, "good");
+    }
+  }
+  if (!unit.alive || unit.id !== "moonknight") return;
   applyEffect(unit, "strengthened", 3);
   applyEffect(unit, "armor", 3);
   log("Moon Knight gains Strengthened and Protection after taking damage!", "good");
@@ -1882,7 +1891,10 @@ function performAttackOnTargets(actor, targets, move) {
     if (move.applyDebuff && Math.random() < (move.debuffChance || 100) / 100) {
       if (actualTarget.characterAbilities?.includes("bulletproof-skin") && ["burn","bleed","bleedOut"].includes(move.applyDebuff)) log(`${actualTarget.name}'s Bulletproof Skin blocks ${move.applyDebuff}.`, "good");
       else if (move.applyDebuff === "stun") actualTarget.stunned = true;
-      else applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
+      else {
+        applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : move.applyDebuff === "darkforceDimension" ? 4 : 3);
+        if (move.applyDebuff === "darkforceDimension") actualTarget.darkforceDimensionInflictorId = actor.id;
+      }
     }
     if (move.secondaryDebuff && Math.random() < (move.secondaryDebuffChance || 100) / 100) applyEffect(actualTarget, move.secondaryDebuff, 3);
     if (move.bleedOthersOnly) {
