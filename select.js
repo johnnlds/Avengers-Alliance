@@ -99,4 +99,5 @@ function saveTeamAndLaunch(url) {
 startButton.addEventListener("click", () => saveTeamAndLaunch("battle/"));
 document.getElementById("practice2StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=2-star"));
 document.getElementById("practice3StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=3-star"));
+document.getElementById("practice4StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=4-star"));
 render();
