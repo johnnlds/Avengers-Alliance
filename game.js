@@ -781,9 +781,37 @@ function renderBuffsDebuffs() {
 }
 
 function renderAll() {
+  // renderTeam rebuilds its DOM, so preserve the previous HP widths and animate
+  // them to the new values after the replacement nodes have been inserted.
+  const previousHpWidths = new Map(
+    [...document.querySelectorAll(".battlefield .unit[data-unit-id]")].map(card => {
+      const fill = card.querySelector(".battle-unit-hp-fill");
+      return [card.dataset.unitId, fill ? fill.getBoundingClientRect().width : null];
+    })
+  );
   renderBuffsDebuffs();
   renderTeam("heroTeam", heroes);
   renderTeam("enemyTeam", enemies);
+  const newCards = [...document.querySelectorAll(".battlefield .unit[data-unit-id]")];
+  for (const card of newCards) {
+    const oldWidth = previousHpWidths.get(card.dataset.unitId);
+    const fill = card.querySelector(".battle-unit-hp-fill");
+    const unit = [...heroes, ...enemies].find(item => item.id === card.dataset.unitId);
+    if (oldWidth == null || !fill || !unit) continue;
+    const bar = fill.parentElement;
+    const barWidth = bar.getBoundingClientRect().width;
+    if (!barWidth) continue;
+    const targetWidth = Math.max(0, Math.min(100, unit.hp / unit.maxHp * 100));
+    fill.style.transition = "none";
+    fill.style.width = `${Math.max(0, Math.min(100, oldWidth / barWidth * 100))}%`;
+    // Force layout so the browser sees the previous width before animating.
+    void fill.offsetWidth;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!fill.isConnected) return;
+      fill.style.transition = "";
+      fill.style.width = `${targetWidth}%`;
+    }));
+  }
   renderRoster();
   renderTurnOrder();
   renderMoveDock();
@@ -1746,8 +1774,8 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     if (card) {
       const rect = card.getBoundingClientRect();
       // Put damage beside the unit and start lower than the portrait's top edge.
-      x = isEnemy ? rect.left - 7 : rect.right + 7;
-      y = rect.top + Math.min(rect.height * 0.42, 78);
+      x = isEnemy ? rect.left - 2 : rect.right + 2;
+      y = rect.top + Math.min(rect.height * 0.55, 96);
     }
 
     number.style.setProperty("left", x + "px", "important");
