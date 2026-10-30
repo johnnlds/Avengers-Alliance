@@ -247,46 +247,32 @@ const HERO_TEMPLATES = [
   }
 ];
 
-const BOT_WAVE_SCHEDULE = [
-  { start: 1, end: 5, bot: "Bot 1", tier: 1 },
-  { start: 6, end: 10, bot: "Bot 1H", tier: 1.2 },
-  { start: 11, end: 15, bot: "Bot 2", tier: 1.4 },
-  { start: 16, end: 20, bot: "Bot 2H", tier: 1.6 },
-  { start: 21, end: 25, bot: "Bot 3L", tier: 1.8 },
-  { start: 26, end: 30, bot: "Bot 3", tier: 2 },
-  { start: 31, end: 35, bot: "Bot 3H", tier: 2.2 },
-  { start: 36, end: 40, bot: "Bot 4L", tier: 2.4 },
-  { start: 41, end: 45, bot: "Bot 4", tier: 2.6 },
-  { start: 46, end: 50, bot: "Bot 4H", tier: 2.8 },
-  { start: 51, end: 55, bot: "Bot 5L", tier: 3 },
-  { start: 56, end: 60, bot: "Bot 5", tier: 3.2 },
-  { start: 61, end: 65, bot: "Bot 5H", tier: 3.4 },
-  { start: 66, end: 70, bot: "Bot 6L", tier: 3.6 },
-  { start: 71, end: 75, bot: "Bot 6", tier: 3.8 },
-  { start: 76, end: 80, bot: "Bot 6H", tier: 4 },
-  { start: 81, end: 85, bot: "Bot 7L", tier: 4.2 },
-  { start: 86, end: 90, bot: "Bot 7", tier: 4.4 }
-];
-
-function getBotTemplateForWave(currentWave) {
-  const entry = BOT_WAVE_SCHEDULE.find(item => currentWave >= item.start && currentWave <= item.end)
-    || BOT_WAVE_SCHEDULE[BOT_WAVE_SCHEDULE.length - 1];
-  const multiplier = entry.tier * (1 + Math.max(0, currentWave - entry.start) * 0.015);
-  return {
-    id: "bot-" + entry.bot.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    name: entry.bot,
-    description: "Campaign combat bot",
-    image: "Bot",
-    team: "enemy",
-    maxHp: Math.round(80 * multiplier),
-    maxSta: Math.round(80 * multiplier),
-    atk: Math.round(30 * multiplier * 100) / 100,
-    acc: Math.round(30 * multiplier * 100) / 100,
-    def: Math.round(15 * multiplier * 100) / 100,
-    eva: Math.round(15 * multiplier * 100) / 100
-  };
+const BOT_PROFILES = {
+"Bot 1":[100,100,25,25,25,80,21,25,29],"Bot 1H":[125,125,32,32,32,85,27,32,37],
+"Bot 2":[150,150,38,38,38,85,32,38,44],"Bot 2H":[200,200,50,50,50,90,43,50,58],
+"Bot 3L":[250,250,58,58,58,90,49,58,67],"Bot 3":[300,300,76,76,76,100,65,76,87],
+"Bot 3H":[350,350,89,89,89,100,75,89,102],"Bot 4L":[383,383,97,97,97,100,83,97,112],
+"Bot 4":[450,450,114,114,114,125,97,114,131],"Bot 4H":[600,600,152,152,152,126,129,152,175],
+"Bot 5L":[700,700,177,177,177,141,151,177,204],"Bot 5":[900,900,228,228,228,151,194,228,262],
+"Bot 5H":[1200,1200,304,304,304,190,258,304,350],"Bot 6L":[1400,1400,355,355,355,190,301,355,408],
+"Bot 6":[1800,1800,456,456,456,190,388,456,524],"Bot 6H":[2100,2100,532,532,532,190,452,532,612],
+"Bot 7L":[2300,2300,583,583,583,190,495,583,670],"Bot 7":[2700,2700,684,684,684,190,581,684,787]
 };
-
+const BOT_WAVE_SCHEDULE = [
+{start:1,end:5,bot:"Bot 1"},{start:6,end:10,bot:"Bot 1H"},{start:11,end:15,bot:"Bot 2"},
+{start:16,end:20,bot:"Bot 2H"},{start:21,end:25,bot:"Bot 3L"},{start:26,end:30,bot:"Bot 3"},
+{start:31,end:35,bot:"Bot 3H"},{start:36,end:40,bot:"Bot 4L"},{start:41,end:45,bot:"Bot 4"},
+{start:46,end:50,bot:"Bot 4H"},{start:51,end:55,bot:"Bot 5L"},{start:56,end:60,bot:"Bot 5"},
+{start:61,end:65,bot:"Bot 5H"},{start:66,end:70,bot:"Bot 6L"},{start:71,end:75,bot:"Bot 6"},
+{start:76,end:80,bot:"Bot 6H"},{start:81,end:85,bot:"Bot 7L"},{start:86,end:90,bot:"Bot 7"}
+];
+function getBotTemplateForWave(currentWave) {
+ const entry=BOT_WAVE_SCHEDULE.find(x=>currentWave>=x.start&&currentWave<=x.end)||BOT_WAVE_SCHEDULE[17];
+ const [hp,sta,atk,acc,def,speed,light,medium,heavy]=BOT_PROFILES[entry.bot];
+ return {id:"bot-"+entry.bot.toLowerCase().replace(/[^a-z0-9]+/g,"-"),name:entry.bot,description:"Campaign combat bot",image:"Bot",team:"enemy",
+ maxHp:hp,maxSta:sta,atk,acc,def,eva:0,speed,botDamage:{light,medium,heavy},
+ moveIds:["bot-light","bot-medium","bot-heavy","bot-random-effect"]};
+}
 /* =========================================
    GAME STATE
    ========================================= */
