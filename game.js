@@ -349,7 +349,7 @@ function createWaveEnemies() {
   const waveTemplates = [1, 2, 3].map(index => createUnit({
     ...template,
     id: `${template.id}-${index}`,
-    name: `${template.name} ${index}`
+    name: template.name
   }));
   // Keep the wave size fixed at three, even if a hero used a next-wave elimination ability.
   heroes.forEach(hero => { hero.pendingWaveEliminations = 0; });
