@@ -1800,7 +1800,8 @@ function performAttackOnTargets(actor, targets, move) {
     showDamageNumber(actualTarget, damage.amount, damage.critical, false, 100);
     log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
     if (move.applyDebuff && Math.random() < (move.debuffChance || 100) / 100) {
-      if (move.applyDebuff === "stun") actualTarget.stunned = true;
+      if (actualTarget.characterAbilities?.includes("bulletproof-skin") && ["burn","bleed","bleedOut"].includes(move.applyDebuff)) log(`${actualTarget.name}'s Bulletproof Skin blocks ${move.applyDebuff}.`, "good");
+      else if (move.applyDebuff === "stun") actualTarget.stunned = true;
       else applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
     }
     if (move.bleedOthersOnly) {
