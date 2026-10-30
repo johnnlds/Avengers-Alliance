@@ -247,47 +247,45 @@ const HERO_TEMPLATES = [
   }
 ];
 
-const ENEMY_TEMPLATES = [
-  {
-    id: "hydra1",
-    name: "Hydra Soldier 1",
-    description: "Hydra infantry",
-    image: "Hydra",
-    team: "enemy",
-    maxHp: 80,
-    maxSta: 80,
-    atk: 30,
-    acc: 30,
-    def: 15,
-    eva: 15
-  },
-  {
-    id: "hydra2",
-    name: "Hydra Soldier 2",
-    description: "Hydra infantry",
-    image: "Hydra",
-    team: "enemy",
-    maxHp: 80,
-    maxSta: 80,
-    atk: 30,
-    acc: 30,
-    def: 15,
-    eva: 15
-  },
-  {
-    id: "hydra3",
-    name: "Hydra Soldier 3",
-    description: "Hydra infantry",
-    image: "Hydra",
-    team: "enemy",
-    maxHp: 80,
-    maxSta: 80,
-    atk: 30,
-    acc: 30,
-    def: 15,
-    eva: 15
-  }
+const BOT_WAVE_SCHEDULE = [
+  { start: 1, end: 5, bot: "Bot 1", tier: 1 },
+  { start: 6, end: 10, bot: "Bot 1H", tier: 1.2 },
+  { start: 11, end: 15, bot: "Bot 2", tier: 1.4 },
+  { start: 16, end: 20, bot: "Bot 2H", tier: 1.6 },
+  { start: 21, end: 25, bot: "Bot 3L", tier: 1.8 },
+  { start: 26, end: 30, bot: "Bot 3", tier: 2 },
+  { start: 31, end: 35, bot: "Bot 3H", tier: 2.2 },
+  { start: 36, end: 40, bot: "Bot 4L", tier: 2.4 },
+  { start: 41, end: 45, bot: "Bot 4", tier: 2.6 },
+  { start: 46, end: 50, bot: "Bot 4H", tier: 2.8 },
+  { start: 51, end: 55, bot: "Bot 5L", tier: 3 },
+  { start: 56, end: 60, bot: "Bot 5", tier: 3.2 },
+  { start: 61, end: 65, bot: "Bot 5H", tier: 3.4 },
+  { start: 66, end: 70, bot: "Bot 6L", tier: 3.6 },
+  { start: 71, end: 75, bot: "Bot 6", tier: 3.8 },
+  { start: 76, end: 80, bot: "Bot 6H", tier: 4 },
+  { start: 81, end: 85, bot: "Bot 7L", tier: 4.2 },
+  { start: 86, end: 90, bot: "Bot 7", tier: 4.4 }
 ];
+
+function getBotTemplateForWave(currentWave) {
+  const entry = BOT_WAVE_SCHEDULE.find(item => currentWave >= item.start && currentWave <= item.end)
+    || BOT_WAVE_SCHEDULE[BOT_WAVE_SCHEDULE.length - 1];
+  const multiplier = entry.tier * (1 + Math.max(0, currentWave - entry.start) * 0.015);
+  return {
+    id: "bot-" + entry.bot.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    name: entry.bot,
+    description: "Campaign combat bot",
+    image: entry.bot,
+    team: "enemy",
+    maxHp: Math.round(80 * multiplier),
+    maxSta: Math.round(80 * multiplier),
+    atk: Math.round(30 * multiplier * 100) / 100,
+    acc: Math.round(30 * multiplier * 100) / 100,
+    def: Math.round(15 * multiplier * 100) / 100,
+    eva: Math.round(15 * multiplier * 100) / 100
+  };
+};
 
 /* =========================================
    GAME STATE
