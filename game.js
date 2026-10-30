@@ -1761,8 +1761,8 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
     if (card) {
       const rect = card.getBoundingClientRect();
-      // Keep the number tucked beside the character, centered on the torso.
-      x = isEnemy ? rect.left + 7 : rect.right - 7;
+      // Place the number over the character's torso, not beside the card.
+      x = rect.left + rect.width * 0.5;
       y = rect.top + rect.height * 0.5;
     }
     number.style.setProperty("left", x + "px", "important");
