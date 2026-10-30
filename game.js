@@ -1732,27 +1732,28 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
   // Battle Van must fully clear the battlefield before its damage appears.
   const vanWait = Math.max(0, (window.battleVanDamageDelayUntil || 0) - Date.now());
   delay = Math.max(delay, vanWait);
-  // Anchor each damage number to the unit that was hit, on both desktop and mobile.
   window.setTimeout(() => {
     const number = document.createElement("span");
-    number.className = "damage-number damage-overlay" + (critical ? " critical" : "") + (missed ? " miss-number" : "");
+    const isEnemy = target.team === "enemy";
+    number.className = "damage-number damage-overlay " + (isEnemy ? "damage-left" : "damage-right")
+      + (critical ? " critical" : "") + (missed ? " miss-number" : "");
     number.textContent = missed ? "DODGE" : String(Math.round(amount));
     number.setAttribute("aria-hidden", "true");
 
     let x = window.innerWidth / 2;
-    let y = Math.max(16, window.innerHeight * 0.3);
+    let y = Math.max(16, window.innerHeight * 0.4);
     const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
     if (card) {
       const rect = card.getBoundingClientRect();
-      x = rect.left + rect.width / 2;
-      // Keep the number near the character's head, just above the portrait's upper area.
-      y = Math.max(8, rect.top + Math.min(34, rect.height * 0.16));
+      // Put damage beside the unit and start lower than the portrait's top edge.
+      x = isEnemy ? rect.left - 7 : rect.right + 7;
+      y = rect.top + Math.min(rect.height * 0.42, 78);
     }
 
     number.style.setProperty("left", x + "px", "important");
     number.style.setProperty("top", y + "px", "important");
     document.body.appendChild(number);
-    window.setTimeout(() => number.remove(), 950);
+    window.setTimeout(() => number.remove(), 900);
   }, delay);
 }
 
