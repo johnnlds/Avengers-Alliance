@@ -499,9 +499,9 @@ function resetBattle() {
     log(enemies.length > 1 ? "Defeat the entire enemy team to complete the fight." : "Defeat your practice opponent to complete the fight.", "good");
     log("Choose an ability first, then select your opponent.");
   } else {
-    log("Battle started! S.H.I.E.L.D. versus Hydra.", "good");
-    log(`Wave ${wave} of ${TOTAL_WAVES}: Hydra forces are advancing.`, "good");
-    log("Choose an ability first, then select a Hydra target.");
+    log("Campaign started! S.H.I.E.L.D. versus the bot army.", "good");
+    log(`Wave ${wave} of ${TOTAL_WAVES}: ${enemies[0]?.name?.replace(/ \d+$/, "") || "Bots"} are advancing.`, "good");
+    log("Choose an ability first, then select a bot target.");
   }
 
   renderAll();
@@ -2193,7 +2193,7 @@ function checkBattleEnd() {
 
   $("resultMessage").textContent = practiceMode
     ? (victory ? `You defeated ${enemies[0]?.name || "your opponent"}! Practice complete.` : `Your team was defeated by ${enemies[0]?.name || "your opponent"}.`)
-    : (victory ? "Hydra has been defeated. Your team wins the battle!" : "Your entire team has been defeated by Hydra.");
+    : (victory ? (wave >= TOTAL_WAVES ? "All 90 waves cleared! Campaign complete!" : "Campaign complete!") : "Your entire team has been defeated. Restart the campaign from Wave 1.");
 
   const turnLabel = $("turnLabel");
   if (turnLabel) turnLabel.textContent = "BATTLE OVER";
@@ -2265,11 +2265,7 @@ document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !$("moveInfoOverlay").classList.contains("hidden")) closeMoveInfo();
 });
 $("playAgainBtn").addEventListener("click", () => {
-  const lostBattle = !heroes.some(hero => hero.alive);
-  if (lostBattle) {
-    window.location.href = "../";
-    return;
-  }
+  // A loss restarts the campaign at Wave 1; victories can also start a fresh run.
   resetBattle();
 });
 
