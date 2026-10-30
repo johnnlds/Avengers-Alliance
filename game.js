@@ -1735,6 +1735,7 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
   const unitKey = String(target.id);
   const visualHp = window.__damageHpVisual || (window.__damageHpVisual = new Map());
   let hpState = visualHp.get(unitKey);
+  const hpAfterThisHit = target.hp;
   if (!missed && amount > 0) {
     if (!hpState) {
       hpState = { hp: Math.min(target.maxHp, target.hp + amount), pending: 0, cleanupTimer: null };
@@ -1769,9 +1770,8 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     window.setTimeout(() => number.remove(), 1100);
 
     if (!missed && amount > 0 && hpState && visualHp.get(unitKey) === hpState) {
-      hpState.hp = Math.max(0, target.hp + amount - amount);
-      // Use the actual HP after this particular hit, captured by the caller below.
-      hpState.hp = Math.max(0, Number.isFinite(target.__lastDamageHpAfter) ? target.__lastDamageHpAfter : target.hp);
+      // Capture HP at call time so each delayed hit uses its own result.
+      hpState.hp = Math.max(0, hpAfterThisHit);
       const currentCard = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
       const fill = currentCard?.querySelector(".battle-unit-hp-fill");
       if (fill) fill.style.width = `${Math.max(0, Math.min(100, hpState.hp / target.maxHp * 100))}%`;
