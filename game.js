@@ -1104,26 +1104,6 @@ function renderTeam(containerId, units) {
       nameplate.setAttribute("aria-label", `Show ${unit.name} buffs and debuffs`);
       nameplate.append(name, hpBar);
 
-      if (buffs.length || debuffs.length) {
-        const statusBoxes = document.createElement("div");
-        statusBoxes.className = "unit-effect-indicators";
-        if (buffs.length) {
-          const buffBox = document.createElement("span");
-          buffBox.className = "unit-effect-indicator buff";
-          buffBox.setAttribute("aria-label", `${buffs.length} buff(s)`);
-          buffBox.title = `${buffs.length} active buff(s)`;
-          statusBoxes.appendChild(buffBox);
-        }
-        if (debuffs.length) {
-          const debuffBox = document.createElement("span");
-          debuffBox.className = "unit-effect-indicator debuff";
-          debuffBox.setAttribute("aria-label", `${debuffs.length} debuff(s)`);
-          debuffBox.title = `${debuffs.length} active debuff(s)`;
-          statusBoxes.appendChild(debuffBox);
-        }
-        nameplate.appendChild(statusBoxes);
-      }
-
       const showEffects = event => {
         event.stopPropagation();
         openEffectsInfo(unit.name, buffs, debuffs, unit.id);
