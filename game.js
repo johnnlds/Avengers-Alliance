@@ -76,7 +76,7 @@ const MOVE_DATA = [
   {id:"rock-fists",name:"Rock Fists",attackType:"unarmed-melee",description:"Two heavy punches with a 30% chance to Stun.",cost:15,damage:86,hits:2,accuracy:93,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"thing",stunChance:30},
   {id:"fault-line",name:"Fault Line",attackType:"unarmed-melee",description:"Strike all enemies.",cost:25,damage:60,hits:1,accuracy:95,crit:15,cooldown:0,type:"attack",target:"all-enemies",owner:"thing"},
   {id:"clobberin-time",name:"Clobberin Time",attackType:"unarmed-melee",description:"Three powerful hits with a 30% chance to Stun and 50% chance to Weaken.",cost:22,damage:98.9,hits:3,accuracy:75,crit:25,cooldown:0,type:"attack",target:"enemy",owner:"thing",stunChance:30,applyDebuff:"weakened",debuffChance:50},
-  {id:"rock-wall",name:"Rock Wall",attackType:"buff",description:"Gain Attention and Armor.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:3,type:"buff",target:"self",owner:"thing",buffs:["attention","armorDamageReduction"],duration:2}
+  {id:"rock-wall",name:"Rock Wall",attackType:"buff",description:"Gain Attention and Armor.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:3,type:"buff",target:"self",owner:"thing",buffs:["attention","armorDamageReduction"],duration:2},
 
 
   { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true },
