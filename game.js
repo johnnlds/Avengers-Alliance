@@ -543,6 +543,7 @@ function applyEffect(unit, name, duration = 1) {
   else if (effect === "temporaryDamage") unit.effects.temporaryDamage = 1;
   else if (effect === "darkforceDimension") unit.effects.darkforceDimension = duration;
   else if (effect === "weakened") unit.effects.weakened = true;
+  else if (effect === "debuffed") removeAllBuffs(unit);
   else if (effect === "squirrelly") unit.effects.squirrelly = 2;
   else if (effect === "freeaction") unit.freeActions = (unit.freeActions || 0) + 1;
   else if (effect === "shielded") unit.protectedUntilAttack = true;
@@ -612,6 +613,13 @@ function applyEndOfTurnDamage(unit) {
   if (unit.hp <= 0) { unit.alive = false; log(`${unit.name} has been defeated!`, "good"); }
 }
 
+function resolveDefeat(unit) {
+  const team = unit.team === "hero" ? heroes : enemies;
+  if (unit.characterAbilities?.includes("regeneration") && team.some(other => other !== unit && other.alive)) { unit.hp = Math.max(1, unit.maxHp * 0.05); log(`${unit.name} regenerates with 5% health!`, "good"); return; }
+  if (unit.characterAbilities?.includes("revival") && !unit.revivedThisWave && Math.random() < 0.30) { unit.revivedThisWave = true; unit.hp = Math.max(1, unit.maxHp * 0.30); log(`${unit.name} revives with 30% health!`, "good"); return; }
+  unit.alive = false; unit.hp = 0; log(`${unit.name} has been defeated!`, "good");
+}
+
 function redirectSingleTarget(attacker, target, move) {
   if (!target || !attacker || move.target !== "enemy" && move.target !== "ally") return target;
   const targetTeam = target.team === "hero" ? heroes : enemies;
@@ -666,13 +674,13 @@ function renderBuffsDebuffs() {
       ["stealth", "Stealth", "buff", "40% chance to dodge incoming attacks."],
       ["armor", "Armor", "buff", "Defense increased by 25%."],
       ["squirrelly", "Squirrelly", "buff", "Next attack gains an extra hit for 50% of total attack damage."],
-      ["attention", "Attention", "buff", "Redirects single-target attacks away from allies to this character."],
+      ["attention", "Attention", "buff", "Allies cannot be targeted while this is active."],
       ["weakened", "Weakened", "debuff", "Next attack deals 50% less damage."],
       ["bleed", "Bleed", "debuff", "Takes 4% of max HP damage at end of turn."],
       ["confused", "Confused", "debuff", "40% chance offensive abilities target a living teammate."],
       ["burn", "Burn", "debuff", "Takes 4% of max HP damage at end of turn."],
       ["slow", "Slow", "debuff", "Evasion reduced by 20%."],
-      ["fear", "Fear", "debuff", "Attacks are 20% less likely to hit."],
+      ["fear", "Fear", "debuff", "Attack damage and hit chance are reduced by 20%."],
       ["monkeyJoe", "Monkey Joe", "debuff", "Takes 5% of max HP damage at end of turn."],
       ["bleedOut", "Bleed Out", "debuff", "Bleed damage is doubled."], ["blind", "Blind", "debuff", "Attacks are 40% more likely to miss."],
       ["cantMiss", "Can't Miss", "buff", "Attacks are guaranteed to hit."], ["temporaryDamage", "Temporary Damage", "debuff", "Takes 30% damage, then heals 10% max HP over 3 turns."],
@@ -1802,9 +1810,7 @@ function performAttackOnTargets(actor, targets, move) {
     }
     if (move.removeBuffs) removeAllBuffs(actualTarget);
     if (actualTarget.hp <= 0) {
-      actualTarget.alive = false;
-      actualTarget.hp = 0;
-      log(`${actualTarget.name} has been defeated!`, "good");
+      resolveDefeat(actualTarget);
     } else if (move.stunChance && Math.random() < move.stunChance / 100) {
       actualTarget.stunned = true;
       log(`${actualTarget.name} is stunned and will lose their next action!`, "good");
@@ -1880,9 +1886,7 @@ function performAttack(actor, target, move) {
       for (const other of otherEnemies) applyEffect(other, "bleed", 3);
     }
     if (actualTarget.hp <= 0) {
-      actualTarget.alive = false;
-      actualTarget.hp = 0;
-      log(`${actualTarget.name} has been defeated!`, "good");
+      resolveDefeat(actualTarget);
     }
   }
   if (move.removeBuffs && actualTarget.alive && hitAny) removeAllBuffs(actualTarget);
@@ -1894,9 +1898,7 @@ function performAttack(actor, target, move) {
     log(`Squirrelly adds a bonus hit! ${actualTarget.name} takes ${Math.ceil(bonus)} additional damage.`, "damage");
     actor.effects.squirrelly = 0;
     if (actualTarget.hp <= 0) {
-      actualTarget.alive = false;
-      actualTarget.hp = 0;
-      log(`${actualTarget.name} has been defeated!`, "good");
+      resolveDefeat(actualTarget);
     }
   }
   // Weakened is consumed by the next offensive ability, even if it misses.
