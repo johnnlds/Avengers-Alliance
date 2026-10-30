@@ -344,27 +344,17 @@ function createUnit(template) {
 }
 
 function createWaveEnemies() {
-  const multiplier = 1 + (wave - 1) * 0.01;
-  const waveTemplates = ENEMY_TEMPLATES.map(template => {
-    const scaled = {
-      ...template,
-      maxHp: Math.round(template.maxHp * multiplier),
-      maxSta: Math.round(template.maxSta * multiplier),
-      atk: Math.round(template.atk * multiplier * 100) / 100,
-      acc: Math.round(template.acc * multiplier * 100) / 100,
-      def: Math.round(template.def * multiplier * 100) / 100,
-      eva: Math.round(template.eva * multiplier * 100) / 100
-    };
-    return createUnit(scaled);
-  });
-  const eliminations = heroes.reduce((count, hero) => count + (hero.pendingWaveEliminations || 0), 0);
-  for (let i = 0; i < eliminations && waveTemplates.length; i++) {
-    waveTemplates.splice(Math.floor(Math.random() * waveTemplates.length), 1);
-  }
+  const template = getBotTemplateForWave(wave);
+  // Each campaign wave contains exactly three copies of the scheduled bot type.
+  const waveTemplates = [1, 2, 3].map(index => createUnit({
+    ...template,
+    id: `${template.id}-${index}`,
+    name: `${template.name} ${index}`
+  }));
+  // Keep the wave size fixed at three, even if a hero used a next-wave elimination ability.
   heroes.forEach(hero => { hero.pendingWaveEliminations = 0; });
   return waveTemplates;
 }
-
 function beginNextWave() {
   if (wave >= TOTAL_WAVES || battleOver) return;
 
