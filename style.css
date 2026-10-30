@@ -7157,16 +7157,24 @@ body {
   65% { opacity: 1; transform: translate(0, -26px) scale(1); }
   100% { opacity: 0; transform: translate(0, -60px) scale(1); }
 }
-/* Center the damage value over the torso and keep the rise vertical. */
-.damage-number.damage-overlay.damage-left,
-.damage-number.damage-overlay.damage-right {
-  animation-name: damage-center-rise !important;
+/* Keep numbers beside the unit; animate them vertically upward before fading. */
+.damage-number.damage-overlay.damage-left {
+  animation: damage-side-rise-left 1100ms ease-out forwards !important;
 }
-@keyframes damage-center-rise {
-  0% { opacity: 0; transform: translate(-50%, 22px) scale(.82); }
-  10% { opacity: 1; transform: translate(-50%, 12px) scale(1); }
-  65% { opacity: 1; transform: translate(-50%, -26px) scale(1); }
-  100% { opacity: 0; transform: translate(-50%, -60px) scale(1); }
+.damage-number.damage-overlay.damage-right {
+  animation: damage-side-rise-right 1100ms ease-out forwards !important;
+}
+@keyframes damage-side-rise-left {
+  0% { opacity: 0; transform: translate(-100%, 18px) scale(.82); }
+  12% { opacity: 1; transform: translate(-100%, 8px) scale(1); }
+  68% { opacity: 1; transform: translate(-100%, -28px) scale(1); }
+  100% { opacity: 0; transform: translate(-100%, -58px) scale(1); }
+}
+@keyframes damage-side-rise-right {
+  0% { opacity: 0; transform: translate(0, 18px) scale(.82); }
+  12% { opacity: 1; transform: translate(0, 8px) scale(1); }
+  68% { opacity: 1; transform: translate(0, -28px) scale(1); }
+  100% { opacity: 0; transform: translate(0, -58px) scale(1); }
 }
 .damage-number.damage-overlay.critical { font-size: clamp(17px, 2.3vw, 24px) !important; }
 .battlefield .unit .battle-unit-hp-fill {
