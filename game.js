@@ -674,7 +674,8 @@ function onUnitDamaged(unit) {
       log(`${target.name} escapes the Darkforce Dimension after its inflictor takes damage!`, "good");
     }
   }
-  if (!unit.alive || unit.id !== "moonknight") return;
+  // Moon Knight only gains these reactive buffs while No Dodging is active.
+  if (!unit.alive || unit.id !== "moonknight" || unit.effects?.cantMiss <= 0) return;
   applyEffect(unit, "strengthened", 3);
   applyEffect(unit, "armor", 3);
   log("Moon Knight gains Strengthened and Protection after taking damage!", "good");
