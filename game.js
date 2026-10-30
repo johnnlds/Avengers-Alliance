@@ -16,21 +16,21 @@ const MOVE_DATA = [
   {id:"spin-throw",name:"Spin Throw",attackType:"spin-melee",description:"Spin through all enemies.",cost:22,damage:20.7,hits:2,accuracy:75,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"bruiser"},
   {id:"shield-protect",name:"S.H.I.E.L.D",attackType:"buff",description:"Shield one ally or yourself from the next attack.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"protect",target:"ally",owner:"bruiser"},
   {id:"combo",name:"Martial Arts Combo",attackType:"unarmed-melee",description:"A two-hit martial arts combo.",cost:8,damage:19.55,hits:2,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"blackwidow"},
-  {id:"bite",name:"Widow's Bite",attackType:"ranged-gun",description:"A two-hit electric attack.",cost:15,damage:23,hits:2,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackwidow"},
+  {id:"bite",name:"Widow's Bite",attackType:"ranged-gun",description:"A two-hit electric attack.",cost:15,damage:23,hits:2,accuracy:87,crit:25,cooldown:0,type:"attack",target:"enemy",owner:"blackwidow"},
   {id:"kick",name:"Flying Kick",attackType:"flying-melee",description:"A powerful two-hit flying kick.",cost:22,damage:26.45,hits:2,accuracy:75,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackwidow"},
   {id:"widowmaker",name:"Widowmaker",attackType:"ranged-gun",description:"85% chance to weaken the target and 75% chance to stun with your next attack.",cost:10,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"debuff",target:"enemy",owner:"blackwidow",stunChance:75,applyDebuff:"weakened",debuffChance:85},
   {id:"cat-scratch",name:"Cat Scratch",attackType:"unarmed-melee",description:"Two quick slashes with a 50% chance to inflict Bleed.",cost:10,damage:14,hits:2,accuracy:95,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackcat",applyDebuff:"bleed",debuffChance:50},
   {id:"unlucky-strike",name:"Unlucky Strike",attackType:"unarmed-melee",description:"A strike that leaves the target debuffed.",cost:15,damage:20,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackcat"},
-  {id:"theft",name:"Theft",attackType:"unarmed-melee",description:"Steal the target's buffs.",cost:15,damage:20,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"blackcat",removeBuffs:true},
+  {id:"theft",name:"Theft",attackType:"unarmed-melee",description:"Steal the target's buffs.",cost:15,damage:20,hits:1,accuracy:87,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"blackcat",removeBuffs:true},
   {id:"stroke-of-luck",name:"Stroke of Luck",attackType:"buff",description:"Gain Lucky and an immediate free action. Cooldown: 2 turns.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:2,type:"buff",target:"self",owner:"blackcat",buffs:["lucky"],freeAction:true},
   {id:"sai-slash",name:"Sai Slash",attackType:"unarmed-melee",description:"A light sai slash with a 50% chance to inflict Bleed.",cost:10,damage:18.9,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"elektra",applyDebuff:"bleed",debuffChance:50},
   {id:"blood-bath",name:"Blood Bath",attackType:"spin-melee",description:"Attack all enemies with an 80% chance to inflict Bleed.",cost:18,damage:8.1,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"elektra",applyDebuff:"bleed",debuffChance:80},
   {id:"assassin-strike",name:"Assassin Strike",attackType:"unarmed-melee",description:"A heavy strike with a 40% chance to be a Super Crit.",cost:22,damage:31.05,hits:1,accuracy:75,crit:0,cooldown:1,type:"attack",target:"enemy",owner:"elektra",superCritChance:40},
   {id:"smoke-bomb",name:"Smoke Bomb",attackType:"ranged-gun",description:"Gain Stealth for two rounds.",cost:7,damage:0,hits:0,accuracy:100,crit:0,cooldown:0,type:"buff",target:"self",owner:"elektra",buffs:["stealth"],duration:2},
-  {id:"sure-strike",name:"Sure Strike",attackType:"ranged-bow",description:"A precise bow shot.",cost:8,damage:25.5,hits:1,accuracy:100,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye"},
-  {id:"putty-arrow",name:"Putty Arrow",attackType:"ranged-arrow",description:"An arrow that Slows the target.",cost:15,damage:30,hits:1,accuracy:87,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye",applyDebuff:"slow",debuffChance:100},
-  {id:"electric-arrow",name:"Electric Arrow",attackType:"ranged-arrow",description:"Three electric hits with a 40% chance to stun the target.",cost:22,damage:34.5,hits:3,accuracy:75,crit:0,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye",stunChance:40},
-  {id:"boomerang-arrow",name:"Boomerang Arrow",attackType:"ranged-arrow",description:"Two hits against all enemies, with a 40% chance to Weaken.",cost:25,damage:15,hits:2,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"hawkeye",applyDebuff:"weakened",debuffChance:40},
+  {id:"sure-strike",name:"Sure Strike",attackType:"ranged-bow",description:"A precise bow shot.",cost:8,damage:25.5,hits:1,accuracy:100,crit:20,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye"},
+  {id:"putty-arrow",name:"Putty Arrow",attackType:"ranged-arrow",description:"An arrow that Slows the target.",cost:15,damage:30,hits:1,accuracy:87,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye",applyDebuff:"slow",debuffChance:100},
+  {id:"electric-arrow",name:"Electric Arrow",attackType:"ranged-arrow",description:"Three electric hits with a 40% chance to stun the target.",cost:22,damage:34.5,hits:3,accuracy:75,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"hawkeye",stunChance:40},
+  {id:"boomerang-arrow",name:"Boomerang Arrow",attackType:"ranged-arrow",description:"Two hits against all enemies, with a 40% chance to Weaken.",cost:25,damage:15,hits:2,accuracy:95,crit:8,cooldown:0,type:"attack",target:"all-enemies",owner:"hawkeye",applyDebuff:"weakened",debuffChance:40},
   {id:"pym-punch",name:"Pym Punch",attackType:"unarmed-melee",description:"A powerful punch.",cost:8,damage:28.05,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"antman"},
   {id:"little-uppercut",name:"Little Uppercut",attackType:"unarmed-melee",description:"A precise uppercut.",cost:15,damage:33,hits:1,accuracy:87,crit:20,cooldown:0,type:"attack",target:"enemy",owner:"antman"},
   {id:"swarm",name:"Swarm",attackType:"ranged-arrow",description:"Send a swarm against all enemies.",cost:25,damage:16.5,hits:1,accuracy:95,crit:0,cooldown:0,type:"attack",target:"all-enemies",owner:"antman"},
@@ -205,7 +205,7 @@ const HERO_TEMPLATES = [
   {
     id: "punisher", name: "Punisher", description: "Vigilante",
     image: "Punisher", team: "hero", maxHp: 158, maxSta: 148,
-    atk: 43, acc: 39, def: 37, eva: 85,
+    atk: 43, acc: 39, def: 37, eva: 85, characterAbilities:["marksman"],
     moveIds: ["assault-rifle","frag-grenade","battle-van","sniper-rifle"]
   },
   {
@@ -659,6 +659,13 @@ function applyEndOfTurnDamage(unit) {
   if (effects.temporaryDamage > 0) { effects.temporaryDamage = 0; unit.temporaryDamageHealTurns = 3; }
   if (unit.temporaryDamageHealTurns > 0 && unit.alive) { const before = unit.hp; unit.hp = Math.min(unit.maxHp, unit.hp + unit.maxHp * 0.10); if (unit.hp > before) log(`${unit.name} recovers ${Math.ceil(unit.hp-before)} HP.`, "good"); unit.temporaryDamageHealTurns--; }
   if (unit.hp <= 0) { unit.alive = false; log(`${unit.name} has been defeated!`, "good"); }
+}
+
+function onUnitDamaged(unit) {
+  if (!unit?.alive || unit.id !== "moonknight") return;
+  applyEffect(unit, "strengthened", 3);
+  applyEffect(unit, "armor", 3);
+  log("Moon Knight gains Strengthened and Protection after taking damage!", "good");
 }
 
 function resolveDefeat(unit) {
@@ -1762,6 +1769,17 @@ function useMove(moveId, chosenTarget = null) {
     log(`${actor.name} uses S.H.I.E.L.D! ${protectedAllies.map(ally => ally.name).join(" and ")} is protected from the next attack.`, "good");
   } else if (move.type === "debuff") {
     useWidowmaker(actor, target, move);
+  } else if (move.type === "random-effects") {
+    const buffPool = ["strengthened","armor","stealth","lucky","superCrit","squirrelly","shielded"];
+    const debuffPool = ["bleed","burn","slow","fear","weakened","blind","confused"];
+    const allies = heroes.filter(unit => unit.alive);
+    const foes = enemies.filter(unit => unit.alive);
+    for (let i=0;i<3;i++) {
+      if (allies.length) applyEffect(allies[Math.floor(Math.random()*allies.length)],buffPool[Math.floor(Math.random()*buffPool.length)],3);
+      if (foes.length) applyEffect(foes[Math.floor(Math.random()*foes.length)],debuffPool[Math.floor(Math.random()*debuffPool.length)],3);
+    }
+    if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
+    log(`${actor.name} unleashes the Mystery Box!`, "good");
   } else if (move.type === "buff") {
     const recipients = move.target === "all-allies" ? heroes.filter(unit => unit.alive) : [move.target === "self" ? actor : target].filter(Boolean);
     for (const recipient of recipients) {
@@ -1784,6 +1802,7 @@ function useMove(moveId, chosenTarget = null) {
     log(`${actor.name} uses ${move.name} on ${target?.name || "the target"}!`, "good");
   } else {
     performAttack(actor, target, move);
+    if (move.selfDebuff) applyEffect(actor, move.selfDebuff, 1);
     if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
   }
 
@@ -1847,6 +1866,7 @@ function performAttackOnTargets(actor, targets, move) {
     if (actor.effects?.lucky) actor.effects.lucky = false;
     if (actor.effects?.weakened) actor.effects.weakened = false;
     actualTarget.hp = Math.max(0, actualTarget.hp - damage.amount);
+    onUnitDamaged(actualTarget);
     showDamageNumber(actualTarget, damage.amount, damage.critical, false, 100);
     log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
     if (move.applyDebuff && Math.random() < (move.debuffChance || 100) / 100) {
@@ -1854,6 +1874,7 @@ function performAttackOnTargets(actor, targets, move) {
       else if (move.applyDebuff === "stun") actualTarget.stunned = true;
       else applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
     }
+    if (move.secondaryDebuff && Math.random() < (move.secondaryDebuffChance || 100) / 100) applyEffect(actualTarget, move.secondaryDebuff, 3);
     if (move.bleedOthersOnly) {
       const otherEnemies = (actualTarget.team === "hero" ? heroes : enemies)
         .filter(unit => unit.alive && unit.id !== actualTarget.id);
@@ -1917,6 +1938,7 @@ function performAttack(actor, target, move) {
     if (actor.effects?.weakened) actor.effects.weakened = false;
     const amount = damage.amount;
     actualTarget.hp = Math.max(0, actualTarget.hp - amount);
+    onUnitDamaged(actualTarget);
     totalDamage += amount;
     showDamageNumber(actualTarget, amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
     log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(amount)} damage.`, "damage");
