@@ -219,8 +219,7 @@ const HERO_TEMPLATES = [
     image: "Captain America", team: "hero", maxHp: 354, maxSta: 302,
     atk: 66, acc: 66, def: 97, eva: 125,
     moveIds: ["mericas-fist","shield-bash","not-a-frisbee","vibranium-protection"]
-  }
-
+  },
   {
     id:"moonknight",name:"Moon Knight",description:"Fist of Khonshu",image:"Moon Knight",team:"hero",
     maxHp:329,maxSta:302,atk:71,acc:68,def:72,eva:90,
@@ -1797,7 +1796,7 @@ function useMove(moveId, chosenTarget = null) {
     if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
     log(`${actor.name} uses ${move.name}!`, "good");
   } else if (move.type === "apply-debuff") {
-    if (target && move.applyDebuff) applyEffect(target, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : 3);
+    if (target && move.applyDebuff) applyEffect(target, move.applyDebuff, move.duration || (move.applyDebuff === "monkeyJoe" ? 5 : 3));
     if (move.cooldown > 0) actor.cooldowns[move.id] = move.cooldown;
     log(`${actor.name} uses ${move.name} on ${target?.name || "the target"}!`, "good");
   } else {
