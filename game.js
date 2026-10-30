@@ -579,7 +579,7 @@ function applyEffect(unit, name, duration = 1) {
   if (!unit || !unit.alive || !unit.effects) return;
   const effect = name.replace(/[^a-z]/gi, "").toLowerCase();
   const durationEffects = {
-    strengthened: "strengthened", stealth: "stealth", armor: "armor", damagearmor: "armorDamageReduction",
+    strengthened: "strengthened", stealth: "stealth", armor: "armor", damagearmor: "armorDamageReduction", damagearmorreduction: "armorDamageReduction",
     attention: "attention", bleed: "bleed", confused: "confused",
     burn: "burn", slow: "slow", fear: "fear", monkeyjoe: "monkeyJoe", bleedout: "bleedOut", blind: "blind", cantmiss: "cantMiss", temporarydamage: "temporaryDamage", darkforcedimension: "darkforceDimension", spidersense: "spiderSense"
   };
