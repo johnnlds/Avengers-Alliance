@@ -1122,6 +1122,20 @@ function renderTeam(containerId, units) {
       nameplate.setAttribute("aria-label", `Show ${unit.name} buffs and debuffs`);
       nameplate.append(name, hpBar);
 
+      // Render one compact square per active effect; omit the row entirely when empty.
+      if (activeEffects.length > 0) {
+        const indicators = document.createElement("div");
+        indicators.className = "unit-effect-indicators";
+        indicators.setAttribute("aria-hidden", "true");
+        for (const effect of activeEffects) {
+          const indicator = document.createElement("span");
+          indicator.className = `unit-effect-indicator ${effect.type}`;
+          indicator.title = effect.name;
+          indicators.appendChild(indicator);
+        }
+        nameplate.appendChild(indicators);
+      }
+
       const showEffects = event => {
         event.stopPropagation();
         openEffectsInfo(unit.name, buffs, debuffs, unit.id);
