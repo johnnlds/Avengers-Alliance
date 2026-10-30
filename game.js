@@ -992,7 +992,12 @@ function getUnitActiveEffects(unit) {
     ["burn", "Burn", "debuff", "Takes 4% of max HP damage at end of turn."],
     ["slow", "Slow", "debuff", "Evasion reduced by 20%."],
     ["fear", "Fear", "debuff", "Attacks are 20% less likely to hit."],
-    ["monkeyJoe", "Monkey Joe", "debuff", "Takes 5% of max HP damage at end of turn."]
+    ["monkeyJoe", "Monkey Joe", "debuff", "Takes 5% of max HP damage at end of turn."],
+    ["bleedOut", "Bleed Out", "debuff", "Bleed damage is doubled."],
+    ["blind", "Blind", "debuff", "Attacks are more likely to miss."],
+    ["cantMiss", "Can't Miss", "buff", "Attacks are guaranteed to hit."],
+    ["temporaryDamage", "Temporary Damage", "debuff", "Takes 30% damage, then recovers over 3 turns."],
+    ["darkforceDimension", "Darkforce Dimension", "debuff", "Trapped in the Darkforce Dimension; takes 6% max HP damage at end of turn."]
   ]) {
     const value = unit.effects?.[key];
     if (value === true || (typeof value === "number" && value > 0)) {
