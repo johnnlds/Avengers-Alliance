@@ -463,7 +463,7 @@ function resetBattle() {
   }
   wave = 1;
   practiceMode = new URLSearchParams(window.location.search).get("practice");
-  if (!["2-star", "3-star", "4-star"].includes(practiceMode)) practiceMode = null;
+  if (!["2-star", "3-star", "4-star", "4-star-hard"].includes(practiceMode)) practiceMode = null;
   let selectedHeroIds = null;
   try {
     const savedSelection = JSON.parse(localStorage.getItem("avengersAllianceSelectedHeroes") || "null");
@@ -476,10 +476,14 @@ function resetBattle() {
   if (!selectedHeroIds || selectedHeroIds.length === 0) selectedHeroIds = HERO_TEMPLATES.map(hero => hero.id);
   heroes = HERO_TEMPLATES.filter(hero => selectedHeroIds.includes(hero.id)).map(createUnit);
   if (practiceMode) {
-    const opponentId = practiceMode === "2-star" ? "daredevil" : practiceMode === "3-star" ? "captainamerica" : "spiderman";
-    const template = HERO_TEMPLATES.find(hero => hero.id === opponentId);
-    const opponent = { ...template, id: `practice-${opponentId}`, team: "enemy", practiceOpponent: true, practiceHeroId: opponentId };
-    enemies = [createUnit(opponent)];
+    const opponentIds = practiceMode === "4-star-hard"
+      ? ["spiderman", "thing", "deadpool"]
+      : [practiceMode === "2-star" ? "daredevil" : practiceMode === "3-star" ? "captainamerica" : "spiderman"];
+    enemies = opponentIds.map(opponentId => {
+      const template = HERO_TEMPLATES.find(hero => hero.id === opponentId);
+      const opponent = { ...template, id: `practice-${opponentId}`, team: "enemy", practiceOpponent: true, practiceHeroId: opponentId };
+      return createUnit(opponent);
+    });
   } else {
     enemies = createWaveEnemies();
   }
@@ -503,8 +507,8 @@ function resetBattle() {
   $("battleLog").innerHTML = "";
 
   if (practiceMode) {
-    log(`Practice battle started: your team versus ${enemies[0].name}.`, "good");
-    log("Defeat your practice opponent to complete the fight.", "good");
+    log(`Practice battle started: your team versus ${enemies.map(enemy => enemy.name).join(", ")}.`, "good");
+    log(enemies.length > 1 ? "Defeat the entire enemy team to complete the fight." : "Defeat your practice opponent to complete the fight.", "good");
     log("Choose an ability first, then select your opponent.");
   } else {
     log("Battle started! S.H.I.E.L.D. versus Hydra.", "good");
