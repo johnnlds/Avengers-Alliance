@@ -1415,11 +1415,11 @@ function startRound() {
 
   initiative = [...heroes, ...enemies]
     .filter(unit => unit.alive || unit.pendingRegeneration)
-    .map((unit, index) => ({ id: unit.id, evasion: unit.eva, index }))
+    .map((unit, index) => ({ id: unit.id, speed: unit.speed ?? unit.eva, index }))
     .sort((a, b) => {
-      const evasionDifference = b.evasion - a.evasion;
-      // Higher evasion acts first; equal evasion is broken randomly.
-      return evasionDifference || (Math.random() < 0.5 ? -1 : 1);
+      const speedDifference = b.speed - a.speed;
+      // Higher Speed acts first; equal Speed is broken randomly.
+      return speedDifference || (Math.random() < 0.5 ? -1 : 1);
     })
     .map(item => item.id);
 
@@ -1690,7 +1690,7 @@ function triggerCombatAnimation(actor, target, move) {
     }, 1280);
     return;
   }
-  const isBuffAnimation = move && (move.type === "buff" || move.type === "protect");
+  const isBuffAnimation = move && (move.type === "buff" || move.type === "protect" || move.type === "bot-effect");
   if (isBuffAnimation) {
     // Support effects should glow on the recipient, not travel toward an enemy.
     const recipient = move.target === "self" || move.target === "all-allies"
