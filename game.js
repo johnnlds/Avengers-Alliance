@@ -666,10 +666,14 @@ function applyEndOfTurnDamage(unit) {
 
 function onUnitDamaged(unit) {
   if (!unit) return;
-  // Darkforce Dimension ends immediately when its inflictor takes damage.
+  // Darkforce Dimension ends when the exact character who applied it takes damage.
+  // Keep both the source object and its ID so this remains reliable across all attack paths.
   for (const target of [...heroes, ...enemies]) {
-    if (target.effects?.darkforceDimension > 0 && target.darkforceDimensionInflictorId === unit.id) {
+    const isInflictor = target.darkforceDimensionInflictor === unit ||
+      (target.darkforceDimensionInflictorId && target.darkforceDimensionInflictorId === unit.id);
+    if (target.effects?.darkforceDimension > 0 && isInflictor) {
       target.effects.darkforceDimension = 0;
+      target.darkforceDimensionInflictor = null;
       target.darkforceDimensionInflictorId = null;
       log(`${target.name} escapes the Darkforce Dimension after its inflictor takes damage!`, "good");
     }
@@ -1932,7 +1936,10 @@ function performAttackOnTargets(actor, targets, move) {
       else if (move.applyDebuff === "stun") actualTarget.stunned = true;
       else {
         applyEffect(actualTarget, move.applyDebuff, move.applyDebuff === "monkeyJoe" ? 5 : move.applyDebuff === "darkforceDimension" ? 4 : 3);
-        if (move.applyDebuff === "darkforceDimension") actualTarget.darkforceDimensionInflictorId = actor.id;
+        if (move.applyDebuff === "darkforceDimension") {
+          actualTarget.darkforceDimensionInflictor = actor;
+          actualTarget.darkforceDimensionInflictorId = actor.id;
+        }
       }
     }
     if (move.secondaryDebuff && Math.random() < (move.secondaryDebuffChance || 100) / 100) applyEffect(actualTarget, move.secondaryDebuff, 3);
@@ -2028,6 +2035,7 @@ function performAttack(actor, target, move) {
   if (hitAny && totalDamage > 0 && actor.effects?.squirrelly > 0 && actualTarget.alive) {
     const bonus = totalDamage * 0.5;
     actualTarget.hp = Math.max(0, actualTarget.hp - bonus);
+    onUnitDamaged(actualTarget);
     showDamageNumber(actualTarget, bonus, false, false, 80 + move.hits * 480);
     log(`Squirrelly adds a bonus hit! ${actualTarget.name} takes ${Math.ceil(bonus)} additional damage.`, "damage");
     actor.effects.squirrelly = 0;
