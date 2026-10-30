@@ -13,6 +13,11 @@ const HEROES = [
   { id: "punisher", name: "Punisher", role: "Vigilante", image: "Punisher", hp: 158, stamina: 148, attack: 43, accuracy: 39, defense: 37, evasion: 85, description: "A hard-hitting vigilante with rifles, grenades, and a battle van." },
   { id: "squirrelgirl", name: "Squirrel Girl", role: "Unbeatable Squirrel Girl", image: "Squirrel Girl", hp: 153, stamina: 158, attack: 41, accuracy: 42, defense: 41, evasion: 88, description: "A squirrel-powered fighter who brings furry fury to the battlefield." },
   { id: "captainamerica", name: "Captain America", role: "Super-Soldier", image: "Captain America", hp: 354, stamina: 302, attack: 66, accuracy: 66, defense: 97, evasion: 125, description: "A super-soldier with a powerful shield and team protection." }
+  { id: "moonknight", name: "Moon Knight", role: "Fist of Khonshu", image: "Moon Knight", hp: 329, stamina: 302, attack: 71, accuracy: 68, defense: 72, evasion: 90, description: "A relentless warrior with crescent darts and lunar power." },
+  { id: "cloakdagger", name: "Cloak & Dagger", role: "Lightforce and Darkforce", image: "Cloak & Dagger", hp: 274, stamina: 312, attack: 63, accuracy: 86, defense: 87, evasion: 200, description: "A duo who heal allies and debilitate enemies." },
+  { id: "spiderman", name: "Spider-Man", role: "Friendly Neighborhood Hero", image: "Spider-Man", hp: 417, stamina: 421, attack: 122, accuracy: 130, defense: 115, evasion: 144, description: "An agile hero with web attacks, Spider Sense, and powerful strikes." },
+  { id: "deadpool", name: "Deadpool", role: "Merc with a Mouth", image: "Deadpool", hp: 457, stamina: 455, attack: 133, accuracy: 106, defense: 100, evasion: 125, description: "A regenerative fighter with an unpredictable bag of tricks." },
+  { id: "thing", name: "Thing", role: "Fantastic Four Powerhouse", image: "Thing", hp: 527, stamina: 435, attack: 86, accuracy: 105, defense: 173, evasion: 92, description: "A durable bruiser with rock-hard defense and heavy attacks." },
 ];
 const STORAGE_KEY = "avengersAllianceSelectedHeroes";
 const selected = new Set(HEROES.slice(0, 3).map(hero => hero.id));
