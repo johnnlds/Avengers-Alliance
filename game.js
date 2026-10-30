@@ -59,7 +59,7 @@ const MOVE_DATA = [
 
   {id:"fist-of-khonshu",name:"Fist of Khonshu",attackType:"unarmed-melee",description:"A strike with a 40% chance to inflict Fear.",cost:8,damage:60.35,hits:1,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"moonknight",applyDebuff:"fear",debuffChance:40},
   {id:"crescent-darts",name:"Crescent Darts",attackType:"ranged-throwing",description:"Three ranged hits, each with a 40% chance to inflict Bleed.",cost:15,damage:71,hits:3,accuracy:87,crit:10,cooldown:0,type:"attack",target:"enemy",owner:"moonknight",applyDebuff:"bleed",debuffChance:40},
-  {id:"blood-moon",name:"Blood Moon",attackType:"unarmed-melee",description:"Strike all enemies and inflict Bleed, with a 50% chance to cause Bleed Out.",cost:22,damage:81.65,hits:1,accuracy:75,crit:15,cooldown:0,type:"attack",target:"all-enemies",owner:"moonknight",applyDebuff:"bleed",debuffChance:100,secondaryDebuff:"bleedOut",secondaryDebuffChance:50},
+  {id:"blood-moon",name:"Blood Moon",attackType:"unarmed-melee",description:"Strike one enemy and inflict Bleed, with a 50% chance to cause Bleed Out.",cost:22,damage:81.65,hits:1,accuracy:75,crit:15,cooldown:0,type:"attack",target:"enemy",owner:"moonknight",applyDebuff:"bleed",debuffChance:100,secondaryDebuff:"bleedOut",secondaryDebuffChance:50},
   {id:"no-dodging",name:"No Dodging",attackType:"buff",description:"Gain Can't Miss. While damaged, Moon Knight gains Strengthened and Protection.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:1,type:"buff",target:"self",owner:"moonknight",buffs:["cantMiss"],duration:3},
   {id:"light-daggers",name:"Light Daggers",attackType:"ranged-energy",description:"Three energy hits with a 60% chance to Blind.",cost:8,damage:53.55,hits:3,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",owner:"cloakdagger",applyDebuff:"blind",debuffChance:60},
   {id:"lightforce",name:"Lightforce",attackType:"buff",description:"Heal all allies for 15%.",cost:20,damage:0,hits:1,accuracy:100,crit:0,cooldown:2,type:"buff",target:"all-allies",owner:"cloakdagger",buffs:["smallheal"]},
@@ -1071,6 +1071,25 @@ function renderTeam(containerId, units) {
       damagePreview.style.width = `${Math.min(currentPercent, previewPercent)}%`;
       damagePreview.setAttribute("aria-label", `Approximate damage preview: ${Math.round(previewDamage)}`);
       hpBar.appendChild(damagePreview);
+    }
+    // Preview healing on allies while an all-allies or single-ally healing move is selected.
+    const healingFractions = { smallheal: 0.15, mediumheal: 0.35, largeheal: 0.6, fullheal: 1 };
+    const selectedHealMove = unit.team === "hero" && unit.alive && pendingMove?.type === "buff" &&
+      (pendingMove.target === "all-allies" || pendingMove.target === "ally") ? pendingMove : null;
+    const healFraction = selectedHealMove
+      ? (selectedHealMove.buffs || []).reduce((best, buff) => Math.max(best, healingFractions[buff] || 0), 0)
+      : 0;
+    if (healFraction > 0 && unit.hp < unit.maxHp) {
+      const currentPercent = Math.max(0, Math.min(100, unit.hp / unit.maxHp * 100));
+      const healPercent = Math.min(100 - currentPercent, healFraction * 100);
+      if (healPercent > 0) {
+        const healPreview = document.createElement("span");
+        healPreview.className = "battle-unit-hp-heal-preview";
+        healPreview.style.left = currentPercent + "%";
+        healPreview.style.width = healPercent + "%";
+        healPreview.setAttribute("aria-label", "Healing preview: approximately " + Math.round(unit.maxHp * healFraction) + " HP");
+        hpBar.appendChild(healPreview);
+      }
     }
 
     const staBar = document.createElement("div");
