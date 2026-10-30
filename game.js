@@ -1105,6 +1105,9 @@ function renderTeam(containerId, units) {
 
     status.textContent = statuses.join(" • ");
 
+    // Do not render an empty status container; its CSS dimensions create a blank bar.
+    if (statuses.length === 0) status.remove();
+
     // Keep every character nameplate visible at all times.
     const activeEffects = getUnitActiveEffects(unit);
     const buffs = activeEffects.filter(effect => effect.type === "buff");
@@ -1130,9 +1133,11 @@ function renderTeam(containerId, units) {
           showEffects(event);
         }
       });
-      card.append(nameplate, portrait, status);
+      card.append(nameplate, portrait);
+      if (statuses.length > 0) card.append(status);
     } else {
-      card.append(portrait, status);
+      card.append(portrait);
+      if (statuses.length > 0) card.append(status);
     }
 
     card.addEventListener("click", () => {
