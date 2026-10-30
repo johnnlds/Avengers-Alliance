@@ -2138,7 +2138,10 @@ function enemyAct() {
   );
 
   if (availableMoves.length === 0) {
-    log(`${actor.name} has insufficient stamina and skips their attack.`);
+    const staminaBefore = actor.sta;
+    actor.sta = Math.min(actor.maxSta, actor.sta + actor.maxSta * 0.5);
+    const actualRestored = actor.sta - staminaBefore;
+    log(`${actor.name} has insufficient stamina and skips their attack, restoring ${Math.ceil(actualRestored)} stamina.`, "good");
   } else {
     // Enemies choose an affordable attack from their available abilities.
     const move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
