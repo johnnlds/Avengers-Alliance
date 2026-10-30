@@ -781,37 +781,9 @@ function renderBuffsDebuffs() {
 }
 
 function renderAll() {
-  // renderTeam rebuilds its DOM, so preserve the previous HP widths and animate
-  // them to the new values after the replacement nodes have been inserted.
-  const previousHpWidths = new Map(
-    [...document.querySelectorAll(".battlefield .unit[data-unit-id]")].map(card => {
-      const fill = card.querySelector(".battle-unit-hp-fill");
-      return [card.dataset.unitId, fill ? fill.getBoundingClientRect().width : null];
-    })
-  );
   renderBuffsDebuffs();
   renderTeam("heroTeam", heroes);
   renderTeam("enemyTeam", enemies);
-  const newCards = [...document.querySelectorAll(".battlefield .unit[data-unit-id]")];
-  for (const card of newCards) {
-    const oldWidth = previousHpWidths.get(card.dataset.unitId);
-    const fill = card.querySelector(".battle-unit-hp-fill");
-    const unit = [...heroes, ...enemies].find(item => item.id === card.dataset.unitId);
-    if (oldWidth == null || !fill || !unit) continue;
-    const bar = fill.parentElement;
-    const barWidth = bar.getBoundingClientRect().width;
-    if (!barWidth) continue;
-    const targetWidth = Math.max(0, Math.min(100, unit.hp / unit.maxHp * 100));
-    fill.style.transition = "none";
-    fill.style.width = `${Math.max(0, Math.min(100, oldWidth / barWidth * 100))}%`;
-    // Force layout so the browser sees the previous width before animating.
-    void fill.offsetWidth;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (!fill.isConnected) return;
-      fill.style.transition = "";
-      fill.style.width = `${targetWidth}%`;
-    }));
-  }
   renderRoster();
   renderTurnOrder();
   renderMoveDock();
@@ -1070,7 +1042,9 @@ function renderTeam(containerId, units) {
     hpBar.setAttribute("aria-label", `Health: ${Math.max(0, unit.hp)} of ${unit.maxHp}`);
     const hpFill = document.createElement("span");
     hpFill.className = "battle-unit-hp-fill";
-    hpFill.style.width = `${Math.max(0, Math.min(100, (unit.hp / unit.maxHp) * 100))}%`;
+    const stagedHp = window.__damageHpVisual?.get(String(unit.id))?.hp;
+    const hpForBar = Number.isFinite(stagedHp) ? stagedHp : unit.hp;
+    hpFill.style.width = `${Math.max(0, Math.min(100, (hpForBar / unit.maxHp) * 100))}%`;
     hpBar.appendChild(hpFill);
 
     const pendingMove = pendingMoveId ? getMove(pendingMoveId) : null;
@@ -1757,6 +1731,19 @@ function showSniperResult(hit) {
 }
 
 function showDamageNumber(target, amount, critical = false, missed = false, delay = 80) {
+  // Stage each hit's HP separately so multi-hit moves animate one hit at a time.
+  const unitKey = String(target.id);
+  const visualHp = window.__damageHpVisual || (window.__damageHpVisual = new Map());
+  let hpState = visualHp.get(unitKey);
+  if (!missed && amount > 0) {
+    if (!hpState) {
+      hpState = { hp: Math.min(target.maxHp, target.hp + amount), pending: 0, cleanupTimer: null };
+      visualHp.set(unitKey, hpState);
+    }
+    hpState.pending++;
+    if (hpState.cleanupTimer) window.clearTimeout(hpState.cleanupTimer);
+  }
+
   // Battle Van must fully clear the battlefield before its damage appears.
   const vanWait = Math.max(0, (window.battleVanDamageDelayUntil || 0) - Date.now());
   delay = Math.max(delay, vanWait);
@@ -1773,15 +1760,33 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
     if (card) {
       const rect = card.getBoundingClientRect();
-      // Put damage beside the unit and start lower than the portrait's top edge.
       x = isEnemy ? rect.left - 2 : rect.right + 2;
       y = rect.top + Math.min(rect.height * 0.55, 96);
     }
-
     number.style.setProperty("left", x + "px", "important");
     number.style.setProperty("top", y + "px", "important");
     document.body.appendChild(number);
-    window.setTimeout(() => number.remove(), 900);
+    window.setTimeout(() => number.remove(), 1100);
+
+    if (!missed && amount > 0 && hpState && visualHp.get(unitKey) === hpState) {
+      hpState.hp = Math.max(0, target.hp + amount - amount);
+      // Use the actual HP after this particular hit, captured by the caller below.
+      hpState.hp = Math.max(0, Number.isFinite(target.__lastDamageHpAfter) ? target.__lastDamageHpAfter : target.hp);
+      const currentCard = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
+      const fill = currentCard?.querySelector(".battle-unit-hp-fill");
+      if (fill) fill.style.width = `${Math.max(0, Math.min(100, hpState.hp / target.maxHp * 100))}%`;
+      hpState.pending = Math.max(0, hpState.pending - 1);
+      if (hpState.pending === 0) {
+        hpState.cleanupTimer = window.setTimeout(() => {
+          if (visualHp.get(unitKey) === hpState) {
+            visualHp.delete(unitKey);
+            const finalCard = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
+            const finalFill = finalCard?.querySelector(".battle-unit-hp-fill");
+            if (finalFill) finalFill.style.width = `${Math.max(0, Math.min(100, target.hp / target.maxHp * 100))}%`;
+          }
+        }, 500);
+      }
+    }
   }, delay);
 }
 
@@ -1949,6 +1954,7 @@ function performAttackOnTargets(actor, targets, move) {
     if (actor.effects?.lucky) actor.effects.lucky = false;
     if (actor.effects?.weakened) actor.effects.weakened = false;
     actualTarget.hp = Math.max(0, actualTarget.hp - damage.amount);
+    actualTarget.__lastDamageHpAfter = actualTarget.hp;
     onUnitDamaged(actualTarget);
     showDamageNumber(actualTarget, damage.amount, damage.critical, false, 100);
     log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(damage.amount)} damage.`, "damage");
@@ -2026,6 +2032,7 @@ function performAttack(actor, target, move) {
     if (actor.effects?.weakened) actor.effects.weakened = false;
     const amount = damage.amount;
     actualTarget.hp = Math.max(0, actualTarget.hp - amount);
+    actualTarget.__lastDamageHpAfter = actualTarget.hp;
     onUnitDamaged(actualTarget);
     totalDamage += amount;
     showDamageNumber(actualTarget, amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
@@ -2055,6 +2062,7 @@ function performAttack(actor, target, move) {
   if (hitAny && totalDamage > 0 && actor.effects?.squirrelly > 0 && actualTarget.alive) {
     const bonus = totalDamage * 0.5;
     actualTarget.hp = Math.max(0, actualTarget.hp - bonus);
+    actualTarget.__lastDamageHpAfter = actualTarget.hp;
     onUnitDamaged(actualTarget);
     showDamageNumber(actualTarget, bonus, false, false, 80 + move.hits * 480);
     log(`Squirrelly adds a bonus hit! ${actualTarget.name} takes ${Math.ceil(bonus)} additional damage.`, "damage");
