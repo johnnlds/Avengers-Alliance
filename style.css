@@ -7157,8 +7157,17 @@ body {
   65% { opacity: 1; transform: translate(0, -26px) scale(1); }
   100% { opacity: 0; transform: translate(0, -60px) scale(1); }
 }
-.damage-number.damage-overlay.damage-left { animation-name: damage-side-rise-left !important; }
-.damage-number.damage-overlay.damage-right { animation-name: damage-side-rise-right !important; }
+/* Center the damage value over the torso and keep the rise vertical. */
+.damage-number.damage-overlay.damage-left,
+.damage-number.damage-overlay.damage-right {
+  animation-name: damage-center-rise !important;
+}
+@keyframes damage-center-rise {
+  0% { opacity: 0; transform: translate(-50%, 22px) scale(.82); }
+  10% { opacity: 1; transform: translate(-50%, 12px) scale(1); }
+  65% { opacity: 1; transform: translate(-50%, -26px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -60px) scale(1); }
+}
 .damage-number.damage-overlay.critical { font-size: clamp(17px, 2.3vw, 24px) !important; }
 .battlefield .unit .battle-unit-hp-fill {
   transition: width 420ms cubic-bezier(.2,.7,.25,1) !important;
