@@ -79,6 +79,10 @@ const MOVE_DATA = [
   {id:"rock-wall",name:"Rock Wall",attackType:"buff",description:"Gain Attention and Armor.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:3,type:"buff",target:"self",owner:"thing",buffs:["attention","armorDamageReduction"],duration:2},
 
 
+  {id:"bot-light",name:"Light Attack",attackType:"unarmed-melee",description:"Two-hit bot melee attack.",cost:0,damage:21,hits:2,accuracy:100,crit:0,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
+  {id:"bot-medium",name:"Medium Attack",attackType:"ranged-gun",description:"Single-target ranged bot attack.",cost:0,damage:25,hits:1,accuracy:100,crit:0,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
+  {id:"bot-heavy",name:"Heavy Attack",attackType:"ranged-gun",description:"Single-target heavy ranged bot attack.",cost:0,damage:29,hits:1,accuracy:100,crit:0,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
+  {id:"bot-random-effect",name:"Buff/Debuff",attackType:"buff",description:"Randomly buff one bot ally or debuff one hero.",cost:0,damage:0,hits:1,accuracy:100,crit:0,cooldown:0,type:"bot-effect",target:"enemy",enemyUsable:true},
   { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true },
 
   { id:"stormbreaker", name:"Stormbreaker", attackType:"unarmed-melee", description:"Beta Ray Bill strikes one enemy with Stormbreaker.", cost:572.24, damage:1416.6, hits:1, accuracy:75, crit:2, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
@@ -104,7 +108,7 @@ function getMovesForUnit(unit) {
   if (!unit) return [];
   if (unit.team === "enemy") return unit.practiceOpponent
     ? (unit.moveIds || []).map(getMove).filter(Boolean)
-    : MOVE_DATA.filter(move => move.enemyUsable);
+    : (unit.moveIds || []).map(getMove).filter(Boolean);
   return (unit.moveIds || []).map(getMove).filter(Boolean);
 }
 
@@ -2107,7 +2111,7 @@ function enemyAct() {
     livingHeroes[Math.floor(Math.random() * livingHeroes.length)];
 
   const availableMoves = getMovesForUnit(actor).filter(move =>
-    move.type === "attack" &&
+    ["attack","bot-effect"].includes(move.type) &&
     actor.sta >= getMoveCost(actor, move) &&
     (actor.cooldowns[move.id] || 0) === 0
   );
@@ -2123,8 +2127,24 @@ function enemyAct() {
 
     actor.sta -= getMoveCost(actor, move);
     triggerCombatAnimation(actor, target, move);
-    if (move.target === "all-enemies") performAttackOnTargets(actor, heroes.filter(hero => hero.alive), move);
-    else performAttack(actor, target, move);
+    if (move.type === "bot-effect") {
+      if (Math.random() < 0.5) {
+        const pool = ["strengthened","armor","stealth","lucky","superCrit","squirrelly","shielded"];
+        const recipient = enemies.filter(unit => unit.alive)[Math.floor(Math.random() * enemies.filter(unit => unit.alive).length)];
+        const effect = pool[Math.floor(Math.random() * pool.length)];
+        applyEffect(recipient, effect, 3);
+        log(`${actor.name} uses Buff/Debuff! ${recipient.name} gains ${effect}.`, "good");
+      } else {
+        const pool = ["bleed","burn","slow","fear","weakened","blind","confused"];
+        const recipient = livingHeroes[Math.floor(Math.random() * livingHeroes.length)];
+        const effect = pool[Math.floor(Math.random() * pool.length)];
+        applyEffect(recipient, effect, 3);
+        log(`${actor.name} uses Buff/Debuff! ${recipient.name} is afflicted with ${effect}.`, "damage");
+      }
+    } else {
+      const damageKey = move.id.replace("bot-","");
+      performAttack(actor, target, {...move,damage:actor.botDamage?.[damageKey] ?? move.damage});
+    }
   }
 
   if (actor.attackDebuffTurns > 0) {
