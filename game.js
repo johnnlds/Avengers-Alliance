@@ -1759,11 +1759,12 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     let x = window.innerWidth / 2;
     let y = Math.max(16, window.innerHeight * 0.4);
     const card = document.querySelector(`.unit[data-unit-id="${target.id}"]`);
-    if (card) {
-      const rect = card.getBoundingClientRect();
-      // Keep the number beside the character, aligned with the vertical midpoint.
-      x = isEnemy ? rect.left + 7 : rect.right - 7;
-      y = rect.top + rect.height * 0.5;
+    const portrait = card?.querySelector(".portrait");
+    if (portrait) {
+      const rect = portrait.getBoundingClientRect();
+      // Center the number over the portrait's top edge; CSS animates it down to the bottom.
+      x = rect.left + rect.width / 2;
+      y = rect.top + 2;
     }
     number.style.setProperty("left", x + "px", "important");
     number.style.setProperty("top", y + "px", "important");
