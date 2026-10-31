@@ -7156,3 +7156,12 @@ body {
     font-size: clamp(16px, 4.3vw, 21px) !important;
   }
 }
+
+
+/* Standard damage feedback: white numerals with a crisp black outline. Critical hits retain their gold styling. */
+.damage-number.damage-overlay:not(.critical) {
+  color: #fff !important;
+  -webkit-text-stroke: 1.5px #000 !important;
+  paint-order: stroke fill;
+  text-shadow: 0 1px 2px #000 !important;
+}
