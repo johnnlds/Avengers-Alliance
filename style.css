@@ -1909,6 +1909,17 @@ body {
   letter-spacing: .2px;
   white-space: nowrap;
 }
+.best-run-counter {
+  order: 4;
+  flex: 0 0 auto;
+  padding: 2px 5px;
+  border-left: 1px solid #3b526a;
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  white-space: nowrap;
+}
 .turn-order-track {
   display: flex;
   flex: 1;
