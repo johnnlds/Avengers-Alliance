@@ -2040,7 +2040,7 @@ function performAttack(actor, target, move) {
       log(`${move.name} misses ${actualTarget.name}!`, "miss");
       // Super Crit is consumed by a dodge; Lucky remains until an attack lands.
       if (actor.effects?.superCrit) actor.effects.superCrit = false;
-      showDamageNumber(actualTarget, 0, false, true, 80 + (hitNumber - 1) * 480, move.hits);
+      showDamageNumber(actualTarget, 0, false, true, 80 + (hitNumber - 1) * 140, move.hits);
       continue;
     }
     hitAny = true;
@@ -2061,7 +2061,7 @@ function performAttack(actor, target, move) {
     actualTarget.__lastDamageHpAfter = actualTarget.hp;
     onUnitDamaged(actualTarget);
     totalDamage += amount;
-    showDamageNumber(actualTarget, amount, damage.critical, false, 80 + (hitNumber - 1) * 480, move.hits);
+    showDamageNumber(actualTarget, amount, damage.critical, false, 80 + (hitNumber - 1) * 140, move.hits);
     log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(amount)} damage.`, "damage");
     if (actor.stunPrimed) {
       actor.stunPrimed = false;
