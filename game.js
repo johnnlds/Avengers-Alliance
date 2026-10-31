@@ -369,6 +369,11 @@ function restoreCampaignProgress() {
     $("resultOverlay").classList.remove("hidden");
   } else if (currentActor && waitingForEnemy) {
     window.setTimeout(enemyAct, 500);
+  } else if (currentActor?.team === "enemy") {
+    // The enemy action had completed and its follow-up timer had not fired yet.
+    turnIndex++;
+    currentActor = null;
+    nextTurn();
   } else if (!currentActor) {
     startRound();
   }
