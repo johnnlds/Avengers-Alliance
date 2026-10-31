@@ -317,6 +317,63 @@ let imageExtensions = {};
 let inspectedMoveId = null;
 let destroyerPrototypePrimed = false;
 
+const CAMPAIGN_SAVE_KEY = "avengersAllianceCampaignSave";
+
+function saveCampaignProgress() {
+  if (practiceMode) return;
+  try {
+    localStorage.setItem(CAMPAIGN_SAVE_KEY, JSON.stringify({
+      version: 1, wave, round, heroes, enemies, initiative, turnIndex,
+      currentActorId: currentActor?.id || null, battleOver, waitingForEnemy,
+      selectedHeroId, selectedTargetId, destroyerPrototypePrimed
+    }));
+  } catch (error) { console.warn("Could not save campaign progress.", error); }
+}
+
+function restoreCampaignProgress() {
+  if (new URLSearchParams(window.location.search).has("practice")) return false;
+  let save;
+  try { save = JSON.parse(localStorage.getItem(CAMPAIGN_SAVE_KEY) || "null"); }
+  catch (_) { localStorage.removeItem(CAMPAIGN_SAVE_KEY); return false; }
+  if (!save || save.version !== 1 || !Array.isArray(save.heroes) ||
+      !Array.isArray(save.enemies) || !Array.isArray(save.initiative) ||
+      !Number.isInteger(save.wave) || save.wave < 1 || save.wave > TOTAL_WAVES) return false;
+
+  heroes = save.heroes;
+  enemies = save.enemies;
+  wave = save.wave;
+  round = Number.isInteger(save.round) && save.round > 0 ? save.round : 1;
+  initiative = save.initiative;
+  turnIndex = Math.max(0, Math.min(Number(save.turnIndex) || 0, initiative.length));
+  currentActor = [...heroes, ...enemies].find(unit => unit.id === save.currentActorId) || null;
+  selectedHeroId = heroes.some(unit => unit.id === save.selectedHeroId && unit.alive)
+    ? save.selectedHeroId : (heroes.find(unit => unit.alive)?.id || heroes[0]?.id);
+  selectedTargetId = save.selectedTargetId || null;
+  destroyerPrototypePrimed = !!save.destroyerPrototypePrimed;
+  practiceMode = null;
+  battleOver = !!save.battleOver;
+  waitingForEnemy = !!save.waitingForEnemy && !!currentActor && currentActor.team === "enemy";
+  pendingMoveId = null;
+  animatingActorId = animatingTargetId = animatingMoveId = animatingMode = null;
+  renderAll();
+  if (battleOver) {
+    const victory = heroes.some(unit => unit.alive);
+    $("resultTitle").textContent = victory ? "VICTORY!" : "DEFEAT";
+    $("resultTitle").style.color = victory ? "var(--gold)" : "var(--red)";
+    $("resultMessage").textContent = victory
+      ? (wave >= TOTAL_WAVES ? "All 90 waves cleared! Campaign complete!" : "Campaign complete!")
+      : "Your entire team has been defeated. Restart the campaign from Wave 1.";
+    $("turnLabel").textContent = "BATTLE OVER";
+    $("resultOverlay").classList.remove("hidden");
+  } else if (currentActor && waitingForEnemy) {
+    window.setTimeout(enemyAct, 500);
+  } else if (!currentActor) {
+    startRound();
+  }
+  log("Campaign progress restored from this browser.", "good");
+  return true;
+}
+
 function createUnit(template) {
   return {
     ...template,
@@ -440,7 +497,7 @@ function beginNextWave() {
   }, 1500);
 }
 
-function resetBattle() {
+function resetBattle() {\n  // An explicit restart starts a new campaign.\n  try { localStorage.removeItem(CAMPAIGN_SAVE_KEY); } catch (_) {}
   if (waveAnnouncementTimer !== null) {
     clearTimeout(waveAnnouncementTimer);
     waveAnnouncementTimer = null;
@@ -2353,4 +2410,4 @@ $("clearLogBtn").addEventListener("click", () => {
   $("battleLog").innerHTML = "";
 });
 
-resetBattle();
+if (!restoreCampaignProgress()) resetBattle();
