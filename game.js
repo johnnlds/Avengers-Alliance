@@ -1769,6 +1769,20 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     number.style.setProperty("left", x + "px", "important");
     number.style.setProperty("top", y + "px", "important");
     document.body.appendChild(number);
+
+    // Use the Web Animations API directly so the movement is not dependent on
+    // CSS animation rules being overridden elsewhere in the stylesheet.
+    if (typeof number.animate === "function") {
+      number.animate(
+        [
+          { opacity: 0, transform: "translate(-50%, 0) scale(.88)", offset: 0 },
+          { opacity: 1, transform: "translate(-50%, 0) scale(1)", offset: 0.12 },
+          { opacity: 1, transform: "translate(-50%, 54px) scale(1)", offset: 0.88 },
+          { opacity: 0, transform: "translate(-50%, 66px) scale(.96)", offset: 1 }
+        ],
+        { duration: 1000, easing: "ease-in", fill: "forwards" }
+      );
+    }
     window.setTimeout(() => number.remove(), 1100);
 
     if (!missed && amount > 0 && hpState && visualHp.get(unitKey) === hpState) {
