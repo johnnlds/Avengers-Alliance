@@ -268,12 +268,15 @@ const BOT_PROFILES = {
 "Bot 7L":[2300,2300,583,583,583,190,495,583,670],"Bot 7":[2700,2700,684,684,684,190,581,684,787]
 };
 const BOT_WAVE_SCHEDULE = [
-{start:1,end:5,bot:"Bot 1L"},{start:6,end:10,bot:"Bot 1H"},{start:11,end:15,bot:"Bot 2"},
-{start:16,end:20,bot:"Bot 2H"},{start:21,end:25,bot:"Bot 3L"},{start:26,end:30,bot:"Bot 3"},
-{start:31,end:35,bot:"Bot 3H"},{start:36,end:40,bot:"Bot 4L"},{start:41,end:45,bot:"Bot 4"},
-{start:46,end:50,bot:"Bot 4H"},{start:51,end:55,bot:"Bot 5L"},{start:56,end:60,bot:"Bot 5"},
-{start:61,end:65,bot:"Bot 5H"},{start:66,end:70,bot:"Bot 6L"},{start:71,end:75,bot:"Bot 6"},
-{start:76,end:80,bot:"Bot 6H"},{start:81,end:85,bot:"Bot 7L"},{start:86,end:90,bot:"Bot 7"}
+{start:1,end:5,bot:"Bot 1L"},{start:6,end:10,bot:"Bot 1"},
+{start:11,end:15,bot:"Bot 1H"},{start:16,end:20,bot:"Bot 2"},
+{start:21,end:25,bot:"Bot 2H"},{start:26,end:30,bot:"Bot 3L"},
+{start:31,end:35,bot:"Bot 3"},{start:36,end:40,bot:"Bot 3H"},
+{start:41,end:45,bot:"Bot 4L"},{start:46,end:50,bot:"Bot 4"},
+{start:51,end:55,bot:"Bot 4H"},{start:56,end:60,bot:"Bot 5L"},
+{start:61,end:65,bot:"Bot 5"},{start:66,end:70,bot:"Bot 5H"},
+{start:71,end:75,bot:"Bot 6L"},{start:76,end:80,bot:"Bot 6"},
+{start:81,end:85,bot:"Bot 6H"},{start:86,end:90,bot:"Bot 7L"}
 ];
 function getBotTemplateForWave(currentWave) {
  const entry=BOT_WAVE_SCHEDULE.find(x=>currentWave>=x.start&&currentWave<=x.end)||BOT_WAVE_SCHEDULE[17];
