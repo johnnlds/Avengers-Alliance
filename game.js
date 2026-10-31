@@ -1766,24 +1766,34 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
       x = rect.left + rect.width / 2;
       y = rect.top + 2;
     }
+    number.style.setProperty("position", "fixed", "important");
     number.style.setProperty("left", x + "px", "important");
     number.style.setProperty("top", y + "px", "important");
+    number.style.setProperty("transform", "translateX(-50%)", "important");
+    number.style.setProperty("opacity", "0", "important");
     document.body.appendChild(number);
 
-    // Use the Web Animations API directly so the movement is not dependent on
-    // CSS animation rules being overridden elsewhere in the stylesheet.
-    if (typeof number.animate === "function") {
-      number.animate(
-        [
-          { opacity: 0, transform: "translate(-50%, 0) scale(.88)", offset: 0 },
-          { opacity: 1, transform: "translate(-50%, 0) scale(1)", offset: 0.12 },
-          { opacity: 1, transform: "translate(-50%, 54px) scale(1)", offset: 0.88 },
-          { opacity: 0, transform: "translate(-50%, 66px) scale(.96)", offset: 1 }
-        ],
-        { duration: 1000, easing: "ease-in", fill: "forwards" }
-      );
-    }
-    window.setTimeout(() => number.remove(), 1100);
+    // Move the actual top coordinate each frame. This deliberately avoids
+    // CSS transforms/keyframes, which have been overridden by legacy rules.
+    const animationStarted = performance.now();
+    const animationDuration = 1000;
+    const animationDistance = 66;
+    const animateDamageNumber = now => {
+      if (!number.isConnected) return;
+      const progress = Math.min(1, (now - animationStarted) / animationDuration);
+      const eased = progress * progress;
+      const fadeIn = Math.min(1, progress / 0.12);
+      const fadeOut = progress <= 0.82 ? 1 : 1 - (progress - 0.82) / 0.18;
+      number.style.setProperty("top", (y + animationDistance * eased) + "px", "important");
+      number.style.setProperty("opacity", String(Math.max(0, Math.min(1, fadeIn, fadeOut))), "important");
+      if (progress < 1) {
+        window.requestAnimationFrame(animateDamageNumber);
+      } else {
+        number.remove();
+      }
+    };
+    window.requestAnimationFrame(animateDamageNumber);
+    window.setTimeout(() => number.remove(), 1200);
 
     if (!missed && amount > 0 && hpState && visualHp.get(unitKey) === hpState) {
       // Capture HP at call time so each delayed hit uses its own result.
