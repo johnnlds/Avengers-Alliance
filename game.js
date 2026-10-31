@@ -1776,7 +1776,7 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     // Move the actual top coordinate each frame. This deliberately avoids
     // CSS transforms/keyframes, which have been overridden by legacy rules.
     const animationStarted = performance.now();
-    const animationDuration = 750;
+    const animationDuration = 433;
     const animationDistance = 66;
     const animateDamageNumber = now => {
       if (!number.isConnected) return;
