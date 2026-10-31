@@ -1730,7 +1730,7 @@ function showSniperResult(hit) {
   window.setTimeout(() => indicator.remove(), 1200);
 }
 
-function showDamageNumber(target, amount, critical = false, missed = false, delay = 80) {
+function showDamageNumber(target, amount, critical = false, missed = false, delay = 80, hitCount = 1) {
   // Stage each hit's HP separately so multi-hit moves animate one hit at a time.
   const unitKey = String(target.id);
   const visualHp = window.__damageHpVisual || (window.__damageHpVisual = new Map());
@@ -1776,7 +1776,8 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     // Move the actual top coordinate each frame. This deliberately avoids
     // CSS transforms/keyframes, which have been overridden by legacy rules.
     const animationStarted = performance.now();
-    const animationDuration = 750;
+    // Scale the fall speed with the move's hit count: multi-hit moves use shorter animations.
+    const animationDuration = Math.max(220, 750 / Math.sqrt(Math.max(1, hitCount)));
     const animationDistance = 66;
     const animateDamageNumber = now => {
       if (!number.isConnected) return;
@@ -2040,7 +2041,7 @@ function performAttack(actor, target, move) {
       log(`${move.name} misses ${actualTarget.name}!`, "miss");
       // Super Crit is consumed by a dodge; Lucky remains until an attack lands.
       if (actor.effects?.superCrit) actor.effects.superCrit = false;
-      showDamageNumber(actualTarget, 0, false, true, 80 + (hitNumber - 1) * 480);
+      showDamageNumber(actualTarget, 0, false, true, 80 + (hitNumber - 1) * 480, move.hits);
       continue;
     }
     hitAny = true;
@@ -2061,7 +2062,7 @@ function performAttack(actor, target, move) {
     actualTarget.__lastDamageHpAfter = actualTarget.hp;
     onUnitDamaged(actualTarget);
     totalDamage += amount;
-    showDamageNumber(actualTarget, amount, damage.critical, false, 80 + (hitNumber - 1) * 480);
+    showDamageNumber(actualTarget, amount, damage.critical, false, 80 + (hitNumber - 1) * 480, move.hits);
     log(`${damage.critical ? "CRITICAL! " : ""}${actualTarget.name} takes ${Math.ceil(amount)} damage.`, "damage");
     if (actor.stunPrimed) {
       actor.stunPrimed = false;
