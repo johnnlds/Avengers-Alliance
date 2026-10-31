@@ -525,7 +525,9 @@ function beginNextWave() {
   }, 1500);
 }
 
-function resetBattle() {\n  // An explicit restart starts a new campaign.\n  try { localStorage.removeItem(CAMPAIGN_SAVE_KEY); } catch (_) {}
+function resetBattle() {
+  // An explicit restart starts a new campaign.
+  try { localStorage.removeItem(CAMPAIGN_SAVE_KEY); } catch (_) {}
   if (waveAnnouncementTimer !== null) {
     clearTimeout(waveAnnouncementTimer);
     waveAnnouncementTimer = null;
