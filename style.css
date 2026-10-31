@@ -7133,48 +7133,35 @@ body {
 }
 
 
-/* Damage feedback: numbers sit beside the unit, start lower, then rise and fade. */
+/* Damage feedback: numbers drop from the top-center to the bottom-center of each portrait. */
 .damage-number.damage-overlay {
-  font-size: clamp(15px, 2.1vw, 22px) !important;
-  line-height: 1 !important;
-  padding: 2px 3px !important;
-  animation: damage-side-rise 1100ms ease-out forwards !important;
+  left: 50% !important;
+  transform: translate(-50%, 0) !important;
+  animation: damage-portrait-drop 1000ms ease-in forwards !important;
 }
-@keyframes damage-side-rise {
-  0% { opacity: 0; }
-  12% { opacity: 1; }
-  100% { opacity: 0; }
-}
-@keyframes damage-side-rise-left {
-  0% { opacity: 0; transform: translate(-100%, 22px) scale(.82); }
-  10% { opacity: 1; transform: translate(-100%, 12px) scale(1); }
-  65% { opacity: 1; transform: translate(-100%, -26px) scale(1); }
-  100% { opacity: 0; transform: translate(-100%, -60px) scale(1); }
-}
-@keyframes damage-side-rise-right {
-  0% { opacity: 0; transform: translate(0, 22px) scale(.82); }
-  10% { opacity: 1; transform: translate(0, 12px) scale(1); }
-  65% { opacity: 1; transform: translate(0, -26px) scale(1); }
-  100% { opacity: 0; transform: translate(0, -60px) scale(1); }
-}
-/* Keep numbers beside the unit; animate them vertically upward before fading. */
-.damage-number.damage-overlay.damage-left {
-  animation: damage-side-rise-left 1100ms ease-out forwards !important;
-}
+.damage-number.damage-overlay.damage-left,
 .damage-number.damage-overlay.damage-right {
-  animation: damage-side-rise-right 1100ms ease-out forwards !important;
+  left: 50% !important;
+  transform: translate(-50%, 0) !important;
+  animation: damage-portrait-drop 1000ms ease-in forwards !important;
 }
-@keyframes damage-side-rise-left {
-  0% { opacity: 0; transform: translate(-100%, 18px) scale(.82); }
-  12% { opacity: 1; transform: translate(-100%, 8px) scale(1); }
-  68% { opacity: 1; transform: translate(-100%, -28px) scale(1); }
-  100% { opacity: 0; transform: translate(-100%, -58px) scale(1); }
-}
-@keyframes damage-side-rise-right {
-  0% { opacity: 0; transform: translate(0, 18px) scale(.82); }
-  12% { opacity: 1; transform: translate(0, 8px) scale(1); }
-  68% { opacity: 1; transform: translate(0, -28px) scale(1); }
-  100% { opacity: 0; transform: translate(0, -58px) scale(1); }
+@keyframes damage-portrait-drop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(.88);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  88% {
+    opacity: 1;
+    transform: translate(-50%, 54px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 66px) scale(.96);
+  }
 }
 .damage-number.damage-overlay.critical { font-size: clamp(17px, 2.3vw, 24px) !important; }
 .battlefield .unit .battle-unit-hp-fill {
