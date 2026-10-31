@@ -861,6 +861,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 function renderAll() {
+  saveCampaignProgress();
   renderBuffsDebuffs();
   renderTeam("heroTeam", heroes);
   renderTeam("enemyTeam", enemies);
