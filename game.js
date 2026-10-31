@@ -342,6 +342,8 @@ function restoreCampaignProgress() {
   heroes = save.heroes;
   enemies = save.enemies;
   wave = save.wave;
+  // A save can occur during the brief wave-transition animation.
+  if (enemies.length === 0 && !save.battleOver) enemies = createWaveEnemies();
   round = Number.isInteger(save.round) && save.round > 0 ? save.round : 1;
   initiative = save.initiative;
   turnIndex = Math.max(0, Math.min(Number(save.turnIndex) || 0, initiative.length));
@@ -847,6 +849,11 @@ function renderBuffsDebuffs() {
     root.appendChild(empty);
   }
 }
+
+window.addEventListener("pagehide", saveCampaignProgress);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") saveCampaignProgress();
+});
 
 function renderAll() {
   renderBuffsDebuffs();
