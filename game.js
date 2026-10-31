@@ -1776,8 +1776,7 @@ function showDamageNumber(target, amount, critical = false, missed = false, dela
     // Move the actual top coordinate each frame. This deliberately avoids
     // CSS transforms/keyframes, which have been overridden by legacy rules.
     const animationStarted = performance.now();
-    // Scale the fall speed with the move's hit count: multi-hit moves use shorter animations.
-    const animationDuration = Math.max(220, 750 / Math.sqrt(Math.max(1, hitCount)));
+    const animationDuration = 750;
     const animationDistance = 66;
     const animateDamageNumber = now => {
       if (!number.isConnected) return;
