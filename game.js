@@ -318,9 +318,30 @@ let inspectedMoveId = null;
 let destroyerPrototypePrimed = false;
 
 const CAMPAIGN_SAVE_KEY = "avengersAllianceCampaignSave";
+const BEST_RUN_KEY = "avengersAllianceBestRun";
+
+function getBestRunWave() {
+  const best = Number(localStorage.getItem(BEST_RUN_KEY));
+  return Number.isInteger(best) && best > 0 ? best : 1;
+}
+
+function recordBestRun() {
+  if (practiceMode) return;
+  try {
+    if (wave > getBestRunWave()) localStorage.setItem(BEST_RUN_KEY, String(wave));
+  } catch (_) {}
+}
+
+function formatRunLevelWave(waveNumber) {
+  const level = Math.floor((waveNumber - 1) / 10) + 1;
+  const levelWave = ((waveNumber - 1) % 10) + 1;
+  return `${level}.${levelWave}`;
+}
+
 
 function saveCampaignProgress() {
   if (practiceMode) return;
+  recordBestRun();
   try {
     localStorage.setItem(CAMPAIGN_SAVE_KEY, JSON.stringify({
       version: 1, wave, round, heroes, enemies, initiative, turnIndex,
@@ -1013,6 +1034,13 @@ function renderTurnOrder() {
   waveCounter.textContent = `Wave ${wave}`;
   waveCounter.setAttribute("aria-label", `Wave ${wave} of ${TOTAL_WAVES}`);
   root.appendChild(waveCounter);
+
+  const bestCounter = document.createElement("span");
+  bestCounter.className = "best-run-counter";
+  const bestWave = getBestRunWave();
+  bestCounter.textContent = `Best ${formatRunLevelWave(bestWave)}`;
+  bestCounter.setAttribute("aria-label", `Best run: Level ${Math.floor((bestWave - 1) / 10) + 1}, wave ${((bestWave - 1) % 10) + 1}`);
+  root.appendChild(bestCounter);
 }
 
 function getUnitActiveEffects(unit) {
