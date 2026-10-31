@@ -7133,35 +7133,13 @@ body {
 }
 
 
-/* Damage feedback: numbers drop from the top-center to the bottom-center of each portrait. */
-.damage-number.damage-overlay {
-  left: 50% !important;
-  transform: translate(-50%, 0) !important;
-  animation: damage-portrait-drop 1000ms ease-in forwards !important;
-}
+/* Damage numbers are positioned by game.js; movement is driven by Web Animations API. */
+.damage-number.damage-overlay,
 .damage-number.damage-overlay.damage-left,
 .damage-number.damage-overlay.damage-right {
   left: 50% !important;
-  transform: translate(-50%, 0) !important;
-  animation: damage-portrait-drop 1000ms ease-in forwards !important;
-}
-@keyframes damage-portrait-drop {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, 0) scale(.88);
-  }
-  12% {
-    opacity: 1;
-    transform: translate(-50%, 0) scale(1);
-  }
-  88% {
-    opacity: 1;
-    transform: translate(-50%, 54px) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, 66px) scale(.96);
-  }
+  animation: none !important;
+  transform: none;
 }
 .damage-number.damage-overlay.critical { font-size: clamp(17px, 2.3vw, 24px) !important; }
 .battlefield .unit .battle-unit-hp-fill {
