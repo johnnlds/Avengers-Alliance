@@ -83,6 +83,10 @@ const MOVE_DATA = [
   {id:"bot-medium",name:"Medium Attack",attackType:"ranged-gun",description:"Single-target ranged bot attack.",cost:0,damage:25,hits:1,accuracy:100,crit:0,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
   {id:"bot-heavy",name:"Heavy Attack",attackType:"ranged-gun",description:"Single-target heavy ranged bot attack.",cost:0,damage:29,hits:1,accuracy:100,crit:0,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
   {id:"bot-random-effect",name:"Buff/Debuff",attackType:"buff",description:"Randomly buff one bot ally or debuff one hero.",cost:0,damage:0,hits:1,accuracy:100,crit:0,cooldown:0,type:"bot-effect",target:"enemy",enemyUsable:true},
+  {id:"bot-1l-light",name:"Light Attack",attackType:"unarmed-melee",description:"Two quick melee hits against one enemy.",cost:8,damage:13,hits:2,accuracy:95,crit:8,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
+  {id:"bot-1l-medium",name:"Medium Attack",attackType:"ranged-gun",description:"A medium-damage gunshot against one enemy.",cost:15,damage:15,hits:1,accuracy:87,crit:10,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
+  {id:"bot-1l-heavy",name:"Heavy Attack",attackType:"ranged-gun",description:"A heavy gunshot against one enemy.",cost:22,damage:17,hits:1,accuracy:75,crit:10,cooldown:0,type:"attack",target:"enemy",enemyUsable:true},
+  {id:"bot-1l-random-effect",name:"Buff/Debuff",attackType:"buff",description:"Apply a random buff to a living bot ally or a random debuff to a living enemy.",cost:7,damage:0,hits:1,accuracy:100,crit:0,cooldown:0,type:"bot-effect",target:"enemy",enemyUsable:true},
   { id:"hydra-strike", name:"Hydra Strike", attackType:"unarmed-melee", description:"A basic Hydra melee attack.", cost:8, damage:18, hits:1, accuracy:82, crit:8, cooldown:0, type:"attack", target:"enemy", enemyUsable:true },
 
   { id:"stormbreaker", name:"Stormbreaker", attackType:"unarmed-melee", description:"Beta Ray Bill strikes one enemy with Stormbreaker.", cost:572.24, damage:1416.6, hits:1, accuracy:75, crit:2, cooldown:0, type:"attack", target:"enemy", owner:"beta-ray-bill" },
@@ -100,6 +104,7 @@ function getMove(moveId) {
 }
 function getMoveCost(unit, move) {
   const scalingHeroId = unit?.practiceHeroId || unit?.id;
+  if (move && unit?.botCostPercent) return Math.ceil(unit.maxSta * move.cost / 100);
   return move && unit && ["phil","bruiser","blackwidow","blackcat","elektra","hawkeye","antman","daredevil","howard","punisher","squirrelgirl","captainamerica","moonknight","cloakdagger","spiderman","deadpool","thing"].includes(scalingHeroId)
     ? Math.ceil(unit.maxSta * move.cost / 100)
     : (move?.cost || 0);
@@ -252,7 +257,7 @@ const HERO_TEMPLATES = [
 ];
 
 const BOT_PROFILES = {
-"Bot 1":[100,100,25,25,25,80,21,25,29],"Bot 1H":[125,125,32,32,32,85,27,32,37],
+"Bot 1L":[70,70,15,15,15,15,13,15,17],"Bot 1":[100,100,25,25,25,80,21,25,29],"Bot 1H":[125,125,32,32,32,85,27,32,37],
 "Bot 2":[150,150,38,38,38,85,32,38,44],"Bot 2H":[200,200,50,50,50,90,43,50,58],
 "Bot 3L":[250,250,58,58,58,90,49,58,67],"Bot 3":[300,300,76,76,76,100,65,76,87],
 "Bot 3H":[350,350,89,89,89,100,75,89,102],"Bot 4L":[383,383,97,97,97,100,83,97,112],
@@ -263,7 +268,7 @@ const BOT_PROFILES = {
 "Bot 7L":[2300,2300,583,583,583,190,495,583,670],"Bot 7":[2700,2700,684,684,684,190,581,684,787]
 };
 const BOT_WAVE_SCHEDULE = [
-{start:1,end:5,bot:"Bot 1"},{start:6,end:10,bot:"Bot 1H"},{start:11,end:15,bot:"Bot 2"},
+{start:1,end:5,bot:"Bot 1L"},{start:6,end:10,bot:"Bot 1H"},{start:11,end:15,bot:"Bot 2"},
 {start:16,end:20,bot:"Bot 2H"},{start:21,end:25,bot:"Bot 3L"},{start:26,end:30,bot:"Bot 3"},
 {start:31,end:35,bot:"Bot 3H"},{start:36,end:40,bot:"Bot 4L"},{start:41,end:45,bot:"Bot 4"},
 {start:46,end:50,bot:"Bot 4H"},{start:51,end:55,bot:"Bot 5L"},{start:56,end:60,bot:"Bot 5"},
@@ -275,7 +280,10 @@ function getBotTemplateForWave(currentWave) {
  const [hp,sta,atk,acc,def,speed,light,medium,heavy]=BOT_PROFILES[entry.bot];
  return {id:"bot-"+entry.bot.toLowerCase().replace(/[^a-z0-9]+/g,"-"),name:entry.bot,description:"Campaign combat bot",image:"Bot",team:"enemy",
  maxHp:hp,maxSta:sta,atk,acc,def,eva:0,speed,botDamage:{light,medium,heavy},
- moveIds:["bot-light","bot-medium","bot-heavy","bot-random-effect"]};
+ ...(entry.bot === "Bot 1L" ? {botCostPercent:true} : {}),
+ moveIds:entry.bot === "Bot 1L"
+   ? ["bot-1l-light","bot-1l-medium","bot-1l-heavy","bot-1l-random-effect"]
+   : ["bot-light","bot-medium","bot-heavy","bot-random-effect"]};
 }
 /* =========================================
    GAME STATE
