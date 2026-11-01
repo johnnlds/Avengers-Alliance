@@ -25,6 +25,7 @@ const grid = document.getElementById("unlockedCharacterGrid");
 const count = document.getElementById("selectionCount");
 const error = document.getElementById("selectionError");
 const startButton = document.getElementById("startBattleBtn");
+const storyModeButton = document.getElementById("storyModeBtn");
 try {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
   if (Array.isArray(saved)) {
@@ -97,6 +98,7 @@ function saveTeamAndLaunch(url) {
   window.location.href = url;
 }
 startButton.addEventListener("click", () => saveTeamAndLaunch("battle/"));
+storyModeButton.addEventListener("click", () => saveTeamAndLaunch("story/"));
 document.getElementById("practice2StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=2-star"));
 document.getElementById("practice3StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=3-star"));
 document.getElementById("practice4StarBtn").addEventListener("click", () => saveTeamAndLaunch("battle/?practice=4-star"));
