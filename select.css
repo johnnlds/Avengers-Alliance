@@ -193,3 +193,9 @@ footer { margin:20px 0 0; color:#64758a; font-size:10px; font-weight:700; letter
   .practice-row { gap: 6px; }
   .practice-button { padding: 10px 6px; font-size: 12px; }
 }
+
+
+/* Story Mode entry point */
+.story-mode-row { display:flex; justify-content:center; margin-top:12px; }
+.story-mode-button { width:min(100%,360px); color:#eaf4ff; background:linear-gradient(180deg,#315675,#1d3b57); border:1px solid #5b88ad; }
+.story-mode-button:hover { background:linear-gradient(180deg,#3b668b,#244967); }
